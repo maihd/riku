@@ -20,6 +20,11 @@ using sbyte  = int8_t;
 
 using str    = const char*;
 
+// Memory address and size
+
+using iptr   = intptr_t;
+using uptr   = uintptr_t;
+
 #if __x86_64__ || UINTPTR_MAX == 0xffffffffffffffff
 using usize  = uint64_t;
 using isize  = int64_t;
