@@ -5,7 +5,7 @@
 
 // Redefine primitive types
 
-#if (UINT32_MAX != 0xffffffff)
+#if (UINT_MAX != 0xffffffff)
 #define int   int32_t
 #define long  int64_t
 #define short int16_t
@@ -19,3 +19,11 @@ using byte   = uint8_t;
 using sbyte  = int8_t;
 
 using str    = const char*;
+
+#if __x86_64__ || UINTPTR_MAX == 0xffffffffffffffff
+using usize  = uint64_t;
+using isize  = int64_t;
+#else 
+using usize  = uint32_t;
+using isize  = int32_t;
+#endif
