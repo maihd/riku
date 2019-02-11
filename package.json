@@ -1,0 +1,25 @@
+{
+  "name": "@maihd/riku",
+  "version": "0.0.2",
+  "description": "Riku is common runtime and library for C++11, distribute to npmjs.org for craft framework",
+  "private": false, 
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maihd/riku.git"
+  },
+  "keywords": [
+    "C++",
+    "craft",
+    "library"
+  ],
+  "author": "MaiHD",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/maihd/riku/issues"
+  },
+  "homepage": "https://github.com/maihd/riku#readme"
+}
