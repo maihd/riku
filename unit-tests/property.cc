@@ -23,6 +23,7 @@ public:
 public:
     int real_value;
 };
+static_assert(sizeof(PropertyTest) == sizeof(int), "property should not create new member in data structure, it's just syntax sugar man.");
 
 int main()
 {
