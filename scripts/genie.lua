@@ -1,31 +1,16 @@
 local RIKU_DIR = path.getabsolute('..')
 local RIKU_BUILD_DIR = path.join(RIKU_DIR, 'build')
 
-local function clean()
-   io.write 'Removing build directory...'
-   
-   os.rmdir(RIKU_BUILD_DIR)
-   
-   io.write 'DONE.\n'
-end
-
-local function regen()
-   clean()
-
-   print(_ARGS[1])
-   os.execute('genie ' .. _ARGS[0])
-end
-
 newaction {
    trigger = 'clean',
    description = 'Clean all generated projects',
-   execute = clean
-}
-
-newaction {
-   trigger = 'regen',
-   description = 'Clean all generated projects and regenerate.',
-   execute = regen
+   execute = function clean()
+      io.write 'Removing build directory...'
+      
+      os.rmdir(RIKU_BUILD_DIR)
+      
+      io.write 'DONE.\n'
+   end
 }
 
 solution 'riku'
@@ -78,10 +63,27 @@ do
       path.join(RIKU_DIR, 'include/*.h'),
       path.join(RIKU_DIR, 'include/**/*.h'),
    }
+
+   configuration { 'debug' }
+   do
+      defines {
+         '_DEBUG'
+      }
+   end
+
+   configuration { 'release' }
+   do
+      defines {
+         'NDEBUG'
+      }
+   end
    
    configuration { 'vs*' }
    do
-
+      defines {
+         '_CRT_SECURE_NO_WARNINGS',
+         '_USRLIB'
+      }
    end
 end
 
