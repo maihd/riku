@@ -13,7 +13,7 @@ public: //
     void* buffer;
 
 public: // Properties
-    property_readonly(get_type) int type;
+    propdef_readonly(get_type) int type;
 
 public: // Properties implement
     inline int get_type() const 

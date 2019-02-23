@@ -11,7 +11,7 @@ public: // Types
     struct Type
     {
     public:
-        property(int, get_value, set_value) value;
+        propdef(get_value, set_value) int value;
         
     public:
         int get_value()

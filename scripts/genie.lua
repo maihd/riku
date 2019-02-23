@@ -4,13 +4,13 @@ local RIKU_BUILD_DIR = path.join(RIKU_DIR, 'build')
 newaction {
    trigger = 'clean',
    description = 'Clean all generated projects',
-   execute = function clean()
+   execute = function ()
       io.write 'Removing build directory...'
       
       os.rmdir(RIKU_BUILD_DIR)
       
       io.write 'DONE.\n'
-   end
+   end,
 }
 
 solution 'riku'
