@@ -1,24 +1,9 @@
 #pragma once
 
 #include <riku.h>
+#include "./catch2/catch.hpp"
 
 struct UnitTest
 {
-    UnitTest* next;
-    static UnitTest* root;
-
-    inline UnitTest()
-    {
-        this->next = nullptr;
-        if (UnitTest::root)
-        {
-            UnitTest::root = UnitTest::root->next = this;
-        }
-        else
-        {
-            UnitTest::root = this;
-        }
-    }
-
     virtual void execute() = 0;
 };

@@ -96,6 +96,8 @@ do
    }
 
    files {
+      path.join(RIKU_DIR, 'unit-tests/*.h'),
+      path.join(RIKU_DIR, 'unit-tests/**/*.h'),
       path.join(RIKU_DIR, 'unit-tests/*.cc'),
       path.join(RIKU_DIR, 'unit-tests/**/*.cc'),
    }

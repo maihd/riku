@@ -2,7 +2,6 @@
 
 #include "./types.h"
 #include "./define.h"
-#include "./property.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -64,12 +63,16 @@ namespace array
     template <typename TItem>
     inline bool grow(Array<TItem>& array, int new_size)
     {
-        int  old_size = array.capacity;
-        int* old_raw  = array.buffer ? raw(array) : nullptr;
-        int* new_raw  = (int*)realloc(old_raw, sizeof(int) * 2 + new_size * sizeof(TItem));
+        int* old_raw = array.buffer ? raw(array) : nullptr;
+        int* new_raw = (int*)realloc(old_raw, sizeof(int) * 2 + new_size * sizeof(TItem));
 
         if (new_raw)
         {
+            if (!old_raw)
+            {
+                new_raw[1] = 0;
+            }
+
             new_raw[0]   = new_size;
             array.buffer = new_raw + 2;
             return true; 
@@ -89,7 +92,10 @@ namespace array
         }
         else
         {
-            return grow(array, array.capacity * 2);
+            int new_size = array.capacity;
+            new_size = new_size ? new_size : 64;
+            while (new_size < size) new_size *= 2;
+            return grow(array, new_size);
         }
     }
 
