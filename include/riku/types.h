@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <limits.h>
 #include <stdint.h>
@@ -25,10 +25,38 @@ using str    = const char*;
 using iptr   = intptr_t;
 using uptr   = uintptr_t;
 
-#if __x86_64__ || UINTPTR_MAX == 0xffffffffffffffff
+#if defined(__x86_64__) || UINTPTR_MAX == 0xffffffffffffffff
 using usize  = uint64_t;
 using isize  = int64_t;
 #else 
 using usize  = uint32_t;
 using isize  = int32_t;
 #endif
+
+// Right value trait
+template <typename T>
+struct WithoutRefTrait
+{
+    using Type = T;
+};
+
+template <typename T>
+struct WithoutRefTrait<T&>
+{
+    using Type = T;
+};
+
+template <typename T>
+struct WithoutRefTrait<T&&>
+{
+    using Type = T;
+};
+
+template <typename T>
+using WithoutRef = typename WithoutRefTrait<T>::Type;
+
+template <typename T>
+inline WithoutRef<T>&& make_rvalue(T&& value)
+{
+    return (static_cast<WithoutRef<T>&&>(value));
+}

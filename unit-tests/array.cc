@@ -62,16 +62,16 @@ TEST_CASE("Test array operations", "[Array]")
     array::push(int_array, 9);
     REQUIRE(int_array.length == 10);
 
-    array::push(int_array1, 0);
-    array::push(int_array1, 1);
-    array::push(int_array1, 2);
-    array::push(int_array1, 3);
-    array::push(int_array1, 4);
-    array::push(int_array1, 5);
-    array::push(int_array1, 6);
-    array::push(int_array1, 7);
-    array::push(int_array1, 8);
-    array::push(int_array1, 9);
+    array::unshift(int_array1, 0);
+    array::unshift(int_array1, 1);
+    array::unshift(int_array1, 2);
+    array::unshift(int_array1, 3);
+    array::unshift(int_array1, 4);
+    array::unshift(int_array1, 5);
+    array::unshift(int_array1, 6);
+    array::unshift(int_array1, 7);
+    array::unshift(int_array1, 8);
+    array::unshift(int_array1, 9);
     REQUIRE(int_array.length == 10);
 
     for (int i = 0, n = int_array.length; i < n; i++)
@@ -84,13 +84,23 @@ TEST_CASE("Test array operations", "[Array]")
         REQUIRE(array::last_index_of(int_array1, int_array1[i]) == i);
     }
 
-    int new_length = int_array.length + int_array1.length;
-    array::concat(int_array, int_array1);
-    REQUIRE(int_array.length == new_length);
+    printf("Cloning int_array...\n");
+    Array<int> concat_array = array::clone(int_array);
+    REQUIRE(concat_array.length == int_array.length);
+    REQUIRE(concat_array.capacity == int_array.capacity);
+    for (int i = 0, n = concat_array.length; i < n; i++)
+    {
+        REQUIRE(concat_array[i] == int_array[i]);
+    }
+
+    printf("Concat int_array1 to concat_array...\n");
+    int new_length = concat_array.length + int_array1.length;
+    REQUIRE(array::concat(concat_array, int_array1));
+    REQUIRE(concat_array.length == new_length);
 
     printf("int_array after concat...\n");
-    for (int i = 0, n = int_array.length; i < n; i++)
+    for (int i = 0, n = concat_array.length; i < n; i++)
     {
-        printf("\tint_array[%d] = %d\n", i, int_array[i]);
+        printf("\tconcat_array[%d] = %d\n", i, concat_array[i]);
     }
 }
