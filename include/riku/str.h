@@ -2,7 +2,6 @@
 
 #include "./types.h"
 #include "./define.h"
-#include "./property.h"
 
 #include <stdlib.h>
 #include <string.h>

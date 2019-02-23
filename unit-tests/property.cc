@@ -1,5 +1,5 @@
+#include <riku.h>
 #include <stdio.h>
-#include <riku/property.h>
 
 #include "./unit-test.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./define.h"
-#include "./property.h"
 
 template <typename TRet, typename ...TArgs>
 struct Func;
