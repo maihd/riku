@@ -60,3 +60,45 @@ inline WithoutRef<T>&& make_rvalue(T&& value)
 {
     return (static_cast<WithoutRef<T>&&>(value));
 }
+
+// Option
+template <typename T>
+struct Option
+{
+public: // Metatype
+    using ValueType = typename T;
+
+public:
+    ValueType value;
+    bool      has_value;
+
+public:
+    inline Option(void)
+        : value()
+        : has_value(false) {}
+
+    inline Option(ValueType&& value)
+        : value(make_rvalue(value))
+        : has_value(true) {}
+
+    inline Option(const ValueType& value)
+        : value(value)
+        : has_value(true) {}
+
+    inline Option& operator=(ValueType&& value)
+    {
+        this->value = make_rvalue(value);
+        this->has_value = true;
+        return *this;
+    }
+
+    inline Option& operator=(const ValueType& value)
+    {
+        this->value = value;
+        this->has_value = true;
+        return *this;
+    }
+
+public:
+    inline operator bool() const { return has_value; }
+};
