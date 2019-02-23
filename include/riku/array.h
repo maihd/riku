@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./types.h"
 #include "./define.h"
 #include "./property.h"
 
@@ -20,7 +21,10 @@ public:
 
     inline ~Array()
     {
-        free(buffer);
+        if (buffer)
+        {
+            free((int*)buffer - 2);
+        }
     }
 
 public:
@@ -62,7 +66,7 @@ namespace array
     {
         int  old_size = array.capacity;
         int* old_raw  = array.buffer ? raw(array) : nullptr;
-        int* new_raw  = (int*)realloc(old_raw, new_size * sizeof(TItem));
+        int* new_raw  = (int*)realloc(old_raw, sizeof(int) * 2 + new_size * sizeof(TItem));
 
         if (new_raw)
         {
