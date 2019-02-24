@@ -28,14 +28,33 @@ do
 
    startproject 'riku.unit-tests'
 
+   flags {
+      'NoPCH',
+      'NoRTTI',
+      'NoWinRT',
+      'NoExceptions',
+      'NoEditAndContinue',
+      'NoBufferSecurityCheck',
+
+      'ExtraWarnings'
+   }
+
    configuration { 'debug' }
    do
       targetdir (path.join(RIKU_BUILD_DIR, 'debug'))
+
+      flags {
+         'Symbols' 
+      }
    end
 
    configuration { 'release' }
    do
       targetdir (path.join(RIKU_BUILD_DIR, 'release'))
+      flags { 
+         'OptimizeSpeed', 
+         'No64BitChecks', 
+      }
    end
 
    configuration { 'gmake' }
@@ -45,6 +64,9 @@ do
 
       buildoptions {
          '-fdeclspec'
+      }
+
+      linkoptions {
       }
    end
 end
@@ -83,6 +105,10 @@ do
       defines {
          '_CRT_SECURE_NO_WARNINGS',
          '_USRLIB'
+      }
+
+      linkoptions {
+         '/NODEFAULTLIB'
       }
    end
 end
