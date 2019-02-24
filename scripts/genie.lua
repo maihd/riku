@@ -63,7 +63,7 @@ do
       premake.gcc.cxx = 'clang++'
 
       buildoptions {
-         '-fdeclspec'
+         '-fdeclspec',
       }
 
       linkoptions {
@@ -97,6 +97,13 @@ do
    do
       defines {
          'NDEBUG'
+      }
+   end
+
+   configuration { 'gmake' }
+   do
+      buildoptions {
+         '-std=c++11'
       }
    end
    

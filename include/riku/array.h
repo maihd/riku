@@ -10,7 +10,15 @@ template <typename TItem>
 struct Array 
 {
 public:
-    TItem* buffer;
+    struct Buffer
+    {
+        int length;
+        int capacity;
+        TItem items[];
+    };
+
+public:
+    Buffer* buffer;
 
 public:
     inline Array(void)
@@ -20,10 +28,7 @@ public:
 
     inline ~Array(void)
     {
-        if (buffer)
-        {
-            free((int*)buffer - 2);
-        }
+        free(buffer);
     }
 
 public: // RAII
@@ -35,11 +40,7 @@ public: // RAII
 
     inline Array<TItem>& operator=(Array<TItem>&& other)
     {
-        if (buffer)
-        {
-            free((int*)buffer - 2);
-        }
-
+        free(buffer);
         buffer = other.buffer;
         other.buffer = nullptr;
 
@@ -52,60 +53,54 @@ public: // Properties
     
     inline int get_length(void) const
     {
-        return buffer ? ((int*)buffer - 2)[1] : 0;
+        return buffer ? buffer->length : 0;
     }
 
     inline int get_capacity(void) const
     {
-        return buffer ? ((int*)buffer - 2)[0] : 0;
+        return buffer ? buffer->capacity : 0;
     }
 
 public: // Indexor
     inline TItem& operator[](int index)
     {
-        return buffer[index];
+        return buffer->items[index];
     }
 
     inline const TItem& operator[](int index) const
     {
-        return buffer[index];
+        return buffer->items[index];
     }
 
 public: // Conversion
     inline operator TItem*(void)
     {
-        return buffer;
+        return buffer->items;
     }
 
     inline operator const TItem*(void) const
     {
-        return buffer;
+        return buffer->items;
     }
 };
 
 namespace array 
 {
     template <typename TItem>
-    inline int* raw(const Array<TItem>& array)
-    {
-        return (int*)array.buffer - 2;
-    }
-
-    template <typename TItem>
     inline bool grow(Array<TItem>& array, int new_size)
     {
-        int* old_raw = array.buffer ? raw(array) : nullptr;
-        int* new_raw = (int*)realloc(old_raw, sizeof(int) * 2 + new_size * sizeof(TItem));
+        auto old_buf = array.buffer;
+        auto new_buf = (Array<TItem>::Buffer*)realloc(old_buf, sizeof(Array<TItem>::Buffer) + new_size * sizeof(TItem));
 
-        if (new_raw)
+        if (new_buf)
         {
-            if (!old_raw)
+            if (!old_buf)
             {
-                new_raw[1] = 0;
+                new_buf->length = 0;
             }
 
-            new_raw[0]   = new_size;
-            array.buffer = new_raw + 2;
+            array.buffer           = new_buf;
+            array.buffer->capacity = new_size;
             return true; 
         }
         else 
@@ -144,24 +139,24 @@ namespace array
             return false;
         }
 
-        int index = array.length;
-        raw(array)[1] = index + 1;
-        array.buffer[index] = value;
+        array.buffer->items[array.buffer->length++] = value;
         return true;   
     }
 
     template <typename TItem>
     inline const TItem& pop(Array<TItem>& array)
     {
-        return array.buffer[--raw(array)[1]];
+        return array.buffer->items[--array.buffer->length];
     }
 
     template <typename TItem>
     inline TItem shift(Array<TItem>& array)
     {
-        TItem result = array.buffer[0];
-        raw(array)[1] = array.length - 1;
-        memmove(array.buffer, array.buffer + 1, array.length * sizeof(TItem));
+        TItem result = array.buffer->items[0];
+
+        array.buffer->length--;
+        memmove(array.buffer->items, array.buffer->items + 1, array.buffer->length * sizeof(TItem));
+
         return result;
     }
 
@@ -173,9 +168,9 @@ namespace array
             return false;
         }
 
-        memmove(array.buffer + 1, array.buffer, array.length * sizeof(TItem));
-        raw(array)[1] = array.length + 1;
-        array.buffer[0] = value;
+        memmove(array.buffer->items + 1, array.buffer->items, array.length * sizeof(TItem));
+        array.buffer->length++;
+        array.buffer->items[0] = value;
         return true;
     }
 
@@ -184,7 +179,7 @@ namespace array
     {
         for (int i = 0, n = array.length; i < n; i++)
         {
-            if (array.buffer[i] == value)
+            if (array.buffer->items[i] == value)
             {
                 return i;
             }
@@ -199,7 +194,7 @@ namespace array
         int index = -1;
         for (int i = 0, n = array.length; i < n; i++)
         {
-            if (array.buffer[i] == value)
+            if (array.buffer->items[i] == value)
             {
                 index = i;
             }
@@ -213,14 +208,17 @@ namespace array
     {
         int dst_len = dst.length;
         int src_len = src.length;
-        int new_len = dst_len + src_len;
-        if (!ensure(dst, new_len))
+        if (src_len)
         {
-            return false;
-        }
+            int new_len = dst_len + src_len;
+            if (!ensure(dst, new_len))
+            {
+                return false;
+            }
 
-        memcpy(dst.buffer + dst.length, src.buffer, src_len * sizeof(TItem));
-        raw(dst)[1] = new_len;
+            memcpy(dst.buffer->items + dst.length, src.buffer->items, src_len * sizeof(TItem));
+            dst.buffer->length = new_len;
+        }
         return true;
     }
     
@@ -229,7 +227,7 @@ namespace array
     {
         if (array.buffer) 
         {
-            raw(res)[1] = 0;
+            dst.buffer->length = 0;
         }
     }
 
@@ -244,8 +242,8 @@ namespace array
         {
             if (grow(res, cap))
             {
-                raw(res)[1] = len;
-                memcpy(res.buffer, array.buffer, len * sizeof(TItem));
+                res.buffer->length = len;
+                memcpy(res.buffer->items, array.buffer->items, len * sizeof(TItem));
             }
         }
 
