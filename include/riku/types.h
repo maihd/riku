@@ -66,7 +66,7 @@ template <typename T>
 struct Option
 {
 public: // Metatype
-    using ValueType = typename T;
+    using ValueType = T;
 
 public:
     ValueType value;
@@ -75,15 +75,15 @@ public:
 public:
     inline Option(void)
         : value()
-        : has_value(false) {}
+        , has_value(false) {}
 
     inline Option(ValueType&& value)
         : value(make_rvalue(value))
-        : has_value(true) {}
+        , has_value(true) {}
 
     inline Option(const ValueType& value)
         : value(value)
-        : has_value(true) {}
+        , has_value(true) {}
 
     inline Option& operator=(ValueType&& value)
     {
