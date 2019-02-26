@@ -1,1 +1,1 @@
-#include "../include/riku/value.h"
+#include <riku/value.h>
