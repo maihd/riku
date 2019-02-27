@@ -1,15 +1,28 @@
 local RIKU_DIR = path.getabsolute('..')
 local RIKU_BUILD_DIR = path.join(RIKU_DIR, 'build')
 
+function string.startwith(s, b)
+   return string.sub(s, 1, string.len(b)) == b
+end
+
+local TARGET_PLATFORM = ''
+if string.startwith(_ACTION, 'vs') or string.startwith(_ACTION, 'mingw') then
+   TARGET_PLATFORM = 'windows'
+else
+   TARGET_PLATFORM = 'linux'
+end
+
 newaction {
    trigger = 'clean',
    description = 'Clean all generated projects',
    execute = function ()
-      io.write 'Removing build directory...'
+      io.write('Removing build directory...')
       
-      os.rmdir(RIKU_BUILD_DIR)
-      
-      io.write 'DONE.\n'
+      if os.rmdir(RIKU_BUILD_DIR) then
+         io.write('DONE!\n')
+      else
+         io.write('FAILED!\n')
+      end
    end,
 }
 
@@ -30,7 +43,7 @@ do
 
    configuration { 'debug' }
    do
-      targetdir (path.join(RIKU_BUILD_DIR, 'debug'))
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'debug'))
 
       flags {
          'Symbols' 
@@ -43,7 +56,7 @@ do
 
    configuration { 'release' }
    do
-      targetdir (path.join(RIKU_BUILD_DIR, 'release'))
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'release'))
       flags { 
          'OptimizeSpeed', 
          'No64BitChecks', 
