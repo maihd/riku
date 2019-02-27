@@ -8936,6 +8936,8 @@ __forceinline float3x3 float3x3::translate(float x, float y)
 
 __forceinline float3x3 float3x3::rotate(float angle)
 {
+    using namespace math;
+
     const float c = cos(angle);
     const float s = sin(angle);
     return float3x3(
