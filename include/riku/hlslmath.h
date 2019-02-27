@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <cmath>
+#include <math.h>
 
 #undef min // When Windows.h is included, min is an macro
 #undef max // When Windows.h is included, max is an macro
@@ -38,12 +38,13 @@ extern "C"
 #if __unix__
 #define HLSL_DEFINE_INTRINSICS 1
 #else
-#define HLSL_DEFINE_INTRINSICS 0
+#define HLSL_DEFINE_INTRINSICS 1
 #endif
 
 #include <assert.h>
 #define HLSL_ASSERT(exp, msg) assert(exp && msg)
 
+namespace {
 union int2
 {
 public: // @region: Fields
@@ -1111,9 +1112,9 @@ public: // @region: Graphics functions
     static float4x4 rotate(const float3& axis, float angle);
     static float4x4 rotate(float x, float y, float z, float angle);
 
-    static float4x4 rotatex(float angle);
-    static float4x4 rotatey(float angle);
-    static float4x4 rotatez(float angle);
+    static float4x4 rotate_x(float angle);
+    static float4x4 rotate_y(float angle);
+    static float4x4 rotate_z(float angle);
 
     static float4x4 lookat(const float3& eye, const float3& target, const float3& up);
 
@@ -3188,98 +3189,98 @@ inline int sign(float x)
  */
 inline float abs(float x)
 {
-    return fabsf(x);
+    return ::fabsf(x);
 }
 
 /* Computes cosine
  */
 inline float cos(float x)
 {
-    return cosf(x);
+    return ::cosf(x);
 }
 
 /* Computes sine
  */
 inline float sin(float x)
 {
-    return sinf(x);
+    return ::sinf(x);
 }
 
 /* Computes tangent
  */
 inline float tan(float x)
 {
-    return tanf(x);
+    return ::tanf(x);
 }
 
 /* Computes hyperbolic cosine
  */
 inline float cosh(float x)
 {
-    return coshf(x);
+    return ::coshf(x);
 }
 
 /* Computes hyperbolic sine
  */
 inline float sinh(float x)
 {
-    return sinhf(x);
+    return ::sinhf(x);
 }
 
 /* Computes hyperbolic tangent
  */
 inline float tanh(float x)
 {
-    return tanhf(x);
+    return ::tanhf(x);
 }
 
 /* Computes inverse cosine
  */
 inline float acos(float x)
 {
-    return acosf(x);
+    return ::acosf(x);
 }
 
 /* Computes inverse sine
  */
 inline float asin(float x)
 {
-    return asinf(x);
+    return ::asinf(x);
 }
 
 /* Computes inverse tangent
  */
 inline float atan(float x)
 {
-    return atanf(x);
+    return ::atanf(x);
 }
 
 /* Computes inverse tangent with 2 args
  */
 inline float atan2(float y, float x)
 {
-    return atan2f(y, x);
+    return ::atan2f(y, x);
 }
 
 /* Computes Euler number raised to the power 'x'
  */
 inline float exp(float x)
 {
-    return expf(x);
+    return ::expf(x);
 }
 
 /* Computes 2 raised to the power 'x'
  */
 inline float exp2(float x)
 {
-    return exp2f(x);
+    return ::exp2f(x);
 }
 
 /* Computes the base Euler number logarithm
  */
 inline float log(float x)
 {
-    return logf(x);
+    return ::logf(x);
 }
 
 /* Computes the base 2 logarithm
@@ -3293,49 +3294,49 @@ inline float log2(float x)
  */
 inline float log10(float x)
 {
-    return log10f(x);
+    return ::log10f(x);
 }
 
 /* Computes the value of base raised to the power exponent
  */
 inline float pow(float x, float y)
 {
-    return powf(x, y);
+    return ::powf(x, y);
 }
 
 /* Computes the floating-point remainder of the division operation x/y
  */
 inline float fmod(float x, float y)
 {
-    return fmodf(x, y);
+    return ::fmodf(x, y);
 }
 
 /* Computes the smallest integer value not less than 'x'
  */
 inline float ceil(float x)
 {
-    return ceilf(x);
+    return ::ceilf(x);
 }
 
 /* Computes the largest integer value not greater than 'x'
  */
 inline float floor(float x)
 {
-    return floorf(x);
+    return ::floorf(x);
 }
 
 /* Computes the nearest integer value
  */
 inline float round(float x)
 {
-    return roundf(x);
+    return ::roundf(x);
 }
 
 /* Computes the nearest integer not greater in magnitude than 'x'
  */
 inline float trunc(float x)
 {
-    return truncf(x);
+    return ::truncf(x);
 }
 #endif
 
@@ -3343,7 +3344,7 @@ inline float trunc(float x)
 */
 inline float frac(float x)
 {
-	return modff(x, 0);
+	return ::modff(x, 0);
 }
 
 /* Get the smaller value
@@ -3403,7 +3404,7 @@ inline float smoothstep(float min, float max, float x)
  */
 inline float sqrt(float x)
 {
-    return sqrtf(x);
+    return ::sqrtf(x);
 }
 #endif
 
@@ -3411,7 +3412,7 @@ inline float sqrt(float x)
  */
 inline float rsqrt(float x)
 {
-    return 1.0f / sqrtf(x);
+    return 1.0f / ::sqrtf(x);
 }
 
 /* Computes fast inverse square root of 'x'.
@@ -9173,7 +9174,7 @@ inline float4x4 float4x4::rotate(float x, float y, float z, float angle)
     return result;
 }
 
-inline float4x4 float4x4::rotatex(float angle)
+inline float4x4 float4x4::rotate_x(float angle)
 {
     const float s = sin(angle);
     const float c = cos(angle);
@@ -9186,7 +9187,7 @@ inline float4x4 float4x4::rotatex(float angle)
     );
 }
 
-inline float4x4 float4x4::rotatey(float angle)
+inline float4x4 float4x4::rotate_y(float angle)
 {
     const float s = sin(angle);
     const float c = cos(angle);
@@ -9199,7 +9200,7 @@ inline float4x4 float4x4::rotatey(float angle)
     );
 }
 
-inline float4x4 float4x4::rotatez(float angle)
+inline float4x4 float4x4::rotate_z(float angle)
 {
     const float s = sin(angle);
     const float c = cos(angle);
@@ -9212,4 +9213,6 @@ inline float4x4 float4x4::rotatez(float angle)
     );
 }
 
+} // hlslmath namespace
 // File 'D:\hlslmath\tools/../hlslmath.h' end here.
+
