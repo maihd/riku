@@ -14,7 +14,7 @@ public:
     {
         int length;
         int capacity;
-        TItem items[];
+        TItem items[1];
     };
 
 public:
@@ -118,7 +118,7 @@ namespace array
     inline bool grow(Array<TItem>& array, int new_size)
     {
         auto old_buf = array.buffer;
-        auto new_buf = (decltype(old_buf))realloc(old_buf, sizeof(*old_buf) + new_size * sizeof(TItem));
+        auto new_buf = (decltype(old_buf))realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
         if (new_buf)
         {

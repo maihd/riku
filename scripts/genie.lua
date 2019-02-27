@@ -29,7 +29,7 @@ newaction {
 solution 'riku'
 do
    language 'c++'
-   location (RIKU_BUILD_DIR)
+   location (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM))
    
    platforms {
       'x32', 'x64', 'native'
@@ -43,20 +43,17 @@ do
 
    configuration { 'debug' }
    do
-      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'debug'))
-
       flags {
          'Symbols' 
       }
 
       defines {
-         '_DEBUG'
+         '_DEBUG=1'
       }
    end
 
    configuration { 'release' }
    do
-      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'release'))
       flags { 
          'OptimizeSpeed', 
          'No64BitChecks', 
@@ -65,6 +62,26 @@ do
       defines {
          'NDEBUG=1'
       }
+   end
+
+   configuration { 'debug', 'x32' }
+   do
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'x32/debug'))
+   end
+
+   configuration { 'debug', 'x64' }
+   do
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'x64/debug'))
+   end
+
+   configuration { 'release', 'x32' }
+   do
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'x32/release'))
+   end
+
+   configuration { 'release', 'x64' }
+   do
+      targetdir (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM, 'x32/release'))
    end
 
    configuration { 'gmake' }
@@ -85,7 +102,9 @@ do
    configuration { 'vs*' }
    do
       buildoptions {
-         "/wd4201", -- warning C4201: nonstandard extension used : nameless struct/union
+         '/wd4201', -- warning C4201: nonstandard extension used : nameless struct/union
+         '/wd4458', -- warning C4458: declaration of '*' hides class member
+         '/wd4005', -- warning C4005: macro redefinition
       }
    end
 end
