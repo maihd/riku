@@ -1,4 +1,4 @@
-local RIKU_DIR = path.getabsolute('..')
+local RIKU_DIR       = path.getabsolute('..')
 local RIKU_BUILD_DIR = path.join(RIKU_DIR, 'build')
 
 function string.startwith(s, b)
@@ -39,7 +39,7 @@ do
       'debug', 'release'
    }
 
-   startproject 'riku.unit-tests'
+   startproject 'riku.unit_tests'
 
    configuration { 'debug' }
    do
@@ -109,71 +109,9 @@ do
    end
 end
 
-project 'riku'
-do
-   kind 'staticlib'
+dofile('riku.genie.lua')(RIKU_BUILD_DIR, TARGET_PLATFORM)
 
-   flags {
-      'NoPCH',
-      'NoRTTI',
-      'NoWinRT',
-      'NoExceptions',
-      'NoEditAndContinue',
-      'NoBufferSecurityCheck',
-
-      'ExtraWarnings'
-   }
-
-   includedirs {
-      path.join(RIKU_DIR, 'include')
-   }
-
-   files {
-      path.join(RIKU_DIR, 'src/*.cc'),
-      path.join(RIKU_DIR, 'src/**/*.cc'),
-      path.join(RIKU_DIR, 'include/*.h'),
-      path.join(RIKU_DIR, 'include/**/*.h'),
-   }
-
-   configuration { 'debug' }
-   do
-      defines {
-         '_DEBUG'
-      }
-   end
-
-   configuration { 'release' }
-   do
-      defines {
-         'NDEBUG'
-      }
-   end
-
-   configuration { 'gmake' }
-   do
-      buildoptions {
-         '-std=c++11'
-      }
-   end
-   
-   configuration { 'vs*' }
-   do
-      defines {
-         '_CRT_SECURE_NO_WARNINGS',
-         --'_CRT_NO_VA_START_VALIDATION',
-         '_USRLIB'
-      }
-
-      buildoptions {
-      }
-
-      linkoptions {
-         '/NODEFAULTLIB'
-      }
-   end
-end
-
-project 'riku.unit-tests'
+project 'riku.unit_tests'
 do
    kind 'consoleapp'
 
