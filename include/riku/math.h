@@ -8894,10 +8894,8 @@ namespace math
 
 __forceinline float2x2 float2x2::rotate(float angle)
 {
-    using namespace math;
-
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float2x2(
         c, -s,
@@ -8936,10 +8934,8 @@ __forceinline float3x3 float3x3::translate(float x, float y)
 
 __forceinline float3x3 float3x3::rotate(float angle)
 {
-    using namespace math;
-
-    const float c = cos(angle);
-    const float s = sin(angle);
+    const float c = math::cos(angle);
+    const float s = math::sin(angle);
     return float3x3(
         c, -s, 0,
         s, c, 0,
@@ -9007,7 +9003,7 @@ __forceinline float4x4 float4x4::perspective(float fov, float aspect, float znea
 {
     using namespace math;
 
-    const float a = 1.0f / tan(fov * 0.5f);
+    const float a = 1.0f / math::tan(fov * 0.5f);
     const float b = zfar / (znear - zfar);
 
     float4x4 result;
@@ -9086,10 +9082,8 @@ __forceinline float4x4 float4x4::rotate(const float3& axis, float angle)
 
 __forceinline float4x4 float4x4::rotate(float x, float y, float z, float angle)
 {
-    using namespace math;
-
-    const float c = cos(-angle);
-    const float s = sin(-angle);
+    const float c = math::cos(-angle);
+    const float s = math::sin(-angle);
     const float t = 1.0f - c;
 
     float4x4 result;
@@ -9118,16 +9112,14 @@ __forceinline float4x4 float4x4::rotate(float x, float y, float z, float angle)
 
 __forceinline float4x4 float4x4::rotate_x(float angle)
 {
-    using namespace math;
-
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
-        1, 0, 0, 0,
-        0, c, s, 0,
+        1,  0, 0, 0,
+        0,  c, s, 0,
         0, -s, c, 0,
-        0, 0, 0, 1
+        0,  0, 0, 1
     );
 }
 
@@ -9135,8 +9127,8 @@ __forceinline float4x4 float4x4::rotate_y(float angle)
 {
     using namespace math;
 
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
         c, 0, s, 0,
@@ -9150,8 +9142,8 @@ __forceinline float4x4 float4x4::rotate_z(float angle)
 {
     using namespace math;
 
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
         c, s, 0, 0,
