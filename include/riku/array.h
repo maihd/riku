@@ -84,6 +84,34 @@ public: // Conversion
     }
 };
 
+template <typename TValue>
+struct TempArray
+{
+public:
+    int           length;
+    const uint    capacity;
+    TValue* const items;
+
+public:
+    __forceinline explicit TempArray(uint capacity = 64)
+        : length(0)
+        , capacity(capacity)
+#if NDEBUG
+        , items((TValue*)_alloca(capacity * sizeof(TValue)))
+#else
+        , items((TValue*)malloc(capacity * sizeof(TValue)))
+#endif
+    {
+    }
+
+    __forceinline ~TempArray()
+    {
+#if !defined(NDEBUG)
+        free(items);
+#endif
+    }
+};
+
 namespace array 
 {
     template <typename TItem>
