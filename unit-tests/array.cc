@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <riku/array.h>
 
-#include "./unit-test.h"
+#include "./unit_test.h"
 
 // Array size test
 static_assert(sizeof(Array<int>) == sizeof(int*), "Sizeof Array<TItem> is too big, maybe contains hidden member");

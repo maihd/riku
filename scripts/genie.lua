@@ -28,23 +28,16 @@ do
 
    startproject 'riku.unit-tests'
 
-   flags {
-      'NoPCH',
-      'NoRTTI',
-      'NoWinRT',
-      'NoExceptions',
-      'NoEditAndContinue',
-      'NoBufferSecurityCheck',
-
-      'ExtraWarnings'
-   }
-
    configuration { 'debug' }
    do
       targetdir (path.join(RIKU_BUILD_DIR, 'debug'))
 
       flags {
          'Symbols' 
+      }
+
+      defines {
+         '_DEBUG'
       }
    end
 
@@ -55,6 +48,10 @@ do
          'OptimizeSpeed', 
          'No64BitChecks', 
       }
+
+      defines {
+         'NDEBUG=1'
+      }
    end
 
    configuration { 'gmake' }
@@ -64,9 +61,18 @@ do
 
       buildoptions {
          '-fdeclspec',
+         '-fms-extensions',
+         '-isystem'
       }
 
       linkoptions {
+      }
+   end
+
+   configuration { 'vs*' }
+   do
+      buildoptions {
+         "/wd4201", -- warning C4201: nonstandard extension used : nameless struct/union
       }
    end
 end
@@ -74,6 +80,17 @@ end
 project 'riku'
 do
    kind 'staticlib'
+
+   flags {
+      'NoPCH',
+      'NoRTTI',
+      'NoWinRT',
+      'NoExceptions',
+      'NoEditAndContinue',
+      'NoBufferSecurityCheck',
+
+      'ExtraWarnings'
+   }
 
    includedirs {
       path.join(RIKU_DIR, 'include')

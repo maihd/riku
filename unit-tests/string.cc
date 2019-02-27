@@ -1,6 +1,6 @@
 #include <riku/str.h>
 
-#include "./unit-test.h"
+#include "./unit_test.h"
 
 TEST_CASE("String and friend testing", "[str, String, HeapString]")
 {

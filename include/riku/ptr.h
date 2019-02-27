@@ -3,6 +3,22 @@
 #include "./types.h"
 #include <stdlib.h>
 
+// Raw ptr
+template <typename TRet>
+struct PtrTrait
+{
+    using Type = TRet*;
+};
+
+template <typename TRet, typename... TArgs>
+struct PtrTrait<TRet(TArgs...)>
+{
+    using Type = TRet(*)(TArgs...);
+};
+
+template <typename TRet, typename... TArgs>
+using Ptr = PtrTrait<TRet(TArgs...)>::Type; // Ex: using FuncPtr = Ptr<void()>;
+
 template <typename T>
 struct UniPtr 
 {
@@ -98,4 +114,4 @@ public:
 
         return *this;
     }
-}
+};

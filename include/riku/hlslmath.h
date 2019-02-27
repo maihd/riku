@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <math.h>
+#include <cmath>
 
 #undef min // When Windows.h is included, min is an macro
 #undef max // When Windows.h is included, max is an macro
@@ -35,7 +35,7 @@ extern "C"
 }
 #endif
 
-#if (defined(_MSC_VER) && _MSC_VER >= 1900) || __unix__
+#if __unix__
 #define HLSL_DEFINE_INTRINSICS 1
 #else
 #define HLSL_DEFINE_INTRINSICS 0

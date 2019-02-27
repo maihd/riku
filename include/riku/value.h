@@ -1,6 +1,8 @@
 #pragma once
 
 #include "./types.h"
+
+#include "./str.h"
 #include "./array.h"
 #include "./table.h"
 
@@ -22,11 +24,16 @@ public:
     Type type;
     union 
     {
-        double number;
-        str    string;  
-        bool   boolean;
+        double     number;
+        HeapString string;  
+        bool       boolean;
 
-        Array<Value*>      array;
-        Table<str, Value*> table;
+        Array<Value*>             array;
+        Table<HeapString, Value*> table;
     };
+};
+
+struct ValuePool
+{
+
 };

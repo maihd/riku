@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <riku/define.h>
 
-#include "./unit-test.h"
+#include "./unit_test.h"
 
 #define test_assert(a, b) printf(#a " = %d - " #b " = %d\n", a, b)
 
