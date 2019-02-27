@@ -128,7 +128,11 @@ do
    do
       defines {
          '_CRT_SECURE_NO_WARNINGS',
+         --'_CRT_NO_VA_START_VALIDATION',
          '_USRLIB'
+      }
+
+      buildoptions {
       }
 
       linkoptions {
@@ -140,6 +144,10 @@ end
 project 'riku.unit-tests'
 do
    kind 'consoleapp'
+
+   links {
+      'riku'
+   }
 
    includedirs {
       path.join(RIKU_DIR, 'include')

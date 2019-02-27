@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <stdarg.h>
+
 // Redefine primitive types
 
 #define DOUBLE_DECIMAL_DIG  17                      // # of decimal digits of rounding precision
@@ -87,6 +89,12 @@ using isize  = int;
 
 using iptr = isize;
 using uptr = usize;
+
+// ArgsList: alias of va_list
+using ArgsList = va_list;
+#define argslist_begin(args_list, prev_arg) va_start(args_list, prev_arg)
+#define argslist_end(args_list)             va_end(args_list)
+#define argslist_copy(dst, src)             va_copy(dst, src)
 
 // Right value trait
 template <typename T>

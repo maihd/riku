@@ -4,7 +4,7 @@
 
 void simple_print(str s)
 {
-    printf("%s", s);
+    console::log("%s", s);
 }
 
 TEST_CASE("Testing Func<...>", "[Func<>]")

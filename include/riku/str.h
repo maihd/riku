@@ -112,6 +112,20 @@ public:
         return *this;
     }
 
+public: // Compile-time string
+    template <int length>
+    inline String(const char(&buffer)[length])
+        : length(length)
+        , buffer(buffer) {}
+
+    template <int length>
+    inline String& operator=(const char(&buffer)[length])
+    {
+        this->buffer = buffer;
+        this->length = length;
+        return *this;
+    }
+
 public:
     inline operator str() const
     {
