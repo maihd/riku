@@ -277,4 +277,15 @@ namespace array
 
         return make_rvalue(res);
     }
+    
+    template <typename TItem>
+    inline int new_item(Array<TItem>& array)
+    {
+        if (!ensure(array, array.length + 1))
+        {
+            return -1;
+        }
+
+        return array.buffer->length++;   
+    }
 }
