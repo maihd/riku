@@ -8,10 +8,12 @@
 Buffer Buffer::alloc(usize length)
 {
     Buffer buf;
-    buf.data = (byte*)malloc(sizeof(usize) + length);
-    *(usize*)buf.data = length;
-    buf.data += sizeof(usize);
-
+    if (length)
+    {
+        buf.data = (byte*)malloc(sizeof(usize) + length);
+        *(usize*)buf.data = length;
+        buf.data += sizeof(usize);
+    }
     return make_rvalue(buf);
 }
 
