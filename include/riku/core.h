@@ -9,19 +9,27 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
-#define OS_WINDOWS
+#define OS_WINDOWS 1
+#else
+#define OS_WINDOWS 0
 #endif
 
 #if defined(__linux__)
-#define OS_LINUX
+#define OS_LINUX 1
+#else
+#define OS_LINUX 0
 #endif
 
 #if defined(__unix__)
-#define OS_UNIX
+#define OS_UNIX 1
+#else
+#define OS_UNIX 0
 #endif
 
 #if defined(__ANDROID__)
-#define OS_ANDROID
+#define OS_ANDROID 1
+#else
+#define OS_ANDROID 0
 #endif
 
 #if defined(__MINGW64__) || defined(__x86_64__) || defined(__X86_64__) || defined(_M_X64)

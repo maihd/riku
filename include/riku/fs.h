@@ -4,5 +4,18 @@
 
 namespace fs
 {
-    RIKU_API bool exists(const String& path);
+    enum struct FileType
+    {
+        None,
+        File,
+        Directory,
+    };
+
+    struct Stats
+    {
+        FileType type;
+    };
+
+    RIKU_API Stats stat(const String& path);
+    RIKU_API bool  exists(const String& path);
 }

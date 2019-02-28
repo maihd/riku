@@ -11,5 +11,5 @@ TEST_CASE("Testing Func<...>", "[Func<>]")
 {
     Func<void(str)> print = simple_print;
 
-    print("Hello world\n");
+    print("Hello world");
 }

@@ -51,20 +51,24 @@ namespace console
     void log_args(str fmt, ArgsList args_list)
     {
         vfprintf(stdout, fmt, args_list);
+        fputc('\n', stdout);
     }
 
     void log_info_args(str fmt, ArgsList args_list)
     {
         vfprintf(stdout, fmt, args_list);
+        fputc('\n', stdout);
     }
 
     void log_warn_args(str fmt, ArgsList args_list)
     {
         vfprintf(stdout, fmt, args_list);
+        fputc('\n', stdout);
     }
 
     void log_error_args(str fmt, ArgsList args_list)
     {
         vfprintf(stderr, fmt, args_list);
+        fputc('\n', stdout);
     }
 }

@@ -16,14 +16,14 @@ TEST_CASE("Test array operations", "[Array]")
     }
     REQUIRE(int_array.length == 10);
 
-    console::log("int_array after pushing...\n");
+    console::log("int_array after pushing...");
     for (int i = 0, n = int_array.length; i < n; i++)
     {
         REQUIRE(int_array[i] == i);
-        console::log("\tint_array[%d] = %d\n", i, int_array[i]);
+        console::log("\tint_array[%d] = %d", i, int_array[i]);
     }
     
-    console::log("Clearing int_array with array::pop()\n");
+    console::log("Clearing int_array with array::pop()");
     for (int i = 0, n = int_array.length; i < n; i++)
     {
         array::pop(int_array);
@@ -36,14 +36,14 @@ TEST_CASE("Test array operations", "[Array]")
     }
     REQUIRE(int_array.length == 10);
 
-    console::log("int_array after unshifting...\n");
+    console::log("int_array after unshifting...");
     for (int i = 0, n = int_array.length; i < n; i++)
     {
         REQUIRE(int_array[i] == n - i - 1);
-        console::log("\tint_array[%d] = %d\n", i, int_array[i]);
+        console::log("\tint_array[%d] = %d", i, int_array[i]);
     }
     
-    console::log("Clearing int_array with array::shift()\n");
+    console::log("Clearing int_array with array::shift()");
     for (int i = 0, n = int_array.length; i < n; i++)
     {
         array::shift(int_array);
@@ -84,7 +84,7 @@ TEST_CASE("Test array operations", "[Array]")
         REQUIRE(array::last_index_of(int_array1, int_array1[i]) == i);
     }
 
-    console::log("Cloning int_array...\n");
+    console::log("Cloning int_array...");
     Array<int> concat_array = array::clone(int_array);
     REQUIRE(concat_array.length == int_array.length);
     REQUIRE(concat_array.capacity == int_array.capacity);
@@ -93,14 +93,14 @@ TEST_CASE("Test array operations", "[Array]")
         REQUIRE(concat_array[i] == int_array[i]);
     }
 
-    console::log("Concat int_array1 to concat_array...\n");
+    console::log("Concat int_array1 to concat_array...");
     int new_length = concat_array.length + int_array1.length;
     REQUIRE(array::concat(concat_array, int_array1));
     REQUIRE(concat_array.length == new_length);
 
-    console::log("int_array after concat...\n");
+    console::log("int_array after concat...");
     for (int i = 0, n = concat_array.length; i < n; i++)
     {
-        console::log("\tconcat_array[%d] = %d\n", i, concat_array[i]);
+        console::log("\tconcat_array[%d] = %d", i, concat_array[i]);
     }
 }

@@ -2,7 +2,7 @@
 
 #include "./unit_test.h"
 
-#define test_assert(a, b) printf(#a " = %d - " #b " = %d\n", a, b)
+#define test_assert(a, b) console::log(#a " = %d - " #b " = %d", a, b)
 
 struct Type
 {
