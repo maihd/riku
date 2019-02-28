@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include <riku/core.h>
 
+#if OS_WINDOWS
+#include <Windows.h>
+#endif
+
+Buffer Buffer::alloc(usize length)
+{
+    Buffer buf;
+    buf.data = (byte*)malloc(sizeof(usize) + length);
+    *(usize*)buf.data = length;
+    buf.data += sizeof(usize);
+
+    return make_rvalue(buf);
+}
+
 namespace __riku 
 {
     void __assert_print(str exp, str func, str file, int line, str fmt, ...)
@@ -71,4 +85,17 @@ namespace console
         vfprintf(stderr, fmt, args_list);
         fputc('\n', stdout);
     }
+}
+
+namespace process
+{
+    HeapString cwd(void)
+    {
+        char path[1024];
+        uint size = GetCurrentDirectoryA(sizeof(path), path);
+
+        return make_rvalue(HeapString(path, size));
+    }
+
+
 }

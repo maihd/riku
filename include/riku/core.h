@@ -226,6 +226,29 @@ public:
     byte* data;
 
 public:
+    __forceinline Buffer()
+        : data(nullptr) {}
+
+    __forceinline ~Buffer()
+    {
+        free(data ? (usize*)data - 1 : nullptr);
+    }
+
+public:
+    __forceinline Buffer(Buffer&& buffer)
+        : data(buffer.data)
+    {
+        buffer.data = nullptr;
+    }
+
+    __forceinline Buffer& operator=(Buffer&& buffer)
+    {
+        data = buffer.data;
+        buffer.data = nullptr;
+        return *this;
+    }
+
+public:
     propdef_readonly(get_length) usize length;
     __forceinline usize get_length(void) const
     {
@@ -243,7 +266,7 @@ public:
         return data;
     }
 
-public:
+public: // Factory functions
     static Buffer alloc(usize length);
 };
 
@@ -510,4 +533,10 @@ namespace console
     RIKU_API void log_info_args(str fmt, ArgsList args_list);
     RIKU_API void log_warn_args(str fmt, ArgsList args_list);
     RIKU_API void log_error_args(str fmt, ArgsList args_list);
+}
+
+// Current process
+namespace process
+{
+    RIKU_API HeapString cwd(void);
 }
