@@ -12,8 +12,8 @@ struct Array
 public:
     struct Buffer
     {
-        int length;
-        int capacity;
+        int   length;
+        int   capacity;
         TItem items[1];
     };
 
@@ -21,12 +21,12 @@ public:
     Buffer* buffer;
 
 public:
-    inline Array(void)
+    __forceinline Array(void)
         : buffer(nullptr)
     {
     }
 
-    inline ~Array(void)
+    __forceinline ~Array(void)
     {
         free(buffer);
     }
@@ -51,34 +51,34 @@ public: // Properties
     propdef_readonly(get_length)   int length;
     propdef_readonly(get_capacity) int capacity;
     
-    inline int get_length(void) const
+    __forceinline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
     }
 
-    inline int get_capacity(void) const
+    __forceinline int get_capacity(void) const
     {
         return buffer ? buffer->capacity : 0;
     }
 
 public: // Indexor
-    inline TItem& operator[](int index)
+    __forceinline TItem& operator[](int index)
     {
         return buffer->items[index];
     }
 
-    inline const TItem& operator[](int index) const
+    __forceinline const TItem& operator[](int index) const
     {
         return buffer->items[index];
     }
 
 public: // Conversion
-    inline operator TItem*(void)
+    __forceinline operator TItem*(void)
     {
         return buffer->items;
     }
 
-    inline operator const TItem*(void) const
+    __forceinline operator const TItem*(void) const
     {
         return buffer->items;
     }
@@ -104,11 +104,38 @@ public:
     {
     }
 
-    __forceinline ~TempArray()
+    __forceinline ~TempArray(void)
     {
 #if !defined(NDEBUG)
         free(items);
 #endif
+    }
+}; 
+
+template <typename TItem>
+struct SmartArray
+{
+public:
+    Array<TItem> items;
+    Array<int>   free_items;
+
+public:
+    propdef_readonly(get_length) int length;
+
+    __forceinline get_length(void) const
+    {
+        return items.length - free_items.length;
+    }
+
+public:
+    __forceinline TItem& operator[](int index)
+    {
+        return items[index];
+    }
+
+    __forceinline const TItem& operator[](int index) const
+    {
+        return items[index];
     }
 };
 
@@ -277,15 +304,38 @@ namespace array
 
         return make_rvalue(res);
     }
-    
+
     template <typename TItem>
-    inline int new_item(Array<TItem>& array)
+    inline int new_item(SmartArray<TItem>& array)
     {
-        if (!ensure(array, array.length + 1))
+        int index;
+        if (array.free_items.length > 0)
         {
-            return -1;
+            index = array::pop(free_items);
+        }
+        else
+        {
+            if (!ensure(array, array.length + 1))
+            {
+                return -;
+            }
+
+            index = array.items.buffer->length++;
         }
 
-        return array.buffer->length++;   
+        return index;
+    }
+
+    template <typename TItem>
+    inline bool remove_at(int index)
+    {
+        if (index > -1 && index < items.length)
+        {
+            return free_items.push(index);
+        }
+        else
+        {
+            return false;
+        }
     }
 }
