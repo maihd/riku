@@ -1,8 +1,6 @@
 #pragma once
 
-#include "./types.h"
-
-#include "./str.h"
+#include "./core.h"
 #include "./array.h"
 #include "./table.h"
 

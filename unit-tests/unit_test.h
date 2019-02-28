@@ -1,4 +1,4 @@
 #pragma once
 
-#include <riku/console.h>
+#include <riku/core.h>
 #include "./catch2/catch.hpp"

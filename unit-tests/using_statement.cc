@@ -1,4 +1,4 @@
-#include <riku/define.h>
+#include "./unit_test.h"
 
 // Using like typedef
 struct SomeStruct

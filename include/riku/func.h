@@ -1,8 +1,6 @@
 #pragma once
 
-#include "./types.h"
-#include "./define.h"
-
+#include "./core.h"
 #include <malloc.h>
 
 template <typename T>

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "./types.h"
-#include "./define.h"
+#include "./core.h"
 
 #include <stdlib.h>
 #include <string.h>

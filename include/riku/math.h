@@ -1,12 +1,10 @@
 ﻿#pragma once
 
 #include <math.h> // C module
-#include "./types.h"
+#include "./core.h"
 
 #undef min // When Windows.h is included, min is an macro
 #undef max // When Windows.h is included, max is an macro
-
-#define MATH_ASSERT(exp, msg)
 
 #if defined(__ARM_NEON)
 #if defined(__aarch64__) && defined(__ANDROID__)        
@@ -56,13 +54,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline int& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((int*)this)[index];
     }
 
     __forceinline int  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -91,13 +89,13 @@ public: // @region: Constructors
 public: // @region: Fields
     __forceinline int& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((int*)this)[index];
     }
 
     __forceinline int  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -128,13 +126,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline int& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((int*)this)[index];
     }
 
     __forceinline int  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -163,13 +161,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline uint& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((uint*)this)[index];
     }
 
     __forceinline uint  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -198,13 +196,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline uint& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((uint*)this)[index];
     }
 
     __forceinline uint  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -235,13 +233,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline uint& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((uint*)this)[index];
     }
 
     __forceinline uint  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -268,13 +266,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline bool& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((bool*)this)[index];
     }
 
     __forceinline int  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -303,13 +301,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline bool& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((bool*)this)[index];
     }
 
     __forceinline bool  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -340,13 +338,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline bool& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((bool*)this)[index];
     }
 
     __forceinline bool  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -373,13 +371,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline float& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((float*)this)[index];
     }
 
     __forceinline float  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((float*)this)[index];
     }
 
@@ -433,13 +431,13 @@ public: // @region: float2 -> float3
 public: // @region: Operators
     __forceinline float& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((float*)this)[index];
     }
 
     __forceinline float  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((float*)this)[index];
     }
 };
@@ -476,13 +474,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline float& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
 
     __forceinline float  operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
 };
@@ -513,13 +511,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline int2& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((int2*)data)[index];
     }
 
     __forceinline const int2& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((int2*)data)[index];
     }
     
@@ -561,13 +559,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline int3& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((int3*)data)[index];
     }
 
     __forceinline const int3& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((int3*)data)[index];
     }
     
@@ -613,13 +611,13 @@ public: // @region: Constructors
 public: // Constructors
     __forceinline int4& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((int4*)data)[index];
     }
 
     __forceinline const int4& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((int4*)data)[index];
     }
     
@@ -656,13 +654,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline uint2& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((uint2*)data)[index];
     }
 
     __forceinline const uint2& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((uint2*)data)[index];
     }
     
@@ -704,13 +702,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline uint3& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((uint3*)data)[index];
     }
 
     __forceinline const uint3& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((uint3*)data)[index];
     }
     
@@ -756,13 +754,13 @@ public: // @region: Constructors
 public: // Constructors
     __forceinline uint4& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((uint4*)data)[index];
     }
 
     __forceinline const uint4& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((uint4*)data)[index];
     }
     
@@ -799,13 +797,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline bool2& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((bool2*)data)[index];
     }
 
     __forceinline const bool2& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((bool2*)data)[index];
     }
     
@@ -848,13 +846,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline bool3& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((bool3*)data)[index];
     }
 
     __forceinline const bool3& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((bool3*)data)[index];
     }
     
@@ -900,13 +898,13 @@ public: // @region: Constructors
 public: // Constructors
     __forceinline bool4& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((bool4*)data)[index];
     }
 
     __forceinline const bool4& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((bool4*)data)[index];
     }
     
@@ -944,13 +942,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline float2& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((float2*)data)[index];
     }
 
     __forceinline const float2& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 2, "Index out of range");
+        assert(index > -1 && index < 2, "Index out of range");
         return ((float2*)data)[index];
     }
    
@@ -1004,13 +1002,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline float3& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((float3*)data)[index];
     }
 
     __forceinline const float3& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "Index out of range");
         return ((float3*)data)[index];
     }
 
@@ -1073,13 +1071,13 @@ public: // @region: Constructors
 public: // @region: Operators
     __forceinline float4& operator[](int index)
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((float4*)data)[index];
     }
 
     __forceinline const float4& operator[](int index) const
     {
-        MATH_ASSERT(index > -1 && index < 4, "Index out of range");
+        assert(index > -1 && index < 4, "Index out of range");
         return ((float4*)data)[index];
     }
 

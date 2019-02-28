@@ -1,6 +1,18 @@
-#include <riku/console.h>
-
 #include <stdio.h>
+#include <riku/core.h>
+
+namespace __riku 
+{
+    void __assert_print(str exp, str func, str file, int line, str fmt, ...)
+    {
+        console::log_error("Assertion failed!\nIn %s:%s:%d", func, file, line);
+
+        ArgsList args_list;
+        argslist_begin(args_list, fmt);
+        console::log_error_args(fmt, args_list);
+        argslist_end(args_list);
+    }
+}
 
 namespace console
 {

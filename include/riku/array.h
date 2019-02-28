@@ -1,7 +1,6 @@
 #pragma once
 
-#include "./types.h"
-#include "./define.h"
+#include "./core.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -122,7 +121,7 @@ public:
 public:
     propdef_readonly(get_length) int length;
 
-    __forceinline get_length(void) const
+    __forceinline int get_length(void) const
     {
         return items.length - free_items.length;
     }
