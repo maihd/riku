@@ -7,7 +7,7 @@
 #undef max // When Windows.h is included, max is an macro
 
 #if defined(__ARM_NEON)
-#if defined(__aarch64__) && defined(__ANDROID__)        
+#if defined(__aarch64__) && defined(OS_ANDROID)        
 #define MATH_ENABLE_NEON 0
 #else
 #include <arm_neon.h>     
@@ -17,7 +17,7 @@
 #define MATH_ENABLE_NEON 0
 #endif
 
-#if __ANDROID__ // Android support for log2 and log2f
+#if OS_ANDROID // Android support for log2 and log2f
 extern "C"
 {
     __forceinline float log2f(float x)
@@ -4579,6 +4579,11 @@ namespace math
         return m;
     }
 
+    __forceinline int abs(int x)
+    {
+        return x > 0 ? x : -x;
+    }
+
     /* Compute the sign of 'x'
      */
     __forceinline int sign(int x)
@@ -4623,8 +4628,8 @@ namespace math
      */
     __forceinline int2 abs(const int2& m)
     {
-        return int2(::abs(m[0]),
-                    ::abs(m[1]));
+        return int2(abs(m[0]),
+                    abs(m[1]));
     }
 
     /* Get the smaller value
@@ -4649,17 +4654,6 @@ namespace math
     {
         return int2(clamp(m[0], min[0], max[0]), 
                     clamp(m[1], min[1], max[1]));
-    }
-
-    
-
-    //
-    // @region: Common functions
-    //
-
-    __forceinline int abs(int x)
-    {
-        return ::abs(x);
     }
 
     /* Computes sign of 'x'

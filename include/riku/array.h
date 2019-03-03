@@ -175,7 +175,7 @@ public:
     __forceinline explicit TempoArray(uint capacity = 64)
         : length(0)
         , capacity(capacity)
-#if NDEBUG
+#ifdef NDEBUG
         , items((TValue*)stackalloc(capacity * sizeof(TValue)))
 #else
         , items((TValue*)memory::alloc(capacity * sizeof(TValue)))
@@ -389,7 +389,7 @@ namespace array
     {
         if (array.buffer) 
         {
-            dst.buffer->length = 0;
+            array.buffer->length = 0;
         }
     }
 
@@ -418,13 +418,13 @@ namespace array
         int index;
         if (array.free_items.length > 0)
         {
-            index = array::pop(free_items);
+            index = array::pop(array.free_items);
         }
         else
         {
-            if (!ensure(array, array.length + 1))
+            if (!ensure(array.items, array.items.length + 1))
             {
-                return -;
+                return -1;
             }
 
             index = array.items.buffer->length++;
@@ -434,11 +434,11 @@ namespace array
     }
 
     template <typename TItem>
-    inline bool remove_at(int index)
+    inline bool remove_at(SmartArray<TItem>& array, int index)
     {
-        if (index > -1 && index < items.length)
+        if (index > -1 && index < array.items.length)
         {
-            return free_items.push(index);
+            return array.free_items.push(index);
         }
         else
         {

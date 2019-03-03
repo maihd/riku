@@ -64,7 +64,7 @@ public: //
 
 public:
     inline Func(FuncType func)
-#if NDEBUG
+#ifdef NDEBUG
         : stub((Stub*)stackalloc(sizeof(Stub)))
 #else
         : stub((Stub*)memory::alloc(sizeof(Stub)))

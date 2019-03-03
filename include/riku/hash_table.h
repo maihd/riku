@@ -179,12 +179,6 @@ namespace table
     }
 
     template <typename T>
-    bool has(const HashTable<T>& table)
-    {
-        return find(table, key) > -1;
-    }
-
-    template <typename T>
     bool set(HashTable<T>& table, int key, const T& value)
     {
         int hash, prev;

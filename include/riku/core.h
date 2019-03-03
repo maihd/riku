@@ -1,12 +1,16 @@
 #pragma once
 
+#if defined(__GNUC__) && !defined(__clang__)
+#error "riku: No GCC support, sorry man."
+#endif
+
 #include <stdarg.h>
 
 #ifndef RIKU_API
 #define RIKU_API
 #endif
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER)
 #define OS_WINDOWS 1
 #else
 #define OS_WINDOWS 0
@@ -30,19 +34,20 @@
 #define OS_ANDROID 0
 #endif
 
-#if defined(__MINGW64__) || defined(__x86_64__) || defined(__X86_64__) || defined(_M_X64)
-#define RUNTIME_64BITS
+#if defined(__MINGW64__) || defined(__x86_64__) || defined(__X86_64__) || defined(_M_X64) || defined(__aarch64__)
+#define RUNTIME_64BITS 1
+#define RUNTIME_32BITS 0
 #else
-#define RUNTIME_32BITS
+#define RUNTIME_64BITS 0
+#define RUNTIME_32BITS 1
 #endif
 
-#if __GNUC__ && !__clang__
-#error "riku: No GCC support, sorry man."
-#else
+
 #define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
 #define propdef_readonly(getter)  __declspec(property(get=getter))
 #define propdef_writeonly(setter) __declspec(property(put=setter))
-#endif
+
+#define __threadlocal __declspec(thread)
 
 // Redefine primitive types
 
@@ -119,7 +124,7 @@ using sbyte   = char;
 
 // Memory address and size
 
-#if defined(__x86_64__) || UINTPTR_MAX == 0xffffffffffffffff
+#if RUNTIME_64BITS
 using usize  = ulong;
 using isize  = long;
 #else 
@@ -140,7 +145,7 @@ using ArgsList = va_list;
 #include <assert.h> // Include 
 #undef assert       // to remove std assert
 #if !defined(NDEBUG) || !NDEBUG
-#define assert(exp, fmt, ...) ((exp) ? (void)::__riku::__assert_print(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, __VA_ARGS__) : (void)0)
+#define assert(exp, fmt, ...) ((exp) ? (void)::__riku::__assert_print(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #else
 #define assert(exp, fmt, ...)
 #endif

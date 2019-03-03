@@ -10,6 +10,7 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
          'NoRTTI',
          'NoWinRT',
          'NoExceptions',
+         "NoFramePointer",
          'NoEditAndContinue',
          'NoBufferSecurityCheck',
 
@@ -27,6 +28,9 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
          path.join(RIKU_DIR, 'include/**/*.h'),
       }
 
+      defines {
+      }
+
       configuration { 'debug' }
       do
          defines {
@@ -38,6 +42,10 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
       do
          defines {
             'NDEBUG'
+         }
+
+         flags {
+            "NoBufferSecurityCheck",
          }
       end
 
@@ -61,22 +69,6 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
          targetdir (path.join(BUILD_DIR, TARGET_PLATFORM, 'x32/release'))
       end
       
-      configuration { 'gmake' }
-      do
-         premake.gcc.cc = 'clang'
-         premake.gcc.cxx = 'clang++'
-
-         buildoptions {
-            '-fdeclspec',
-            '-fms-extensions',
-            '-isystem',
-            '-std=c++11'
-         }
-
-         linkoptions {
-         }
-      end
-      
       configuration { 'vs*' }
       do
          defines {
@@ -89,7 +81,6 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
          }
 
          linkoptions {
-            '/NODEFAULTLIB'
          }
 
          buildoptions {

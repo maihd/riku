@@ -1,8 +1,8 @@
+#include <riku/core.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <riku/core.h>
 
 #if OS_WINDOWS
 #include <Windows.h>
@@ -110,26 +110,42 @@ namespace console
 
     void log_args(const char* fmt, ArgsList args_list)
     {
+    #if OS_ANDROID
+
+    #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
+    #endif
     }
 
     void log_info_args(const char* fmt, ArgsList args_list)
     {
+    #if OS_ANDROID
+
+    #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
+    #endif
     }
 
     void log_warn_args(const char* fmt, ArgsList args_list)
     {
+    #if OS_ANDROID
+
+    #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
+    #endif
     }
 
     void log_error_args(const char* fmt, ArgsList args_list)
     {
+    #if OS_ANDROID
+
+    #else
         vfprintf(stderr, fmt, args_list);
         fputc('\n', stdout);
+    #endif
     }
 }
 
@@ -137,7 +153,7 @@ namespace process
 {
     const char* cwd(void)
     {
-        __declspec(thread) static char path[1024];
+        __threadlocal static char path[1024];
 
         cwd(path, sizeof(path)); 
         return path;
@@ -145,13 +161,24 @@ namespace process
 
     usize cwd(char* buffer, usize length)
     {
+    #if OS_WINDOWS
         uint size = GetCurrentDirectoryA(length, buffer);
         return size;
+    #elif OS_ANDROID
+        (void)buffer;
+        (void)length;
+        return 0;
+    #endif
     }
 
     bool chdir(const char* directory)
     {
+    #if OS_WINDOWS
         return SetCurrentDirectoryA(directory);
+    #elif OS_ANDROID
+        (void)directory;
+        return false;
+    #endif
     }
 
     void exit(int code)
