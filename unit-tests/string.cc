@@ -1,8 +1,8 @@
 #include "./unit_test.h"
 
-TEST_CASE("String and friend testing", "[str, String, HeapString]")
+TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
 {
-    str str0 = "hello world";
+    const char* str0 = "hello world";
     String string0 = str0;
 
     console::log("str0 = \"%s\"", str0);

@@ -24,7 +24,7 @@ public:
         , keys(NULL)
         , values(NULL)
     {
-        hashs = (int*)malloc(sizeof(hash_count) + hash_count * sizeof(hashs[0]));
+        hashs = (int*)memory::alloc(sizeof(hash_count) + hash_count * sizeof(hashs[0]));
         memcpy(hashs, &hash_count, sizeof(hash_count));
 
         hashs = (int*)((char*)hashs + sizeof(hash_count));
@@ -37,13 +37,40 @@ public:
 
     inline ~HashTable()
     {
-        free(nexts);
-        free(keys);
-        free(values);
-        free(hashs ? hashs - 1 : NULL);
+        memory::dealloc(nexts);
+        memory::dealloc(keys);
+        memory::dealloc(values);
+        memory::dealloc(hashs ? hashs - 1 : NULL);
     }
 
-public:
+public: // Copy
+    inline HashTable(const HashTable<T>& table)
+    {
+        nexts   = table.nexts;
+        keys    = table.keys;
+        values  = table.values;
+        hashs   = table.hashs;
+    }
+
+    inline HashTable<T>& operator=(const HashTable<T>&& table)
+    {
+        memory::dealloc(nexts);
+        memory::dealloc(keys);
+        memory::dealloc(values);
+        memory::dealloc(hashs ? hashs - 1 : NULL);
+
+        nexts  = table.nexts;
+        keys   = table.keys;
+        values = table.values;
+        hashs  = table.hashs;
+
+        table.nexts  = NULL;
+        table.keys   = NULL;
+        table.values = NULL;
+        table.hashs  = NULL;
+    }
+
+public: // RAII
     inline HashTable(HashTable<T>&& table)
     {
         nexts  = table.nexts;
@@ -59,10 +86,10 @@ public:
 
     inline HashTable<T>& operator=(HashTable<T>&& table)
     {
-        free(nexts);
-        free(keys);
-        free(values);
-        free(hashs ? hashs - 1 : NULL);
+        memory::dealloc(nexts);
+        memory::dealloc(keys);
+        memory::dealloc(values);
+        memory::dealloc(hashs ? hashs - 1 : NULL);
 
         nexts  = table.nexts;
         keys   = table.keys;
@@ -168,15 +195,15 @@ namespace table
             if (table.length + 1 > table.capacity)
             {
                 int new_size = table.capacity > 0 ? table.capacity : 8;
-                table.nexts = (int*)realloc(table.nexts, sizeof(int) * new_size);
-                table.keys = (int*)realloc(table.keys, sizeof(int) * new_size);
-                table.values = (T*)realloc(table.values, sizeof(T) * new_size);
+                table.nexts  = (int*)memory::realloc(table.nexts, sizeof(int) * new_size);
+                table.keys   = (int*)memory::realloc(table.keys, sizeof(int) * new_size);
+                table.values = (T*)memory::realloc(table.values, sizeof(T) * new_size);
 
                 if (!table.nexts || !table.keys || !table.values)
                 {
-                    free(table.nexts);
-                    free(table.keys);
-                    free(table.values);
+                    memory::dealloc(table.nexts);
+                    memory::dealloc(table.keys);
+                    memory::dealloc(table.values);
 
                     table.nexts = NULL;
                     table.keys = NULL;

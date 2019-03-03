@@ -68,7 +68,7 @@ public:
 #if NDEBUG
         : stub((Stub*)_alloca(sizeof(Stub)))
 #else
-        : stub((Stub*)malloc(sizeof(Stub)))
+        : stub((Stub*)memory::alloc(sizeof(Stub)))
 #endif
     {
         stub->size = sizeof(Stub);

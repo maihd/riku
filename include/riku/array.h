@@ -6,7 +6,52 @@
 #include <string.h>
 
 template <typename TItem>
-struct Array 
+struct Array;
+
+namespace array 
+{
+    template <typename TItem>
+    inline void unref(Array<TItem>& array);
+
+    template <typename TItem>
+    inline bool grow(Array<TItem>& array, int new_size);
+
+    template <typename TItem>
+    inline bool ensure(Array<TItem>& array, int size);
+
+    template <typename TItem>
+    inline bool ensure(const Array<TItem>& array, int size);
+
+    template <typename TItem>
+    inline bool push(Array<TItem>& array, const TItem& value);
+
+    template <typename TItem>
+    inline const TItem& pop(Array<TItem>& array);
+
+    template <typename TItem>
+    inline TItem shift(Array<TItem>& array);
+
+    template <typename TItem>
+    inline bool unshift(Array<TItem>& array, const TItem& value);
+
+    template <typename TItem>
+    inline int index_of(const Array<TItem>& array, const TItem& value);
+
+    template <typename TItem>
+    inline int last_index_of(const Array<TItem>& array, const TItem& value);
+
+    template <typename TItem>
+    inline bool concat(Array<TItem>& dst, const Array<TItem>& src);
+    
+    template <typename TItem>
+    inline void clear(Array<TItem>& array);
+
+    template <typename TItem>
+    inline Array<TItem> clone(const Array<TItem>& array);
+}
+
+template <typename TItem>
+struct Array
 {
 public:
     struct Buffer
@@ -27,19 +72,42 @@ public:
 
     __forceinline ~Array(void)
     {
-        free(buffer);
+        memory::dealloc(buffer);
     }
 
+public: // Copy
+    inline Array(const Array<TItem>& other)
+        : buffer(nullptr)
+    {
+        if (grow(*this, other.capacity))
+        {
+            buffer->length = other.length;
+            memcpy(buffer->items, other.buffer->items, other.length * sizeof(TItem));
+        }
+    }
+
+    inline Array<TItem>& operator=(const Array<TItem>& other)
+    {
+        if (grow(*this, other.capacity))
+        {
+            buffer->length = other.length;
+            memcpy(buffer->items, other.buffer->items, other.length * sizeof(TItem));
+        }
+
+        return *this;
+    }
+    
 public: // RAII
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
     {
+        console::log("Array: call move constructor");
         other.buffer = nullptr;
     }
 
     inline Array<TItem>& operator=(Array<TItem>&& other)
     {
-        free(buffer);
+        memory::dealloc(buffer);
         buffer = other.buffer;
         other.buffer = nullptr;
 
@@ -98,7 +166,7 @@ public:
 #if NDEBUG
         , items((TValue*)_alloca(capacity * sizeof(TValue)))
 #else
-        , items((TValue*)malloc(capacity * sizeof(TValue)))
+        , items((TValue*)memory::alloc(capacity * sizeof(TValue)))
 #endif
     {
     }
@@ -106,7 +174,7 @@ public:
     __forceinline ~TempArray(void)
     {
 #if !defined(NDEBUG)
-        free(items);
+        memory::dealloc(items);
 #endif
     }
 }; 
@@ -141,10 +209,16 @@ public:
 namespace array 
 {
     template <typename TItem>
+    inline void unref(Array<TItem>& array)
+    {
+        array.buffer = nullptr;
+    }
+
+    template <typename TItem>
     inline bool grow(Array<TItem>& array, int new_size)
     {
         auto old_buf = array.buffer;
-        auto new_buf = (decltype(old_buf))realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+        auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
         if (new_buf)
         {
@@ -209,7 +283,7 @@ namespace array
         TItem result = array.buffer->items[0];
 
         array.buffer->length--;
-        memmove(array.buffer->items, array.buffer->items + 1, array.buffer->length * sizeof(TItem));
+        memory::move(array.buffer->items, array.buffer->items + 1, array.buffer->length * sizeof(TItem));
 
         return result;
     }
@@ -222,7 +296,7 @@ namespace array
             return false;
         }
 
-        memmove(array.buffer->items + 1, array.buffer->items, array.length * sizeof(TItem));
+        memory::move(array.buffer->items + 1, array.buffer->items, array.length * sizeof(TItem));
         array.buffer->length++;
         array.buffer->items[0] = value;
         return true;

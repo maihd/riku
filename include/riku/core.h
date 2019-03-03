@@ -1,8 +1,6 @@
 #pragma once
 
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
 
 #ifndef RIKU_API
 #define RIKU_API
@@ -112,14 +110,12 @@
 #define short int16_t
 #endif
 
-using uint   = unsigned int;
-using ulong  = unsigned long;
-using ushort = unsigned short;
+using uint    = unsigned int;
+using ulong   = unsigned long;
+using ushort  = unsigned short;
 
-using byte   = unsigned char;
-using sbyte  = char;
-
-using str    = const char*;
+using byte    = unsigned char;
+using sbyte   = char;
 
 // Memory address and size
 
@@ -149,7 +145,51 @@ using ArgsList = va_list;
 #define assert(exp, fmt, ...)
 #endif
 
+//
+// Memory management
+//
+namespace memory
+{
+    void* alloc(usize size);
+    void  dealloc(void* ptr);
+    void* realloc(void* ptr, usize size);
+
+    void* init(void* dst, int val, usize size);
+    void* copy(void* dst, const void* src, usize size);
+    void* move(void* dst, const void* src, usize size);
+}
+
+#if 0 && EXPERIMENTAL
+__forceinline void* operator new(usize size) 
+{
+	return ::memory::alloc(size);
+}
+__forceinline void operator delete(void* ptr) 
+{
+	::memory::dealloc(ptr);
+}
+__forceinline void *operator new[](size_t size) 
+{
+	return ::memory::alloc(size);
+}
+__forceinline void operator delete[](void* ptr) 
+{
+	::memory::dealloc(ptr);
+}
+#endif
+
+// 
+// C-String operator
+// 
+namespace string
+{
+    usize length(const char* s);
+}
+
+//
 // Right value trait
+//
+
 template <typename T>
 struct WithoutRefTrait
 {
@@ -231,7 +271,7 @@ public:
 
     __forceinline ~Buffer()
     {
-        free(data ? (usize*)data - 1 : nullptr);
+        memory::dealloc(data ? (usize*)data - 1 : nullptr);
     }
 
 public:
@@ -288,7 +328,7 @@ public:
     { 
         if (buffer)
         {
-            free(buffer - sizeof(int)); 
+            memory::dealloc(buffer - sizeof(int)); 
         }
     }
 
@@ -303,8 +343,8 @@ public:
     {
         if (other.buffer)
         {
-            buffer = (char*)malloc(sizeof(int) + other.length + 1);
-            memcpy(buffer, other.buffer - sizeof(int), sizeof(int) + other.length + 1);
+            buffer = (char*)memory::alloc(sizeof(int) + other.length + 1);
+            memory::copy(buffer, other.buffer - sizeof(int), sizeof(int) + other.length + 1);
         }
         else
         {
@@ -312,19 +352,19 @@ public:
         }
     }
 
-    inline HeapString(str buffer)
-        : HeapString(buffer, strlen(buffer))
+    inline HeapString(const char* buffer)
+        : HeapString(buffer, string::length(buffer))
     {
     }
 
-    inline HeapString(str buffer, int length)
+    inline HeapString(const char* buffer, int length)
     {
         if (buffer)
         {
-            this->buffer = (char*)malloc(sizeof(int) + length + 1) + sizeof(int);
+            this->buffer = (char*)memory::alloc(sizeof(int) + length + 1) + sizeof(int);
 
             *((int*)this->buffer - 1) = length;
-            memcpy(this->buffer, buffer, length + 1);
+            memory::copy(this->buffer, buffer, length + 1);
         }
         else
         {
@@ -342,7 +382,7 @@ public:
     }
 
 public:
-    inline operator str() const
+    inline operator const char*() const
     {
         return buffer;
     } 
@@ -351,25 +391,25 @@ public:
 struct String
 {
 public: // Members
-    str buffer;
-    int length;
+    const char* buffer;
+    int         length;
 
 public:
     inline String(void) : buffer(nullptr) {}
     inline ~String(void) {}
 
-    inline String(str buffer)
+    inline String(const char* buffer)
         : buffer(buffer)
-        , length(strlen(buffer)) {}
+        , length(string::length(buffer)) {}
 
     inline String(const HeapString& heap_string)
         : buffer(heap_string.buffer)
         , length(heap_string.length) {}
 
-    inline String& operator=(str buffer)
+    inline String& operator=(const char* buffer)
     {
         this->buffer = buffer;
-        this->length = strlen(buffer);
+        this->length = string::length(buffer);
         return *this;
     }
 
@@ -395,7 +435,7 @@ public: // Compile-time string
     }
 
 public:
-    inline operator str() const
+    inline operator const char*() const
     {
         return buffer;
     } 
@@ -424,7 +464,7 @@ public:
 
     inline ~UniPtr(void)
     {
-        free(raw);
+        memory::dealloc(raw);
     }
 
 public:
@@ -436,9 +476,7 @@ public:
 
     inline UniPtr<T>& operator=(UniPtr<T>&& other)
     {
-        raw = other.raw;
-        other.raw = nullptr;
-        return *this;
+        raw = other.raw; other.raw = nullptr; return *this;
     }
 
 public:
@@ -462,7 +500,7 @@ public:
     {
         if (ref <= 1)
         {
-            free(raw);
+            memory::dealloc(raw);
         }
     }
 
@@ -518,21 +556,21 @@ struct WeakPtr
 // Internal function
 namespace __riku 
 {
-    RIKU_API void __assert_print(str exp, str func, str file, int line, str fmt, ...);
+    RIKU_API void __assert_print(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
 }
 
 // Console
 namespace console
 {
-    RIKU_API void log(str fmt, ...);
-    RIKU_API void log_info(str fmt, ...);
-    RIKU_API void log_warn(str fmt, ...);
-    RIKU_API void log_error(str fmt, ...);
+    RIKU_API void log(const char* fmt, ...);
+    RIKU_API void log_info(const char* fmt, ...);
+    RIKU_API void log_warn(const char* fmt, ...);
+    RIKU_API void log_error(const char* fmt, ...);
 
-    RIKU_API void log_args(str fmt, ArgsList args_list);
-    RIKU_API void log_info_args(str fmt, ArgsList args_list);
-    RIKU_API void log_warn_args(str fmt, ArgsList args_list);
-    RIKU_API void log_error_args(str fmt, ArgsList args_list);
+    RIKU_API void log_args(const char* fmt, ArgsList args_list);
+    RIKU_API void log_info_args(const char* fmt, ArgsList args_list);
+    RIKU_API void log_warn_args(const char* fmt, ArgsList args_list);
+    RIKU_API void log_error_args(const char* fmt, ArgsList args_list);
 }
 
 // Current process

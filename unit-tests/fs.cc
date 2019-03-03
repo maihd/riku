@@ -6,9 +6,9 @@ TEST_CASE("Filesystem testing", "[fs]")
     console::log("cwd: %s", process::cwd().buffer);
 
 #if OS_WINDOWS
-    str path = "x32/debug/riku.unit_tests.exe";
+    const char* path = "x32/debug/riku.unit_tests.exe";
 #else
-    str path = "x32/debug/riku.unit_tests";
+    const char* path = "x32/debug/riku.unit_tests";
 #endif
 
     if (fs::exists(path))
