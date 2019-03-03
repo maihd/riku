@@ -314,37 +314,79 @@ public: // Factory functions
 // String types
 //
 
-struct String;
-struct HeapString;
-
-struct HeapString 
+struct String 
 {
 public: // Members
-    char* buffer; 
+    struct Buffer
+    {
+        int  length;
+        int  capacity;
+        char characters[1];
+    };
+    Buffer* buffer;
 
 public:
-    inline HeapString() : buffer(nullptr) {}
-    inline ~HeapString() 
+    inline String() 
+        : buffer(nullptr) {}
+
+    inline ~String() 
     { 
         if (buffer)
         {
-            memory::dealloc(buffer - sizeof(int)); 
+            memory::dealloc(buffer); 
         }
     }
 
 public:
-    inline HeapString(HeapString&& other) 
+    inline String(const char* buffer)
+        : String(buffer, string::length(buffer))
+    {
+    }
+
+    inline String(const char* buffer, int length)
+    {
+        if (buffer)
+        {
+            this->buffer = (Buffer*)memory::alloc(sizeof(Buffer) + length);
+            this->buffer->length   = length;
+            this->buffer->capacity = length;
+
+            memory::copy(this->buffer->characters, buffer, length + 1);
+        }
+        else
+        {
+            this->buffer = nullptr;
+        }
+    }
+
+public: // RAII
+    inline String(String&& other)
         : buffer(other.buffer)
     {
         other.buffer = nullptr;
     }
 
-    inline HeapString(const HeapString& other) 
+    inline String& operator=(String&& other)
+    {
+        memory::dealloc(buffer ? buffer - sizeof(int) : nullptr);
+        buffer = other.buffer;
+        other.buffer = nullptr;
+        return *this;
+    }
+
+
+public: // Copy
+    inline String(const String& other)
     {
         if (other.buffer)
         {
-            buffer = (char*)memory::alloc(sizeof(int) + other.length + 1);
-            memory::copy(buffer, other.buffer - sizeof(int), sizeof(int) + other.length + 1);
+            int length = other.length;
+
+            buffer = (Buffer*)memory::alloc(sizeof(Buffer) + length);
+            buffer->length   = length;
+            buffer->capacity = length;
+
+            memory::copy(buffer->characters, other.buffer->characters, length + 1);
         }
         else
         {
@@ -352,99 +394,53 @@ public:
         }
     }
 
-    inline HeapString(const char* buffer)
-        : HeapString(buffer, string::length(buffer))
+    inline String& operator=(const String& other)
     {
-    }
-
-    inline HeapString(const char* buffer, int length)
-    {
-        if (buffer)
+        if (other.buffer)
         {
-            this->buffer = (char*)memory::alloc(sizeof(int) + length + 1) + sizeof(int);
+            int length = other.length;
+            if (buffer->capacity < length)
+            {
+                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + length);
+                buffer->capacity = length;
+            }
 
-            *((int*)this->buffer - 1) = length;
-            memory::copy(this->buffer, buffer, length + 1);
+            buffer->length = length;
+            memory::copy(buffer->characters, other.buffer->characters, length + 1);
         }
-        else
+        else if (buffer)
         {
-            this->buffer = nullptr;
+            buffer->length        = 0;
+            buffer->characters[0] = 0;
         }
+        return *this;
     }
-    
-    inline HeapString(const String& string);
 
 public:
     propdef_readonly(get_length) int length;
-    inline int get_length() const
+    propdef_readonly(get_capacity) int capacity;
+
+    inline int get_length(void) const
     {
-        return buffer ? ((int*)buffer - 1)[0] : 0;
+        return buffer ? buffer->length : 0;
+    }
+
+    inline int get_capacity(void) const
+    {
+        return buffer ? buffer->capacity : 0;
     }
 
 public:
-    inline operator const char*() const
+    inline operator char*(void)
     {
-        return buffer;
+        return buffer ? buffer->characters : nullptr;
+    }
+
+    inline operator const char*(void) const
+    {
+        return buffer ? buffer->characters : nullptr;
     } 
 };
-
-struct String
-{
-public: // Members
-    const char* buffer;
-    int         length;
-
-public:
-    inline String(void) : buffer(nullptr) {}
-    inline ~String(void) {}
-
-    inline String(const char* buffer)
-        : buffer(buffer)
-        , length(string::length(buffer)) {}
-
-    inline String(const HeapString& heap_string)
-        : buffer(heap_string.buffer)
-        , length(heap_string.length) {}
-
-    inline String& operator=(const char* buffer)
-    {
-        this->buffer = buffer;
-        this->length = string::length(buffer);
-        return *this;
-    }
-
-    inline String& operator=(const HeapString& heap_string)
-    {
-        this->buffer = heap_string.buffer;
-        this->length = heap_string.length;
-        return *this;
-    }
-
-public: // Compile-time string
-    template <int length>
-    inline String(const char(&buffer)[length])
-        : length(length)
-        , buffer(buffer) {}
-
-    template <int length>
-    inline String& operator=(const char(&buffer)[length])
-    {
-        this->buffer = buffer;
-        this->length = length;
-        return *this;
-    }
-
-public:
-    inline operator const char*() const
-    {
-        return buffer;
-    } 
-};
-
-inline HeapString::HeapString(const String& string)
-    : HeapString(string.buffer, string.length)
-{
-}
 
 //
 // Ptr types
@@ -576,5 +572,6 @@ namespace console
 // Current process
 namespace process
 {
-    RIKU_API HeapString cwd(void);
+    RIKU_API String cwd(void);
+    RIKU_API bool   chdir(const char* directory);
 }

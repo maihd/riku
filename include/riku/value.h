@@ -23,11 +23,11 @@ public:
     union 
     {
         double     number;
-        HeapString string;  
+        String string;  
         bool       boolean;
 
         Array<Value*>             array;
-        Table<HeapString, Value*> table;
+        Table<String, Value*> table;
     };
 };
 

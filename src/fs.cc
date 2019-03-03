@@ -11,16 +11,16 @@
 
 namespace fs
 {
-    bool exists(const String& path)
+    bool exists(const char* path)
     {
 #if OS_WINDOWS
-        return PathFileExistsA(path.buffer);
+        return PathFileExistsA(path);
 #endif
     }
 
-    Buffer read_file(const String& path)
+    Buffer read_file(const char* path)
     {
-        FILE* file = fopen(path.buffer, "r");
+        FILE* file = fopen(path, "r");
         if (file)
         {
             fseek(file, SEEK_END, 0);

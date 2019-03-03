@@ -17,9 +17,9 @@ namespace fs
         FileType type;
     };
 
-    RIKU_API Stats stat(const String& path);
+    RIKU_API Stats stat(const char* path);
 #endif
     
-    RIKU_API bool   exists(const String& path);
-    RIKU_API Buffer read_file(const String& path);
+    RIKU_API bool   exists(const char* path);
+    RIKU_API Buffer read_file(const char* path);
 }

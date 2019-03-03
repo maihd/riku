@@ -135,11 +135,11 @@ namespace console
 
 namespace process
 {
-    HeapString cwd(void)
+    String cwd(void)
     {
         char path[1024];
         uint size = GetCurrentDirectoryA(sizeof(path), path);
 
-        return make_rvalue(HeapString(path, size));
+        return make_rvalue(String(path, size));
     }
 }
