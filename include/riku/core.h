@@ -572,6 +572,10 @@ namespace console
 // Current process
 namespace process
 {
-    RIKU_API String cwd(void);
-    RIKU_API bool   chdir(const char* directory);
+    RIKU_API const char* cwd(void);
+    RIKU_API usize       cwd(char* buffer, usize length);
+    RIKU_API bool        chdir(const char* directory);
+
+    RIKU_API void        exit(int code);
+    RIKU_API void        abort(void);
 }

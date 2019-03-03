@@ -135,11 +135,32 @@ namespace console
 
 namespace process
 {
-    String cwd(void)
+    const char* cwd(void)
     {
-        char path[1024];
-        uint size = GetCurrentDirectoryA(sizeof(path), path);
+        __declspec(thread) static char path[1024];
 
-        return make_rvalue(String(path, size));
+        cwd(path, sizeof(path)); 
+        return path;
+    }
+
+    usize cwd(char* buffer, usize length)
+    {
+        uint size = GetCurrentDirectoryA(length, buffer);
+        return size;
+    }
+
+    bool chdir(const char* directory)
+    {
+        return SetCurrentDirectoryA(directory);
+    }
+
+    void exit(int code)
+    {
+        ::exit(code);
+    }
+
+    void abort(void)
+    {
+        ::abort();
     }
 }
