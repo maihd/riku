@@ -177,10 +177,7 @@ do
    end
    local androidPlatform = _OPTIONS[""] or "android-19"
    configuration { "android-arm" }
-   do
-		targetdir (path.join(_buildDir, "android-arm/bin"))
-      objdir (path.join(_buildDir, "android-arm/obj"))
-      
+   do 
 		libdirs {
 			"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a",
       }
@@ -215,22 +212,24 @@ end
 
 dofile('riku.genie.lua')(RIKU_BUILD_DIR, TARGET_PLATFORM)
 
-project 'riku.unit_tests'
-do
-   kind 'consoleapp'
+if TARGET_PLATFORM ~= 'android-arm' then
+   project 'riku.unit_tests'
+   do
+      kind 'consoleapp'
 
-   links {
-      'riku'
-   }
+      links {
+         'riku'
+      }
 
-   includedirs {
-      path.join(RIKU_DIR, 'include')
-   }
+      includedirs {
+         path.join(RIKU_DIR, 'include')
+      }
 
-   files {
-      path.join(RIKU_DIR, 'unit-tests/*.h'),
-      path.join(RIKU_DIR, 'unit-tests/**/*.h'),
-      path.join(RIKU_DIR, 'unit-tests/*.cc'),
-      path.join(RIKU_DIR, 'unit-tests/**/*.cc'),
-   }
+      files {
+         path.join(RIKU_DIR, 'unit-tests/*.h'),
+         path.join(RIKU_DIR, 'unit-tests/**/*.h'),
+         path.join(RIKU_DIR, 'unit-tests/*.cc'),
+         path.join(RIKU_DIR, 'unit-tests/**/*.cc'),
+      }
+   end
 end
