@@ -189,7 +189,23 @@ public:
         memory::dealloc(items);
 #endif
     }
-}; 
+};
+
+// StaticArray: temporary array with unknown size at compile-time
+// @note: Donot use pointer of this type
+template <typename TValue, int capacity>
+struct StaticArray
+{
+public:
+    int    length;
+    TValue items[capacity];
+
+public:
+    constexpr StaticArray(void)
+        : length(0)
+    {
+    }
+};
 
 // SmartArray: Fast and safe, reuse memory array
 // @note: Donot use pointer of this type
