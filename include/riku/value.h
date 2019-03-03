@@ -22,11 +22,11 @@ public:
     Type type;
     union 
     {
-        double     number;
+        double number;
         String string;  
-        bool       boolean;
+        bool   boolean;
 
-        Array<Value*>             array;
+        Array<Value*>         array;
         Table<String, Value*> table;
     };
 };
