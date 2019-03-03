@@ -176,7 +176,7 @@ public:
         : length(0)
         , capacity(capacity)
 #if NDEBUG
-        , items((TValue*)memory::stackalloc(capacity * sizeof(TValue)))
+        , items((TValue*)stackalloc(capacity * sizeof(TValue)))
 #else
         , items((TValue*)memory::alloc(capacity * sizeof(TValue)))
 #endif

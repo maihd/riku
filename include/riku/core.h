@@ -151,8 +151,10 @@ using ArgsList = va_list;
 
 #if OS_WINDOWS
 extern "C" void* __cdecl _alloca(usize size);
+#define stackalloc _alloca
 #else
 extern "C" void* alloca(usize size);
+#define stackalloc alloca
 #endif
 
 namespace memory
@@ -164,19 +166,6 @@ namespace memory
     void* init(void* dst, int val, usize size);
     void* copy(void* dst, const void* src, usize size);
     void* move(void* dst, const void* src, usize size);
-
-    __forceinline void* stackalloc(usize size)
-    {
-#ifdef NDEBUG
-#if OS_WINDOWS
-        return _alloca(size);
-#else
-        return alloca(size);
-#endif
-#else
-        return alloc(size);
-#endif
-    }
 }
 
 struct RefCount

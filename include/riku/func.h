@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./core.h"
-#include <malloc.h>
 
 template <typename T>
 struct Func;
@@ -66,7 +65,7 @@ public: //
 public:
     inline Func(FuncType func)
 #if NDEBUG
-        : stub((Stub*)_alloca(sizeof(Stub)))
+        : stub((Stub*)stackalloc(sizeof(Stub)))
 #else
         : stub((Stub*)memory::alloc(sizeof(Stub)))
 #endif
