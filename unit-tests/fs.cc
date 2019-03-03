@@ -1,5 +1,6 @@
 #include "./unit_test.h"
 #include <riku/fs.h>
+#include <memory>
 
 TEST_CASE("Filesystem testing", "[fs]")
 {
@@ -15,6 +16,8 @@ TEST_CASE("Filesystem testing", "[fs]")
     {
         Buffer content = fs::read_file(path);
         console::log("filesystem done!");
+
+        std::shared_ptr<int> val;
     }
     else
     {

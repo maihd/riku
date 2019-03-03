@@ -50,11 +50,13 @@ namespace array
     inline Array<TItem> clone(const Array<TItem>& array);
 }
 
+// Array: JSArray-like
+// @note: Donot use pointer of this type
 template <typename TItem>
 struct Array
 {
 public:
-    struct Buffer
+    struct Buffer : RefCount
     {
         int   length;
         int   capacity;
@@ -65,33 +67,39 @@ public:
     Buffer* buffer;
 
 public:
-    __forceinline Array(void)
+    constexpr Array(void)
         : buffer(nullptr)
     {
     }
 
     __forceinline ~Array(void)
     {
-        memory::dealloc(buffer);
+        if (buffer && buffer->release() <= 0)
+        {
+            memory::dealloc(buffer);
+        }
     }
 
 public: // Copy
     inline Array(const Array<TItem>& other)
-        : buffer(nullptr)
+        : buffer(other.buffer)
     {
-        if (grow(*this, other.capacity))
+        if (buffer)
         {
-            buffer->length = other.length;
-            memcpy(buffer->items, other.buffer->items, other.length * sizeof(TItem));
+            buffer->retain();
         }
     }
 
     inline Array<TItem>& operator=(const Array<TItem>& other)
     {
-        if (grow(*this, other.capacity))
+        // Unref old buffer
+        this->~Array();
+
+        // Assign new buffer
+        buffer = other.buffer;
+        if (buffer)
         {
-            buffer->length = other.length;
-            memcpy(buffer->items, other.buffer->items, other.length * sizeof(TItem));
+            buffer->retain();
         }
 
         return *this;
@@ -101,13 +109,15 @@ public: // RAII
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
     {
-        console::log("Array: call move constructor");
         other.buffer = nullptr;
     }
 
     inline Array<TItem>& operator=(Array<TItem>&& other)
     {
-        memory::dealloc(buffer);
+        // Unref old buffer
+        this->~Array();
+
+        // Assign new buffer
         buffer = other.buffer;
         other.buffer = nullptr;
 
@@ -151,8 +161,10 @@ public: // Conversion
     }
 };
 
+// TempoArray: temporary array with unknown size at compile-time
+// @note: Donot use pointer of this type
 template <typename TValue>
-struct TempArray
+struct TempoArray
 {
 public:
     int           length;
@@ -160,18 +172,18 @@ public:
     TValue* const items;
 
 public:
-    __forceinline explicit TempArray(uint capacity = 64)
+    __forceinline explicit TempoArray(uint capacity = 64)
         : length(0)
         , capacity(capacity)
 #if NDEBUG
-        , items((TValue*)_alloca(capacity * sizeof(TValue)))
+        , items((TValue*)memory::stackalloc(capacity * sizeof(TValue)))
 #else
         , items((TValue*)memory::alloc(capacity * sizeof(TValue)))
 #endif
     {
     }
 
-    __forceinline ~TempArray(void)
+    __forceinline ~TempoArray(void)
     {
 #if !defined(NDEBUG)
         memory::dealloc(items);
@@ -179,6 +191,8 @@ public:
     }
 }; 
 
+// SmartArray: Fast and safe, reuse memory array
+// @note: Donot use pointer of this type
 template <typename TItem>
 struct SmartArray
 {
@@ -224,6 +238,10 @@ namespace array
         {
             if (!old_buf)
             {
+                // Initialize RefCount
+                new (new_buf) RefCount();
+
+                // Initialize Buffer
                 new_buf->length = 0;
             }
 

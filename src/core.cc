@@ -24,7 +24,7 @@ namespace __riku
 {
     void __assert_print(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
     {
-        console::log_error("Assertion failed!\nIn %s:%s:%d", func, file, line);
+        console::log_error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
 
         ArgsList args_list;
         argslist_begin(args_list, fmt);

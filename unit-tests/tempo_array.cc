@@ -4,5 +4,5 @@
 
 TEST_CASE("Temporary array testing", "[TempArray]")
 {
-    TempArray<int> int_array;
+    TempoArray<int> int_array;
 }

@@ -148,6 +148,13 @@ using ArgsList = va_list;
 //
 // Memory management
 //
+
+#if OS_WINDOWS
+extern "C" void* __cdecl _alloca(usize size);
+#else
+extern "C" void* alloca(usize size);
+#endif
+
 namespace memory
 {
     void* alloc(usize size);
@@ -157,7 +164,34 @@ namespace memory
     void* init(void* dst, int val, usize size);
     void* copy(void* dst, const void* src, usize size);
     void* move(void* dst, const void* src, usize size);
+
+    __forceinline void* stackalloc(usize size)
+    {
+#ifdef NDEBUG
+#if OS_WINDOWS
+        return _alloca(size);
+#else
+        return alloca(size);
+#endif
+#else
+        return alloc(size);
+#endif
+    }
 }
+
+struct RefCount
+{
+public:
+    int refcount;
+
+public:
+    constexpr RefCount(void)
+        : refcount(1) {}
+
+public:
+    inline int retain(void)  { return ++refcount; };
+    inline int release(void) { return --refcount; };
+};
 
 #if 0 && EXPERIMENTAL
 __forceinline void* operator new(usize size) 
@@ -484,19 +518,20 @@ template <typename T>
 struct SharedPtr
 {
 public:
-    T*  raw;
-    int ref;
+    T*        raw;
+    RefCount* ref;
 
 public:
     inline SharedPtr(T* ptr)
         : raw(ptr)
-        , ref(1) {}
+        , ref(new RefCount()) {}
 
     inline ~SharedPtr(void)
     {
-        if (ref <= 1)
+        if (ref->release() <= 0)
         {
             memory::dealloc(raw);
+            delete ref;
         }
     }
 
@@ -511,6 +546,10 @@ public:
 
     inline SharedPtr<T>& operator=(SharedPtr<T>&& other)
     {
+        // Should release old pointer
+        this->~SharedPtr();
+
+        // Assign new pointer
         raw = other.raw;
         ref = other.ref; 
         other.raw = 0;
@@ -521,15 +560,20 @@ public:
 
     inline SharedPtr(const SharedPtr<T>& other)
         : raw(other.raw)
-        , ref(other.ref + 1) 
+        , ref(other.ref) 
     {
+        ref->retain();
     }
 
     inline SharedPtr<T>& operator=(const SharedPtr<T>& other)
     {
-        raw = other.raw;
-        ref = other.ref + 1;
+        // Should release old pointer
+        this->~SharedPtr();
 
+        // Assign new pointer
+        raw = other.raw;
+        ref = other.ref;
+        ref->retain();
         return *this;
     }
 
