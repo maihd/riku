@@ -42,6 +42,13 @@
 #define RUNTIME_32BITS 1
 #endif
 
+#if defined(__MIPSEL__) || defined(__LITTLE_ENDIAN__)
+#define OS_BIG_ENDIAN    0
+#define OS_LITTLE_ENDIAN 1
+#else
+#define OS_BIG_ENDIAN    1
+#define OS_LITTLE_ENDIAN 0
+#endif
 
 #define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
 #define propdef_readonly(getter)  __declspec(property(get=getter))
@@ -155,11 +162,10 @@ using ArgsList = va_list;
 //
 
 #if OS_WINDOWS
-extern "C" void* __cdecl _alloca(usize size);
+#include <malloc.h>
 #define stackalloc _alloca
 #else
-extern "C" void* alloca(usize size);
-#define stackalloc alloca
+#define stackalloc __builtin_alloca 
 #endif
 
 namespace memory
