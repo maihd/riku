@@ -58,8 +58,6 @@ namespace os
     #endif
     }
 
-    RIKU_API int   getpid(void);
-
     RIKU_API usize freemem(void);
     RIKU_API usize totalmem(void);
 

@@ -163,6 +163,22 @@ namespace console
 
 namespace process
 {
+    // Get environment variable
+    const char* getenv(const char* name)
+    {
+        return ::getenv(name);    
+    }
+
+    // Set environment variable
+    bool setenv(const char* name, const char* value)
+    {
+#if OS_WINDOWS
+        return SetEnvironmentVariableA(name, value);
+#elif OS_UNIX
+        return ::setenv(name, value, true) == 0;
+#endif
+    }
+
     const char* cwd(void)
     {
         __threadlocal static char path[1024];
@@ -201,5 +217,14 @@ namespace process
     void abort(void)
     {
         ::abort();
+    }
+    
+    int getpid(void)
+    {
+    #if OS_WINDOWS
+        return (int)GetCurrentProcessId();
+    #elif OS_UNIX
+        return (int)::getpid();
+    #endif
     }
 }

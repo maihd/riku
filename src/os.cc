@@ -2,8 +2,6 @@
 
 #if OS_WINDOWS
 #include <Windows.h>
-#undef  OS_WINDOWS
-#define OS_WINDOWS 1
 #elif OS_UNIX
 #include <pwd.h>
 #include <stdlib.h>
@@ -15,15 +13,6 @@
 
 namespace os
 {
-    int getpid(void)
-    {
-    #if OS_WINDOWS
-        return (int)GetCurrentProcessId();
-    #elif OS_UNIX
-        return (int)::getpid();
-    #endif
-    }
-
     usize freemem(void)
     {
     #if OS_WINDOWS

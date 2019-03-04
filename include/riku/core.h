@@ -616,10 +616,27 @@ namespace console
 // Current process
 namespace process
 {
+    // Get environment variable
+    RIKU_API const char* getenv(const char* name);
+
+    // Set environment variable
+    RIKU_API bool setenv(const char* name, const char* value);
+    
+    // Environment container, read-only
+    static struct
+    {
+        inline const char* operator[](const char* name) const
+        {
+            return getenv(name);
+        };
+    } env;
+
     RIKU_API const char* cwd(void);
     RIKU_API usize       cwd(char* buffer, usize length);
     RIKU_API bool        chdir(const char* directory);
 
     RIKU_API void        exit(int code);
     RIKU_API void        abort(void);
+
+    RIKU_API int         getpid(void);
 }
