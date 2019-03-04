@@ -603,14 +603,14 @@ namespace __riku
 namespace console
 {
     RIKU_API void log(const char* fmt, ...);
-    RIKU_API void log_info(const char* fmt, ...);
-    RIKU_API void log_warn(const char* fmt, ...);
-    RIKU_API void log_error(const char* fmt, ...);
+    RIKU_API void info(const char* fmt, ...);
+    RIKU_API void warn(const char* fmt, ...);
+    RIKU_API void error(const char* fmt, ...);
 
     RIKU_API void log_args(const char* fmt, ArgsList args_list);
-    RIKU_API void log_info_args(const char* fmt, ArgsList args_list);
-    RIKU_API void log_warn_args(const char* fmt, ArgsList args_list);
-    RIKU_API void log_error_args(const char* fmt, ArgsList args_list);
+    RIKU_API void info_args(const char* fmt, ArgsList args_list);
+    RIKU_API void warn_args(const char* fmt, ArgsList args_list);
+    RIKU_API void error_args(const char* fmt, ArgsList args_list);
 }
 
 // Current process

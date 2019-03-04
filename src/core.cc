@@ -6,6 +6,8 @@
 
 #if OS_WINDOWS
 #include <Windows.h>
+#elif OS_ANDROID
+#include <android/log.h>
 #endif
 
 Buffer Buffer::alloc(usize length)
@@ -24,12 +26,22 @@ namespace __riku
 {
     void __assert_print(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
     {
-        console::log_error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
+    #if OS_ANDROID
+        char final_fmt[4096];
+        sprintf(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
 
         ArgsList args_list;
         argslist_begin(args_list, fmt);
-        console::log_error_args(fmt, args_list);
+        __android_log_vprint(ANDROID_LOG_FATAL, "riku", final_fmt, args_list);
         argslist_end(args_list);
+    #elif
+        console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
+
+        ArgsList args_list;
+        argslist_begin(args_list, fmt);
+        console::error_args(fmt, args_list);
+        argslist_end(args_list);
+    #endif
     }
 }
 
@@ -84,64 +96,64 @@ namespace console
         argslist_end(args_list);
     }
     
-    void log_info(const char* fmt, ...)
+    void info(const char* fmt, ...)
     {
         ArgsList args_list;
         argslist_begin(args_list, fmt);
-        log_info_args(fmt, args_list);
+        info_args(fmt, args_list);
         argslist_end(args_list);
     }
 
-    void log_warn(const char* fmt, ...)
+    void warn(const char* fmt, ...)
     {
         ArgsList args_list;
         argslist_begin(args_list, fmt);
-        log_warn_args(fmt, args_list);
+        warn_args(fmt, args_list);
         argslist_end(args_list);
     }
 
-    void log_error(const char* fmt, ...)
+    void error(const char* fmt, ...)
     {
         ArgsList args_list;
         argslist_begin(args_list, fmt);
-        log_error_args(fmt, args_list);
+        error_args(fmt, args_list);
         argslist_end(args_list);
     }
 
     void log_args(const char* fmt, ArgsList args_list)
     {
     #if OS_ANDROID
-
+        __android_log_vprint(ANDROID_LOG_DEFAULT, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
     #endif
     }
 
-    void log_info_args(const char* fmt, ArgsList args_list)
+    void info_args(const char* fmt, ArgsList args_list)
     {
     #if OS_ANDROID
-
+        __android_log_vprint(ANDROID_LOG_INFO, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
     #endif
     }
 
-    void log_warn_args(const char* fmt, ArgsList args_list)
+    void warn_args(const char* fmt, ArgsList args_list)
     {
     #if OS_ANDROID
-
+        __android_log_vprint(ANDROID_LOG_WARN, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
     #endif
     }
 
-    void log_error_args(const char* fmt, ArgsList args_list)
+    void error_args(const char* fmt, ArgsList args_list)
     {
     #if OS_ANDROID
-
+        __android_log_vprint(ANDROID_LOG_ERROR, "riku", fmt, args_list);
     #else
         vfprintf(stderr, fmt, args_list);
         fputc('\n', stdout);
