@@ -6,6 +6,7 @@
 #define OS_WINDOWS 1
 #elif OS_UNIX
 #include <pwd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -19,7 +20,7 @@ namespace os
     #if OS_WINDOWS
         return (int)GetCurrentProcessId();
     #elif OS_UNIX
-        return (int)getpid();
+        return (int)::getpid();
     #endif
     }
 
@@ -95,7 +96,7 @@ namespace os
 
     return_buffer:
         strncpy(buffer, envbuf, length);
-        return 0;
+        return string::length(buffer);
     #endif
     }
 
@@ -118,9 +119,10 @@ namespace os
         const char* homedir = getenv("HOME");
         if (!homedir) 
         {
-            homedir = getpwuid_r(getuid())->pw_dir;
+            homedir = getpwuid(getuid())->pw_dir;
         }
-        return homedir;
+        strncpy(buffer, homedir, length);
+        return string::length(buffer);
     #endif
     }
 

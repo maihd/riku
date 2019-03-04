@@ -7,15 +7,19 @@
 #pragma comment(lib, "Shlwapi.lib")
 #undef  OS_WINDOWS
 #define OS_WINDOWS 1
+#elif OS_UNIX
+#include <unistd.h>
 #endif
 
 namespace fs
 {
     bool exists(const char* path)
     {
-#if OS_WINDOWS
+    #if OS_WINDOWS
         return PathFileExistsA(path);
-#endif
+    #elif OS_UNIX
+        return access(path, F_OK) != -1 ;
+    #endif
     }
 
     Buffer read_file(const char* path)
@@ -36,5 +40,45 @@ namespace fs
         }
 
         return make_rvalue(Buffer());
+    }
+    
+    bool read_file(const char* path, Buffer& buffer)
+    {
+        return read_file(path, buffer.data, buffer.length);
+    }
+
+    bool read_file(const char* path, void* buffer, int length)
+    {
+        FILE* file = fopen(path, "r");
+        if (file)
+        {
+            fread(buffer, 1, length, file);
+            fclose(file);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    bool write_file(const char* path, const Buffer& buffer)
+    {
+        return write_file(path, buffer.data, buffer.length);
+    }
+
+    bool write_file(const char* path, const void* buffer, int length)
+    {
+        FILE* file = fopen(path, "w+");
+        if (file)
+        {
+            fwrite(buffer, 1, length, file);
+            fclose(file);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
