@@ -7,6 +7,7 @@
 #if OS_WINDOWS
 #include <Windows.h>
 #elif OS_ANDROID
+#include <unistd.h>
 #include <android/log.h>
 #endif
 
