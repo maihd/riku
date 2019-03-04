@@ -34,7 +34,7 @@ namespace __riku
         argslist_begin(args_list, fmt);
         __android_log_vprint(ANDROID_LOG_FATAL, "riku", final_fmt, args_list);
         argslist_end(args_list);
-    #elif
+    #else
         console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
 
         ArgsList args_list;
