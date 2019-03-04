@@ -29,8 +29,13 @@ local TARGET_PLATFORM = _OPTIONS["platform"]
 if TARGET_PLATFORM == nil then
    if string.startwith(_ACTION, "vs") or string.startwith(_ACTION, "mingw") then
       TARGET_PLATFORM = "windows"
-   else
-      TARGET_PLATFORM = "linux"
+   elseif string.startwith(_ACTION, "gmake") then
+      TARGET_PLATFORM = "gmake"
+   end
+elseif TARGET_PLATFORM == "windows-clang" then
+   if _ACTION ~= "gmake" then
+      os.print("Error: windows-clang can be only build with gmake")
+      os.exit(1)
    end
 end
 
@@ -127,6 +132,10 @@ do
       premake.gcc.ar   = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ar"
          
       premake.gcc.llvm = true
+   elseif _ACTION == "gmake" then
+      premake.gcc.cc   = "clang"
+      premake.gcc.cxx  = "clang++"
+      premake.gcc.llvm = true
    end
 
    configuration { "android-*" }
@@ -175,7 +184,8 @@ do
       linkoptions {
       }
    end
-   local androidPlatform = _OPTIONS[""] or "android-19"
+
+   local ANDROID_PLATFORM = _OPTIONS["android"] or "android-19"
    configuration { "android-arm" }
    do 
 		libdirs {
@@ -188,7 +198,7 @@ do
       
 		buildoptions {
 			"-gcc-toolchain $(ANDROID_NDK_ARM)",
-			"--sysroot=" .. path.join("$(ANDROID_NDK_ROOT)/platforms", androidPlatform, "arch-arm"),
+			"--sysroot=" .. path.join("$(ANDROID_NDK_ROOT)/platforms", ANDROID_PLATFORM, "arch-arm"),
 			"-target armv7-none-linux-androideabi",
 			"-mthumb",
 			"-march=armv7-a",
@@ -207,6 +217,10 @@ do
 			"-march=armv7-a",
 			"-Wl,--fix-cortex-a8",
       }
+   end
+
+   configuration { "*-clang or gmake" }
+   do
    end
 end
 
