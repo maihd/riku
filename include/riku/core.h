@@ -182,15 +182,15 @@ namespace memory
 struct RefCount
 {
 public:
-    int refcount;
+    int __refcount; // __ for avoid member collision.
 
 public:
     constexpr RefCount(void)
-        : refcount(1) {}
+        : __refcount(1) {}
 
 public:
-    inline int retain(void)  { return ++refcount; };
-    inline int release(void) { return --refcount; };
+    inline int retain(void)  { return ++__refcount; };
+    inline int release(void) { return --__refcount; };
 };
 
 #if 0 && EXPERIMENTAL

@@ -241,6 +241,7 @@ namespace array
     template <typename TItem>
     inline void unref(Array<TItem>& array)
     {
+        array.~Array();
         array.buffer = nullptr;
     }
 
