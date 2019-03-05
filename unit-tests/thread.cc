@@ -3,11 +3,11 @@
 
 TEST_CASE("Thread testing", "[thread]")
 {
-    Thread* thread = new Thread();
+    Thread* thread = create<Thread>();
     thread->start([]() {
         console::log("Thread: hello world!");
     });
 
     thread->wait();
-    delete thread;
+    destroy(thread);
 }
