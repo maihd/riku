@@ -68,7 +68,7 @@ public:
 
 public:
     constexpr Array(void)
-        : buffer(nullptr)
+        : buffer(null)
     {
     }
 
@@ -109,7 +109,7 @@ public: // RAII
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
     {
-        other.buffer = nullptr;
+        other.buffer = null;
     }
 
     inline Array<TItem>& operator=(Array<TItem>&& other)
@@ -119,7 +119,7 @@ public: // RAII
 
         // Assign new buffer
         buffer = other.buffer;
-        other.buffer = nullptr;
+        other.buffer = null;
 
         return *this;
     }
@@ -242,7 +242,7 @@ namespace array
     inline void unref(Array<TItem>& array)
     {
         array.~Array();
-        array.buffer = nullptr;
+        array.buffer = null;
     }
 
     template <typename TItem>

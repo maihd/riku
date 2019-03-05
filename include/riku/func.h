@@ -22,7 +22,7 @@ public:
         union
         {
             FuncType free_func;
-            byte     functor[];
+            byte     functor[sizeof(FuncType)];
 
             struct
             {
@@ -53,8 +53,8 @@ public:
         template <typename T>
         static R call_functor(Stub* stub, Args... args)
         {
-            T* caller = (T*)stub->functor;
-            return (*caller)(args...);
+            const T* functor = (T*)stub->functor;
+            return (*functor)(args...);
         }
     };
 
@@ -63,12 +63,12 @@ public: //
 
 public:
     constexpr Func(void)
-        : stub(nullptr)
+        : stub(null)
         {}
 
-    constexpr Func(nullptr_t)
-        : stub(nullptr)
-        {}
+    constexpr Func(NullPtr)
+        : stub(null)
+    {}
     
     inline ~Func(void)
     {
@@ -82,7 +82,7 @@ public:
     inline Func(FuncType func)
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        new (stub) RefCount();
+        init<RefCount>(stub);
 
         stub->size      = sizeof(Stub);
         stub->func      = &Stub::call_func;
@@ -93,7 +93,7 @@ public:
     inline Func(T* object, R (T::*method)(Args...))
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        new (stub) RefCount();
+        init<RefCount>(stub);
 
         using TMethod = R(T::*)(Args...);
         union 
@@ -111,9 +111,9 @@ public:
 
     template <typename T>
     inline Func(const T& functor)
-        : stub((Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor) - 2 * sizeof(void*))))
+        : stub((Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor))))
     {
-        new (stub) RefCount();
+        init<RefCount>(stub);
 
         stub->size   = sizeof(Stub);
         stub->func   = &Stub::call_functor<T>;
@@ -122,10 +122,13 @@ public:
     }
 
 public:
-    inline Func& bind(nullptr_t)
+    inline Func& bind(NullPtr)
     {
         // unref old stub
         this->~Func();
+
+        // Create new stub
+        stub = null;
 
         return *this;
     }
@@ -136,8 +139,8 @@ public:
         this->~Func();
 
         // Create new stub
-        stub = (Stub*)memory::alloc(sizeof(Stub));
-        new (stub) RefCount();
+        stub = (Stub*)memory::alloc(sizeof(Stub)); 
+        init<RefCount>(stub);
 
         stub->size      = sizeof(Stub);
         stub->func      = &Stub::call_func;
@@ -147,17 +150,17 @@ public:
     }
 
     template <typename T>
-    inline Func& bind(T* object, R (T::*method)(Args...))
+    inline Func& bind(T* object, R(T::*method)(Args...))
     {
         // unref old stub
         this->~Func();
 
         // Create new stub
-        stub = (Stub*)memory::alloc(sizeof(Stub));
-        new (stub) RefCount();
+        stub = (Stub*)memory::alloc(sizeof(Stub)); 
+        init<RefCount>(stub);
 
         using TMethod = R(T::*)(Args...);
-        union 
+        union
         {
             TMethod method;
             void*   pointer;
@@ -179,11 +182,11 @@ public:
         this->~Func();
 
         // Create new stub
-        stub = (Stub*)memory::alloc(sizeof(Stub));
-        new (stub) RefCount();
+        stub = (Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor)));
+        init<RefCount>(stub);
 
-        stub->size   = sizeof(Stub);
-        stub->func   = &Stub::call_functor<T>;
+        stub->size = sizeof(Stub);
+        stub->func = &Stub::call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
 
@@ -191,9 +194,9 @@ public:
     }
 
 public:
-    inline Func& operator=(nullptr_t)
+    inline Func& operator=(NullPtr)
     {
-        return this->bind(nullptr);
+        return this->bind(null);
     }
 
     inline Func& operator=(FuncType func)
@@ -207,13 +210,28 @@ public:
         return this->bind(functor);
     }
 
+public:
+    inline Func(const Func& other)
+    {
+        stub = other.stub;
+        if (stub)
+        {
+            stub->retain();
+        }
+    }
+
     inline Func& operator=(const Func& other)
     {
         // unref old stub
         this->~Func();
         
         stub = other.stub;
-        stub->retain();
+        if (stub)
+        {
+            stub->retain();
+        }
+
+        return *this;
     }
 
 public: // Invoking

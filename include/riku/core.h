@@ -142,6 +142,16 @@ using isize  = int;
 using iptr = isize;
 using uptr = usize;
 
+struct NullPtr
+{
+    template <typename T>
+    constexpr operator T* () const
+    {
+        return (T*)0;
+    }
+};
+#define null NullPtr()
+
 // ArgsList: alias of va_list
 using ArgsList = va_list;
 #define argslist_begin(args_list, prev_arg) va_start(args_list, prev_arg)
@@ -211,6 +221,32 @@ __forceinline void operator delete[](void* ptr)
 	::memory::dealloc(ptr);
 }
 #endif
+
+struct NewDummy {};
+constexpr void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
+constexpr void  operator delete(void*, NewDummy, void*)     {             }
+
+template <typename T, typename... Args>
+T* init(void* ptr, Args...args)
+{
+    return new (NewDummy(), ptr) T(args...);
+}
+
+template <typename T, typename... Args>
+T* create(Args...args)
+{
+    return new (NewDummy(), memory::alloc(sizeof(T))) T(args...);
+}
+
+template <typename T>
+void destroy(T* ptr)
+{
+    if (ptr)
+    {
+        ptr->~T();
+        memory::dealloc(ptr);
+    }
+}
 
 // 
 // C-String operator
@@ -301,24 +337,24 @@ public:
 
 public:
     __forceinline Buffer()
-        : data(nullptr) {}
+        : data(null) {}
 
     __forceinline ~Buffer()
     {
-        memory::dealloc(data ? (usize*)data - 1 : nullptr);
+        memory::dealloc(data ? (usize*)data - 1 : null);
     }
 
 public:
     __forceinline Buffer(Buffer&& buffer)
         : data(buffer.data)
     {
-        buffer.data = nullptr;
+        buffer.data = null;
     }
 
     __forceinline Buffer& operator=(Buffer&& buffer)
     {
         data = buffer.data;
-        buffer.data = nullptr;
+        buffer.data = null;
         return *this;
     }
 
@@ -361,7 +397,7 @@ public: // Members
 
 public:
     inline String() 
-        : buffer(nullptr) {}
+        : buffer(null) {}
 
     inline ~String() 
     { 
@@ -389,7 +425,7 @@ public:
         }
         else
         {
-            this->buffer = nullptr;
+            this->buffer = null;
         }
     }
 
@@ -397,14 +433,14 @@ public: // RAII
     inline String(String&& other)
         : buffer(other.buffer)
     {
-        other.buffer = nullptr;
+        other.buffer = null;
     }
 
     inline String& operator=(String&& other)
     {
-        memory::dealloc(buffer ? buffer - sizeof(int) : nullptr);
+        memory::dealloc(buffer ? buffer - sizeof(int) : null);
         buffer = other.buffer;
-        other.buffer = nullptr;
+        other.buffer = null;
         return *this;
     }
 
@@ -424,7 +460,7 @@ public: // Copy
         }
         else
         {
-            buffer = nullptr;
+            buffer = null;
         }
     }
 
@@ -467,12 +503,12 @@ public:
 public:
     inline operator char*(void)
     {
-        return buffer ? buffer->characters : nullptr;
+        return buffer ? buffer->characters : null;
     }
 
     inline operator const char*(void) const
     {
-        return buffer ? buffer->characters : nullptr;
+        return buffer ? buffer->characters : null;
     } 
 };
 
@@ -501,12 +537,12 @@ public:
     inline UniPtr(UniPtr<T>&& other)
         : raw(other.raw)
     {
-        other.raw = nullptr;
+        other.raw = null;
     }
 
     inline UniPtr<T>& operator=(UniPtr<T>&& other)
     {
-        raw = other.raw; other.raw = nullptr; return *this;
+        raw = other.raw; other.raw = null; return *this;
     }
 
 public:
