@@ -14,7 +14,7 @@ public:
     using FuncType = R(*)(Args...);
     using StubFunc = R(*)(Stub* stub, Args...);
 
-    struct Stub
+    struct Stub : RefCount
     {
         usize    size;
         StubFunc func;
@@ -26,8 +26,8 @@ public:
 
             struct
             {
-                void* method;
                 void* object;
+                void* method;
             };
         };
 
@@ -37,7 +37,7 @@ public:
         }
 
         template <typename T>
-        static R call_object(void* context, Args... args)
+        static R call_object(Stub* stub, Args... args)
         {
             using TMethod = R(T::*)(Args...);
             union {
@@ -45,16 +45,15 @@ public:
                 void*   callee;
             } caster;
 
-            T* caller = *((T**)context);
-            caster.callee = *((T**)context + 1); 
-
-            return caller->*(caster.method)(args...);
+            T* caller = (T*)stub->object;
+            caster.callee = stub->method; 
+            return (caller->*caster.method)(args...);
         }
         
         template <typename T>
-        static R call_functor(void* context, Args... args)
+        static R call_functor(Stub* stub, Args... args)
         {
-            T* caller = (T*)context;
+            T* caller = (T*)stub->functor;
             return (*caller)(args...);
         }
     };
@@ -63,26 +62,158 @@ public: //
     Stub* stub;
 
 public:
-    inline Func(FuncType func)
-#ifdef NDEBUG
-        : stub((Stub*)stackalloc(sizeof(Stub)))
-#else
-        : stub((Stub*)memory::alloc(sizeof(Stub)))
-#endif
+    constexpr Func(void)
+        : stub(nullptr)
+        {}
+
+    constexpr Func(nullptr_t)
+        : stub(nullptr)
+        {}
+    
+    inline ~Func(void)
     {
-        stub->size = sizeof(Stub);
-        stub->func = &Stub::call_func;
+        if (stub && stub->release() <= 0)
+        {
+            memory::dealloc(stub);
+        }
+    }
+
+public:
+    inline Func(FuncType func)
+        : stub((Stub*)memory::alloc(sizeof(Stub)))
+    {
+        new (stub) RefCount();
+
+        stub->size      = sizeof(Stub);
+        stub->func      = &Stub::call_func;
         stub->free_func = func;
     }
 
     template <typename T>
     inline Func(T* object, R (T::*method)(Args...))
+        : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
+        new (stub) RefCount();
+
+        using TMethod = R(T::*)(Args...);
+        union 
+        {
+            TMethod method;
+            void*   pointer;
+        } caster;
+        caster.method = method;
+
+        stub->size   = sizeof(Stub);
+        stub->func   = &Stub::call_object<T>;
+        stub->object = object;
+        stub->method = caster.pointer;
     }
 
     template <typename T>
     inline Func(const T& functor)
+        : stub((Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor) - 2 * sizeof(void*))))
     {
+        new (stub) RefCount();
+
+        stub->size   = sizeof(Stub);
+        stub->func   = &Stub::call_functor<T>;
+
+        memory::copy(stub->functor, &functor, sizeof(functor));
+    }
+
+public:
+    inline Func& bind(nullptr_t)
+    {
+        // unref old stub
+        this->~Func();
+
+        return *this;
+    }
+
+    inline Func& bind(FuncType func)
+    {
+        // unref old stub
+        this->~Func();
+
+        // Create new stub
+        stub = (Stub*)memory::alloc(sizeof(Stub));
+        new (stub) RefCount();
+
+        stub->size      = sizeof(Stub);
+        stub->func      = &Stub::call_func;
+        stub->free_func = func;
+
+        return *this;
+    }
+
+    template <typename T>
+    inline Func& bind(T* object, R (T::*method)(Args...))
+    {
+        // unref old stub
+        this->~Func();
+
+        // Create new stub
+        stub = (Stub*)memory::alloc(sizeof(Stub));
+        new (stub) RefCount();
+
+        using TMethod = R(T::*)(Args...);
+        union 
+        {
+            TMethod method;
+            void*   pointer;
+        } caster;
+        caster.method = method;
+
+        stub->size   = sizeof(Stub);
+        stub->func   = &Stub::call_object<T>;
+        stub->object = object;
+        stub->method = caster.pointer;
+
+        return *this;
+    }
+
+    template <typename T>
+    inline Func& bind(const T& functor)
+    {
+        // unref old stub
+        this->~Func();
+
+        // Create new stub
+        stub = (Stub*)memory::alloc(sizeof(Stub));
+        new (stub) RefCount();
+
+        stub->size   = sizeof(Stub);
+        stub->func   = &Stub::call_functor<T>;
+
+        memory::copy(stub->functor, &functor, sizeof(functor));
+
+        return *this;
+    }
+
+public:
+    inline Func& operator=(nullptr_t)
+    {
+        return this->bind(nullptr);
+    }
+
+    inline Func& operator=(FuncType func)
+    {
+        return this->bind(func);
+    }
+
+    template <typename T>
+    inline Func& operator=(const T& functor)
+    {
+        return this->bind(functor);
+    }
+
+    inline Func& operator=(const Func& other)
+    {
+        // unref old stub
+        this->~Func();
+        
+        stub = other.stub;
+        stub->retain();
     }
 
 public: // Invoking
@@ -96,3 +227,9 @@ public: // Invoking
         return this->invoke(args...);
     }
 };
+
+template <typename T, typename R, typename ... Args>
+inline Func<R(Args...)> make_func(T* object, R(T::*method)(Args...))
+{
+    return Func<R(Args...)>(object, method);
+}
