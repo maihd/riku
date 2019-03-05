@@ -274,16 +274,73 @@ namespace crypto
 
     ulong crc32(const void* buffer, usize length)
     {
-        ulong res = 0xffffff;
+        ulong res = 0xffffffffL;
 
         const byte* data = (const byte*)buffer;
 
         while (length--) 
         {
-            res = (CRC_TABLE[(res ^ (*data++)) & 0xff]) ^ (res >> 8);
+            res = (res >> 8) ^ (CRC_TABLE[(res ^ (*data++)) & 0xff]);
         }
 
-        res ^= 0xffffff;
+        res = res ^ 0xffffffffL;
         return res;
+    }
+
+    ulong murmur(const void* buffer, usize length) 
+    {
+        return murmur(buffer, length, 0);
+    }
+
+    // Compute hash value of buffer with Murmur algorithm
+    ulong murmur(const void* buffer, usize length, ulong seed)
+    {
+        ulong h = seed;
+        const byte* key = (const byte*)buffer;
+
+        if (length > 3) 
+        {
+            const uint* key_x4 = (const uint*)key;
+            usize i = length >> 2;
+
+            do 
+            {
+                uint k = *key_x4++;
+                k *= 0xcc9e2d51;
+                k = (k << 15) | (k >> 17);
+                k *= 0x1b873593;
+                h ^= k;
+                h = (h << 13) | (h >> 19);
+                h = (h * 5) + 0xe6546b64;
+            } while (--i);
+
+            key = (const byte*) key_x4;
+        }
+
+        if (length & 3)
+        {
+            usize i = length & 3;
+            uint k = 0;
+            key = &key[i - 1];
+
+            do {
+                k <<= 8;
+                k |= *key--;
+            } while (--i);
+            
+            k *= 0xcc9e2d51;
+            k = (k << 15) | (k >> 17);
+            k *= 0x1b873593;
+            h ^= k;
+        }
+
+        h ^= length;
+        h ^= h >> 16;
+        h *= 0x85ebca6b;
+        h ^= h >> 13;
+        h *= 0xc2b2ae35;
+        h ^= h >> 16;
+
+        return h;
     }
 }

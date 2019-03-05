@@ -16,4 +16,10 @@ namespace crypto
 
     // Compute check sum of buffer with CRC32 algorithm
     RIKU_API ulong crc32(const void* buffer, usize length);
+
+    // Compute hash value of buffer with Murmur algorithm
+    RIKU_API ulong murmur(const void* buffer, usize length);
+    
+    // Compute hash value of buffer with Murmur algorithm
+    RIKU_API ulong murmur(const void* buffer, usize length, ulong seed);
 }
