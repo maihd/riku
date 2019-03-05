@@ -146,6 +146,40 @@ namespace table
     }
 
     template <typename T>
+    T& get_ref(const HashTable<T>& table, int key)
+    {
+        int hash, prev;
+        int curr = find(table, key, &hash, &prev);
+
+        if (curr < 0)
+        {
+            if (table.buffer->length + 1 > table.buffer->capacity)
+            {
+                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity : 8;
+                table.buffer->nexts = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
+                table.buffer->keys = (int*)memory::realloc(table.buffer->keys, sizeof(int) * new_size);
+                table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
+
+                always_assert(!(!table.buffer->nexts || !table.buffer->keys || !table.buffer->values), "Out of memory");
+            }
+
+            curr = table.buffer->length++;
+            if (prev > -1)
+            {
+                table.buffer->nexts[prev] = curr;
+            }
+            else
+            {
+                table.buffer->hashs[hash] = curr;
+            }
+            table.buffer->nexts[curr] = -1;
+            table.buffer->keys[curr] = key;
+        }
+
+        return table.buffer->values[curr];
+    }
+
+    template <typename T>
     bool has(const HashTable<T>& table, int key)
     {
         return find(table, key) > -1;

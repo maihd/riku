@@ -43,6 +43,8 @@ namespace __riku
         console::error_args(fmt, args_list);
         argslist_end(args_list);
     #endif
+
+        process::abort();
     }
 }
 
