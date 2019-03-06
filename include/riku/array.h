@@ -50,7 +50,7 @@ namespace array
     inline Array<TItem> clone(const Array<TItem>& array);
 }
 
-// Array: JSArray-like
+// Array: POD growable sequence container
 // @note: Donot use pointer of this type
 template <typename TItem>
 struct Array
@@ -161,7 +161,7 @@ public: // Conversion
     }
 };
 
-// TempoArray: temporary array with unknown size at compile-time
+// TempoArray: POD temporary sequence container, unknown size at compile-time
 // @note: Donot use pointer of this type
 template <typename TValue>
 struct TempoArray
@@ -191,7 +191,7 @@ public:
     }
 };
 
-// StaticArray: temporary array with unknown size at compile-time
+// StaticArray: POD temporary sequence container, fixed size at compile-time
 // @note: Donot use pointer of this type
 template <typename TValue, int capacity>
 struct StaticArray
@@ -207,7 +207,7 @@ public:
     }
 };
 
-// SmartArray: Fast and safe, reuse memory array
+// SmartArray: Fast and safe, reuse memory Array
 // @note: Donot use pointer of this type
 template <typename TItem>
 struct SmartArray
@@ -256,7 +256,7 @@ namespace array
             if (!old_buf)
             {
                 // Initialize RefCount
-                new (new_buf) RefCount();
+                init<RefCount>(new_buf);
 
                 // Initialize Buffer
                 new_buf->length = 0;

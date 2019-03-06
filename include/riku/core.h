@@ -161,7 +161,7 @@ using ArgsList = va_list;
 // Assertion helper
 #include <assert.h> // Include 
 #undef assert       // to remove std assert
-#define always_assert(exp, fmt, ...) ((!exp) ? (void)::__riku::__assert_print(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
+#define always_assert(exp, fmt, ...) (!(exp) ? (void)::__riku::__assert_print(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #if !defined(NDEBUG) || !NDEBUG
 #define assert(exp, fmt, ...) always_assert(exp, fmt, __VA_ARGS__)
 #else
@@ -196,8 +196,7 @@ public:
     int __refcount; // __ for avoid member collision.
 
 public:
-    constexpr RefCount(void)
-        : __refcount(1) {}
+    constexpr RefCount(void) : __refcount(1) {}
 
 public:
     inline int retain(void)  { return ++__refcount; };
