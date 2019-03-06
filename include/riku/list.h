@@ -2,7 +2,7 @@
 
 #include "./core.h"
 
-// List: highlevel, non-POD sequence container, call constructor and desctructor of object
+// List: highlevel, non-POD continuos-sequence container, call constructor and desctructor of object
 // @note: Donot use pointer of this type
 template <typename TItem>
 struct List
@@ -77,9 +77,20 @@ public: // RAII
     }
 
 public: // Properties
-    propdef_readonly(get_length)   int length;
-    propdef_readonly(get_capacity) int capacity;
-    
+    propdef_readonly(get_items)    TItem* items;
+    propdef_readonly(get_length)   int    length;
+    propdef_readonly(get_capacity) int    capacity;
+
+    __forceinline TItem* get_items(void)
+    {
+        return buffer ? buffer->items : null;
+    }
+
+    __forceinline const TItem* get_items(void) const
+    {
+        return buffer ? buffer->items : null;
+    }
+
     __forceinline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
@@ -99,17 +110,6 @@ public: // Indexor
     __forceinline const TItem& operator[](int index) const
     {
         return buffer->items[index];
-    }
-
-public: // Conversion
-    __forceinline operator TItem*(void)
-    {
-        return buffer->items;
-    }
-
-    __forceinline operator const TItem*(void) const
-    {
-        return buffer->items;
     }
 
 public: // Buffer sizing

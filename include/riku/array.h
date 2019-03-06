@@ -50,7 +50,7 @@ namespace array
     inline Array<TItem> clone(const Array<TItem>& array);
 }
 
-// Array: POD growable sequence container
+// Array: POD growable continuos-sequence container
 // @note: Donot use pointer of this type
 template <typename TItem>
 struct Array
@@ -125,9 +125,20 @@ public: // RAII
     }
 
 public: // Properties
-    propdef_readonly(get_length)   int length;
-    propdef_readonly(get_capacity) int capacity;
+    propdef_readonly(get_items)    TItem* items;
+    propdef_readonly(get_length)   int    length;
+    propdef_readonly(get_capacity) int    capacity;
     
+    __forceinline TItem* get_items(void)
+    {
+        return buffer ? buffer->items : null;
+    }
+
+    __forceinline const TItem* get_items(void) const
+    {
+        return buffer ? buffer->items : null;
+    }
+
     __forceinline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
@@ -148,20 +159,9 @@ public: // Indexor
     {
         return buffer->items[index];
     }
-
-public: // Conversion
-    __forceinline operator TItem*(void)
-    {
-        return buffer->items;
-    }
-
-    __forceinline operator const TItem*(void) const
-    {
-        return buffer->items;
-    }
 };
 
-// TempoArray: POD temporary sequence container, unknown size at compile-time
+// TempoArray: POD temporary continuos-sequence container, unknown size at compile-time
 // @note: Donot use pointer of this type
 template <typename TValue>
 struct TempoArray
@@ -191,7 +191,7 @@ public:
     }
 };
 
-// StaticArray: POD temporary sequence container, fixed size at compile-time
+// StaticArray: POD temporary continuos-sequence container, fixed size at compile-time
 // @note: Donot use pointer of this type
 template <typename TValue, int capacity>
 struct StaticArray
@@ -204,6 +204,13 @@ public:
     constexpr StaticArray(void)
         : length(0)
     {
+    }
+
+public: // Properties
+    propdef_readonly(get_capacity) int capacity;
+    constexpr int get_capacity(void) const
+    {
+        return capacity;
     }
 };
 

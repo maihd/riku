@@ -10,6 +10,16 @@ TEST_CASE("Test array operations", "[Array]")
 {
     Array<int> int_array, int_array1;
 
+    if (true) // Test get items property
+    {
+        const Array<int>& tmp_array = int_array;
+        int* items        = int_array.items;
+        const int* citems = tmp_array.items;
+
+        // should compile failed
+        // items = tmp_array.items;
+    }
+
     for (int i = 0, n = 10; i < n; i++)
     {
         array::push(int_array, i);
