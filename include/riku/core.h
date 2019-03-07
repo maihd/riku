@@ -7,7 +7,15 @@
 #include <stdarg.h>
 
 #ifndef RIKU_API
-#define RIKU_API
+#   ifdef RIKU_SHARED
+#       ifdef RIKU_EXPORT
+#           define RIKU_API __declspec(dllexport)
+#       else
+#           define RIKU_API __declspec(dllimport)
+#       endif
+#   else
+#       define RIKU_API
+#   endif
 #endif
 
 #if defined(_MSC_VER)
@@ -142,7 +150,7 @@ using isize  = int;
 using iptr = isize;
 using uptr = usize;
 
-struct NullPtr
+struct Null
 {
     template <typename T>
     constexpr operator T* () const
@@ -150,7 +158,7 @@ struct NullPtr
         return (T*)0;
     }
 };
-#define null NullPtr()
+#define null Null()
 
 // ArgsList: alias of va_list
 using ArgsList = va_list;
@@ -181,13 +189,13 @@ using ArgsList = va_list;
 
 namespace memory
 {
-    void* alloc(usize size);
-    void  dealloc(void* ptr);
-    void* realloc(void* ptr, usize size);
+    RIKU_API void* alloc(usize size);
+    RIKU_API void  dealloc(void* ptr);
+    RIKU_API void* realloc(void* ptr, usize size);
 
-    void* init(void* dst, int val, usize size);
-    void* copy(void* dst, const void* src, usize size);
-    void* move(void* dst, const void* src, usize size);
+    RIKU_API void* init(void* dst, int val, usize size);
+    RIKU_API void* copy(void* dst, const void* src, usize size);
+    RIKU_API void* move(void* dst, const void* src, usize size);
 }
 
 struct RefCount
@@ -223,23 +231,23 @@ __forceinline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
-constexpr void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
+constexpr void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
 constexpr void  operator delete(void*, NewDummy, void*)     {             }
 
 template <typename T, typename... Args>
-T* init(void* ptr, Args...args)
+__forceinline T* init(void* ptr, Args...args)
 {
     return new (NewDummy(), ptr) T(args...);
 }
 
 template <typename T, typename... Args>
-T* create(Args...args)
+__forceinline T* create(Args...args)
 {
     return new (NewDummy(), memory::alloc(sizeof(T))) T(args...);
 }
 
 template <typename T>
-void destroy(T* ptr)
+__forceinline void destroy(T* ptr)
 {
     if (ptr)
     {
@@ -248,12 +256,29 @@ void destroy(T* ptr)
     }
 }
 
+template <typename T, typename... Args>
+__forceinline T* create_array(long count, Args...args)
+{
+    assert(count > 0, "Number of items must be non-zero positive");
+    return new (NewDummy(), memory::alloc(count * sizeof(T))) T[count];
+}
+
+template <typename T>
+__forceinline void destroy_array(T* ptr)
+{
+    if (ptr)
+    {
+        ptr->~T();
+        memory::dealloc((void*)ptr);
+    }
+}
+
 // 
 // C-String operator
 // 
 namespace string
 {
-    usize length(const char* s);
+    RIKU_API usize length(const char* s);
 }
 
 //
@@ -282,7 +307,7 @@ template <typename T>
 using WithoutRef = typename WithoutRefTrait<T>::Type;
 
 template <typename T>
-inline WithoutRef<T>&& make_rvalue(T&& value)
+__forceinline WithoutRef<T>&& make_rvalue(T&& value)
 {
     return (static_cast<WithoutRef<T>&&>(value));
 }
@@ -377,7 +402,7 @@ public:
     }
 
 public: // Factory functions
-    static Buffer alloc(usize length);
+    RIKU_API static Buffer alloc(usize length);
 };
 
 //

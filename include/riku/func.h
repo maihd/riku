@@ -66,7 +66,7 @@ public:
         : stub(null)
         {}
 
-    constexpr Func(NullPtr)
+    constexpr Func(Null)
         : stub(null)
     {}
     
@@ -122,7 +122,7 @@ public:
     }
 
 public:
-    inline Func& bind(NullPtr)
+    inline Func& bind(Null)
     {
         // unref old stub
         this->~Func();
@@ -194,7 +194,7 @@ public:
     }
 
 public:
-    inline Func& operator=(NullPtr)
+    inline Func& operator=(Null)
     {
         return this->bind(null);
     }
