@@ -1,5 +1,5 @@
-#include "./unit_test.h"
 #include <riku/list.h>
+#include "./unit_test.h"
 
 struct Object
 {

@@ -1,5 +1,5 @@
-#include "./unit_test.h"
 #include <riku/thread.h>
+#include "./unit_test.h"
 
 TEST_CASE("Thread testing", "[thread]")
 {

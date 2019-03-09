@@ -1,6 +1,5 @@
-#include "./unit_test.h"
-
 #include <riku/hash_table.h>
+#include "./unit_test.h"
 
 TEST_CASE("HashTable", "[hash_table]")
 {

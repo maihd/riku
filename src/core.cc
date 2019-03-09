@@ -12,6 +12,36 @@
 #include <android/log.h>
 #endif
 
+//
+// Assertion functions
+// 
+
+void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
+{
+#if OS_ANDROID
+    char final_fmt[4096];
+    sprintf(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
+
+    ArgsList args_list;
+    argslist_begin(args_list, fmt);
+    __android_log_vprint(ANDROID_LOG_FATAL, "riku", final_fmt, args_list);
+    argslist_end(args_list);
+#else
+    console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
+
+    ArgsList args_list;
+    argslist_begin(args_list, fmt);
+    console::error_args(fmt, args_list);
+    argslist_end(args_list);
+#endif
+
+    process::abort();
+}
+
+//
+// Buffer functions
+//
+
 Buffer Buffer::alloc(usize length)
 {
     Buffer buf;
@@ -24,30 +54,9 @@ Buffer Buffer::alloc(usize length)
     return make_rvalue(buf);
 }
 
-namespace __riku 
-{
-    void __assert_print(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
-    {
-    #if OS_ANDROID
-        char final_fmt[4096];
-        sprintf(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
-
-        ArgsList args_list;
-        argslist_begin(args_list, fmt);
-        __android_log_vprint(ANDROID_LOG_FATAL, "riku", final_fmt, args_list);
-        argslist_end(args_list);
-    #else
-        console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
-
-        ArgsList args_list;
-        argslist_begin(args_list, fmt);
-        console::error_args(fmt, args_list);
-        argslist_end(args_list);
-    #endif
-
-        process::abort();
-    }
-}
+//
+// Memory
+// 
 
 namespace memory
 {
@@ -82,6 +91,10 @@ namespace memory
     }
 }
 
+//
+// String
+// 
+
 namespace string
 {
     usize length(const char* s)
@@ -89,6 +102,10 @@ namespace string
         return strlen(s);
     }
 }
+
+//
+// Console
+//
 
 namespace console
 {
@@ -165,6 +182,10 @@ namespace console
     }
 }
 
+//
+// Process
+//
+
 namespace process
 {
     // Get environment variable
@@ -197,9 +218,7 @@ namespace process
         uint size = GetCurrentDirectoryA(length, buffer);
         return size;
     #elif OS_ANDROID
-        (void)buffer;
-        (void)length;
-        return 0;
+        return (usize)(::getcwd(buffer, length) - buffer);
     #endif
     }
 
@@ -208,8 +227,7 @@ namespace process
     #if OS_WINDOWS
         return SetCurrentDirectoryA(directory);
     #elif OS_ANDROID
-        (void)directory;
-        return false;
+        return ::chdir(directory) != 0;
     #endif
     }
 
@@ -227,6 +245,8 @@ namespace process
     {
     #if OS_WINDOWS
         return (int)GetCurrentProcessId();
+    #elif OS_WEB
+        return -1;
     #elif OS_UNIX
         return (int)::getpid();
     #endif

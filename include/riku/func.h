@@ -104,7 +104,7 @@ public:
         caster.method = method;
 
         stub->size   = sizeof(Stub);
-        stub->func   = &Stub::call_object<T>;
+        stub->func   = &Stub::template call_object<T>;
         stub->object = object;
         stub->method = caster.pointer;
     }
@@ -116,7 +116,7 @@ public:
         init<RefCount>(stub);
 
         stub->size   = sizeof(Stub);
-        stub->func   = &Stub::call_functor<T>;
+        stub->func   = &Stub::template call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
     }
@@ -168,7 +168,7 @@ public:
         caster.method = method;
 
         stub->size   = sizeof(Stub);
-        stub->func   = &Stub::call_object<T>;
+        stub->func   = &Stub::template call_object<T>;
         stub->object = object;
         stub->method = caster.pointer;
 
@@ -186,7 +186,7 @@ public:
         init<RefCount>(stub);
 
         stub->size = sizeof(Stub);
-        stub->func = &Stub::call_functor<T>;
+        stub->func = &Stub::template call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
 

@@ -44,6 +44,10 @@ namespace os
         return "android";
     #elif OS_LINUX
         return "linux";
+    #elif __asmjs__
+        return "asmjs";
+    #elif __EMSCRIPTEN__
+        return "wasm";
     #endif
     }
 
@@ -55,6 +59,10 @@ namespace os
         return "Android";
     #elif OS_LINUX
         return "Linux";
+    #elif __asmjs__
+        return "AsmJS";
+    #elif __EMSCRIPTEN__
+        return "WebAssembly";
     #endif
     }
 

@@ -12,10 +12,11 @@ newoption {
    description = "Choose target platform",
 
    allowed = {
-      { "android-arm"  , "Android - ARM"   },
-      { "windows-x86"  , "Windows - x86"   },
-      { "windows-x64"  , "Windows - x64"   },
-      { "windows-clang", "Windows - Clang" }
+      { "android-arm"  , "Android - ARM"        },
+      { "windows-x86"  , "Windows - x86"        },
+      { "windows-x64"  , "Windows - x64"        },
+      { "windows-clang", "Windows - Clang"      },
+      { "asmjs"        , "AsmJS - Emscripten"   },
    }
 }
 
@@ -132,6 +133,11 @@ do
       premake.gcc.ar   = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ar"
          
       premake.gcc.llvm = true
+   elseif TARGET_PLATFORM == "asmjs" then
+      premake.gcc.cc   = "emcc"
+      premake.gcc.cxx  = "em++"
+      premake.gcc.ar   = "emar"
+      premake.gcc.llvm = true
    elseif _ACTION == "gmake" then
       premake.gcc.cc   = "clang"
       premake.gcc.cxx  = "clang++"
@@ -221,6 +227,44 @@ do
 
    configuration { "*-clang or gmake" }
    do
+   end
+
+   configuration { "asmjs or wasm" }
+   do 
+		libdirs {
+			--"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a",
+      }
+      
+		includedirs {
+			--"$(ANDROID_NDK_ROOT)/sysroot/usr/include/arm-linux-androideabi",
+      }
+      
+      linkoptions {
+			"-nostdlib",
+      }
+
+      defines {
+         "NULL=0"
+      }
+
+      links {
+			"c",
+			"dl",
+			"m",
+      }
+
+      buildoptions {
+         "-fPIC",
+         "-std=c++11",
+         "-fdeclspec",
+         "-fms-extensions",
+			"-no-canonical-prefixes",
+			"-fstack-protector-strong",
+			"-ffunction-sections",
+			"-Wunused-value",
+         "-Wundef",
+         "-Wmacro-redefined",
+      }
    end
 end
 

@@ -9,7 +9,7 @@
 #if OS_WINDOWS
 static DWORD WINAPI thread_routine(void* params)
 #elif OS_UNIX
-static void* thread_routine(Thread* thread)
+static void* thread_routine(void* params)
 #endif
 {
     // Run thread routine
@@ -55,6 +55,6 @@ void Thread::wait(void)
 #if OS_WINDOWS
     WaitForSingleObject((HANDLE)handle, INFINITE);
 #elif OS_UNIX
-    pthread_join((pthread_t)thread, NULL);
+    pthread_join((pthread_t)handle, NULL);
 #endif
 }

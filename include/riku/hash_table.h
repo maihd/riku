@@ -55,7 +55,7 @@ public:
     }
 
 public: // Copy
-    inline HashTable(const HashTable<T>& table)
+    inline HashTable(const HashTable<T>& other)
         : buffer(other.buffer)
     {
         if (buffer)
@@ -64,7 +64,7 @@ public: // Copy
         }
     }
 
-    inline HashTable<T>& operator=(const HashTable<T>&& table)
+    inline HashTable<T>& operator=(const HashTable<T>&& other)
     {
         buffer = other.buffer;
         if (buffer)

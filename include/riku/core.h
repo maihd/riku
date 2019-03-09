@@ -42,6 +42,12 @@
 #define OS_ANDROID 0
 #endif
 
+#if defined(__EMSCRIPTEN__)
+#define OS_WEB 1
+#else
+#define OS_WEB 0
+#endif
+
 #if defined(__MINGW64__) || defined(__x86_64__) || defined(__X86_64__) || defined(_M_X64) || defined(__aarch64__)
 #define RUNTIME_64BITS 1
 #define RUNTIME_32BITS 0
@@ -168,12 +174,15 @@ using ArgsList = va_list;
 // Assertion helper
 #include <assert.h> // Include 
 #undef assert       // to remove std assert
-#define always_assert(exp, fmt, ...) (!(exp) ? (void)::__riku::__assert_print(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
+#define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #if !defined(NDEBUG) || !NDEBUG
-#define assert(exp, fmt, ...) always_assert(exp, fmt, __VA_ARGS__)
+#define assert(exp, fmt, ...) always_assert(exp, fmt, ##__VA_ARGS__)
 #else
 #define assert(exp, fmt, ...)
 #endif
+
+// Assertion functions
+RIKU_API void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
 
 //
 // Memory management
@@ -230,8 +239,8 @@ __forceinline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
-constexpr void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
-constexpr void  operator delete(void*, NewDummy, void*)     {             }
+__forceinline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
+__forceinline void  operator delete(void*, NewDummy, void*)     {             }
 
 template <typename T, typename... Args>
 __forceinline T* init(void* ptr, Args...args)
@@ -255,8 +264,8 @@ __forceinline void destroy(T* ptr)
     }
 }
 
-template <typename T, typename... Args>
-__forceinline T* create_array(long count, Args...args)
+template <typename T>
+__forceinline T* create_array(long count)
 {
     assert(count > 0, "Number of items must be non-zero positive");
     return new (NewDummy(), memory::alloc(count * sizeof(T))) T[count];
@@ -653,12 +662,6 @@ struct WeakPtr
     inline const T* operator->(void) const { return raw; }
 };
 
-// Internal function
-namespace __riku 
-{
-    RIKU_API void __assert_print(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
-}
-
 // Console
 namespace console
 {
@@ -781,26 +784,27 @@ public:
 
 public:
     Date(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0)
-        : year(year - 1900)
+        : day(day)
         , month(month)
-        , day(day)
+        , year(year - 1900)
+        , weekday(weekday_of(year, month, day))
+        , yearday(yearday_of(year, month, day))
         , hours(hours)
         , minutes(minutes)
         , seconds(seconds)
     {
-        weekday = weekday_of(year, month, day);
-        yearday = yearday_of(year, month, day);
+        
     }
 
     Date(int year, int month, int day, int weekday, int yearday, int hours = 0, int minutes = 0, int seconds = 0)
-        : year(year - 1900)
+        : day(day)
         , month(month)
-        , day(day)
+        , year(year - 1900)
+        , weekday(weekday)
+        , yearday(yearday)
         , hours(hours)
         , minutes(minutes)
         , seconds(seconds)
-        , yearday(yearday)
-        , weekday(weekday)
     {
     }
     

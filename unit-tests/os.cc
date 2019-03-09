@@ -1,5 +1,5 @@
-#include "./unit_test.h"
 #include <riku/os.h>
+#include "./unit_test.h"
 
 TEST_CASE("OS module testing", "[os]")
 {
