@@ -1,5 +1,6 @@
 #include <riku/core.h>
 
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -184,7 +185,7 @@ namespace process
 
     const char* cwd(void)
     {
-        __threadlocal static char path[1024];
+        __threadstatic char path[1024];
 
         cwd(path, sizeof(path)); 
         return path;
@@ -230,4 +231,93 @@ namespace process
         return (int)::getpid();
     #endif
     }
+}
+
+//
+// Date and time
+// 
+
+#if 0 && PREVIEWING
+int  Date::get_utc_day(void) const;
+void Date::set_utc_day(int day);
+int  Date::get_utc_month(void) const;
+void Date::set_utc_month(int month);
+int  Date::get_utc_year(void) const;
+void Date::set_utc_year(int year);
+int  Date::get_utc_weekday(void) const;
+void Date::set_utc_weekday(int weekday);
+int  Date::get_utc_yearday(void) const;
+void Date::set_utc_yearday(int yearday);
+int  Date::get_utc_hours(void) const;
+void Date::set_utc_hours(int hours);
+int  Date::get_utc_minutes(void) const;
+void Date::set_utc_minutes(int minutes);
+int  Date::get_utc_seconds(void) const;
+void Date::set_utc_seconds(int seconds);
+#endif
+
+const char* Date::to_string(void) const
+{
+    const char wday_name[][4] = {
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    const char mon_name[][4] = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+
+    __threadstatic char result[64];
+    sprintf(result, "%.3s %.3s%3d %d, %.2d:%.2d:%.2d %s",
+        wday_name[weekday], mon_name[month], day, 1900 + year,
+        hours % 12, minutes, seconds, hours > 12 ? "PM" : "AM");
+    return result;
+}
+
+Date Date::now(void)
+{
+    time_t t = time(NULL);
+    struct tm* tm = localtime(&t);
+    return Date(
+        (int)tm->tm_year + 1900, (int)tm->tm_mon, 
+        (int)tm->tm_mday, (int)tm->tm_wday, (int)tm->tm_yday,
+        (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
+}
+
+Date Date::parse(const char* date_string)
+{
+    return Date();
+}
+
+Date Date::utc(void)
+{
+    time_t t = time(NULL);
+    struct tm* tm = gmtime(&t);
+    return Date(
+        (int)tm->tm_year + 1900, (int)tm->tm_mon,
+        (int)tm->tm_mday, (int)tm->tm_wday, (int)tm->tm_yday,
+        (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
+}
+
+Date Date::utc(const Date& date)
+{
+    return Date::utc(date.year, date.month, date.day, date.hours, date.minutes, date.seconds);
+}
+
+Date Date::utc(int year, int month, int day, int hours, int minutes, int seconds)
+{
+    time_t t = time(NULL);
+    struct tm* tm = localtime(&t);
+    tm->tm_year   = year;
+    tm->tm_mon    = month;
+    tm->tm_mday   = day;
+    tm->tm_hour   = hours;
+    tm->tm_min    = minutes;
+    tm->tm_sec    = seconds;
+    t = mktime(tm);
+
+    tm = gmtime(&t);
+    return Date(
+        (int)tm->tm_year + 1900, (int)tm->tm_mon,
+        (int)tm->tm_mday, (int)tm->tm_wday, (int)tm->tm_yday,
+        (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
 }

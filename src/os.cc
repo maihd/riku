@@ -117,14 +117,14 @@ namespace os
 
     const char* tmpdir(void)
     {
-        __threadlocal static char path[1024];
+        __threadstatic char path[1024];
         tmpdir(path, sizeof(path));
         return path;
     }
 
     const char* homedir(void)
     {
-        __threadlocal static char path[1024];
+        __threadstatic char path[1024];
         homedir(path, sizeof(path));
         return path;
     }
