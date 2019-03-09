@@ -68,7 +68,7 @@ public:
 
 public:
     constexpr Array(void)
-        : buffer(null)
+        : buffer(NULL)
     {
     }
 
@@ -109,7 +109,7 @@ public: // RAII
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
     {
-        other.buffer = null;
+        other.buffer = NULL;
     }
 
     inline Array<TItem>& operator=(Array<TItem>&& other)
@@ -119,7 +119,7 @@ public: // RAII
 
         // Assign new buffer
         buffer = other.buffer;
-        other.buffer = null;
+        other.buffer = NULL;
 
         return *this;
     }
@@ -131,12 +131,12 @@ public: // Properties
     
     __forceinline TItem* get_items(void)
     {
-        return buffer ? buffer->items : null;
+        return buffer ? buffer->items : NULL;
     }
 
     __forceinline const TItem* get_items(void) const
     {
-        return buffer ? buffer->items : null;
+        return buffer ? buffer->items : NULL;
     }
 
     __forceinline int get_length(void) const
@@ -249,7 +249,7 @@ namespace array
     inline void unref(Array<TItem>& array)
     {
         array.~Array();
-        array.buffer = null;
+        array.buffer = NULL;
     }
 
     template <typename TItem>

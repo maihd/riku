@@ -18,13 +18,13 @@ static void* thread_routine(Thread* thread)
 
     // Clean up thread
     thread->stop();
-    thread->func = null;
+    thread->func = NullPtr();
 
     // End of thread
 #if OS_WINDOWS
     return 0;
 #elif OS_UNIX
-    return null;
+    return NULL;
 #endif
 }
 
@@ -33,9 +33,9 @@ void Thread::start(const ThreadFunc& func)
     this->func = func;
     
 #if OS_WINDOWS
-    handle = (void*)CreateThread(null, 0, thread_routine, this, 0, null); // HANDLE
+    handle = (void*)CreateThread(NULL, 0, thread_routine, this, 0, NULL); // HANDLE
 #elif OS_UNIX
-    pthread_create((pthread_t*)&handle, null, thread_routine, this);
+    pthread_create((pthread_t*)&handle, NULL, thread_routine, this);
 #endif
 }
 
@@ -47,7 +47,7 @@ void Thread::stop(void)
     pthread_cancel((pthread_t)handle); // pthread_t
 #endif
 
-    handle = null;
+    handle = NULL;
 }
 
 void Thread::wait(void)
@@ -55,6 +55,6 @@ void Thread::wait(void)
 #if OS_WINDOWS
     WaitForSingleObject((HANDLE)handle, INFINITE);
 #elif OS_UNIX
-    pthread_join((pthread_t)thread, null);
+    pthread_join((pthread_t)thread, NULL);
 #endif
 }

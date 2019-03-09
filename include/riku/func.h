@@ -63,12 +63,12 @@ public: //
 
 public:
     constexpr Func(void)
-        : stub(null)
+        : stub(NULL)
         {}
 
-    constexpr Func(Null)
-        : stub(null)
-    {}
+    constexpr Func(NullPtr)
+        : stub(NULL)
+        {}
     
     inline ~Func(void)
     {
@@ -122,13 +122,13 @@ public:
     }
 
 public:
-    inline Func& bind(Null)
+    inline Func& bind(NullPtr)
     {
         // unref old stub
         this->~Func();
 
         // Create new stub
-        stub = null;
+        stub = NULL;
 
         return *this;
     }
@@ -194,9 +194,9 @@ public:
     }
 
 public:
-    inline Func& operator=(Null)
+    inline Func& operator=(NullPtr)
     {
-        return this->bind(null);
+        return this->bind(NullPtr());
     }
 
     inline Func& operator=(FuncType func)

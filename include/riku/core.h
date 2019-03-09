@@ -150,7 +150,7 @@ using isize  = int;
 using iptr = isize;
 using uptr = usize;
 
-struct Null
+struct NullPtr
 {
     template <typename T>
     constexpr operator T* () const
@@ -158,7 +158,6 @@ struct Null
         return (T*)0;
     }
 };
-#define null Null()
 
 // ArgsList: alias of va_list
 using ArgsList = va_list;
@@ -362,24 +361,24 @@ public:
 
 public:
     __forceinline Buffer()
-        : data(null) {}
+        : data(NULL) {}
 
     __forceinline ~Buffer()
     {
-        memory::dealloc(data ? (usize*)data - 1 : null);
+        memory::dealloc(data ? (usize*)data - 1 : NULL);
     }
 
 public:
     __forceinline Buffer(Buffer&& buffer)
         : data(buffer.data)
     {
-        buffer.data = null;
+        buffer.data = NULL;
     }
 
     __forceinline Buffer& operator=(Buffer&& buffer)
     {
         data = buffer.data;
-        buffer.data = null;
+        buffer.data = NULL;
         return *this;
     }
 
@@ -422,7 +421,7 @@ public: // Members
 
 public:
     inline String() 
-        : buffer(null) {}
+        : buffer(NULL) {}
 
     inline ~String() 
     { 
@@ -450,7 +449,7 @@ public:
         }
         else
         {
-            this->buffer = null;
+            this->buffer = NULL;
         }
     }
 
@@ -458,14 +457,14 @@ public: // RAII
     inline String(String&& other)
         : buffer(other.buffer)
     {
-        other.buffer = null;
+        other.buffer = NULL;
     }
 
     inline String& operator=(String&& other)
     {
-        memory::dealloc(buffer ? buffer - sizeof(int) : null);
+        memory::dealloc(buffer ? buffer - sizeof(int) : NULL);
         buffer = other.buffer;
-        other.buffer = null;
+        other.buffer = NULL;
         return *this;
     }
 
@@ -485,7 +484,7 @@ public: // Copy
         }
         else
         {
-            buffer = null;
+            buffer = NULL;
         }
     }
 
@@ -528,12 +527,12 @@ public:
 public:
     inline operator char*(void)
     {
-        return buffer ? buffer->characters : null;
+        return buffer ? buffer->characters : NULL;
     }
 
     inline operator const char*(void) const
     {
-        return buffer ? buffer->characters : null;
+        return buffer ? buffer->characters : NULL;
     } 
 };
 
@@ -562,12 +561,12 @@ public:
     inline UniPtr(UniPtr<T>&& other)
         : raw(other.raw)
     {
-        other.raw = null;
+        other.raw = NULL;
     }
 
     inline UniPtr<T>& operator=(UniPtr<T>&& other)
     {
-        raw = other.raw; other.raw = null; return *this;
+        raw = other.raw; other.raw = NULL; return *this;
     }
 
 public:

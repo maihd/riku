@@ -28,9 +28,9 @@ public:
 
         buffer->length   = 0;
         buffer->capacity = 0;
-        buffer->nexts    = null;
-        buffer->keys     = null;
-        buffer->values   = null;
+        buffer->nexts    = NULL;
+        buffer->keys     = NULL;
+        buffer->values   = NULL;
 
         new (buffer) RefCount();
         new (&buffer->hashs) Array<int>();
@@ -79,7 +79,7 @@ public: // RAII
     inline HashTable(HashTable<T>&& other)
         : buffer(other.buffer)
     {
-        other.buffer = null;
+        other.buffer = NULL;
     }
 
     inline HashTable<T>& operator=(HashTable<T>&& other)
@@ -87,7 +87,7 @@ public: // RAII
         this->~HashTable();
         
         buffer = other.buffer;
-        other.buffer = null;
+        other.buffer = NULL;
 
         return *this;
     }
@@ -99,7 +99,7 @@ namespace table
     inline void unref(HashTable<T>& table)
     {
         table.~HashTable();
-        table.buffer = null;
+        table.buffer = NULL;
     }
 
     template <typename T>
@@ -109,7 +109,7 @@ namespace table
     }
 
     template <typename T>
-    int find(const HashTable<T>& table, int key, int* out_hash = null, int* out_prev = null)
+    int find(const HashTable<T>& table, int key, int* out_hash = NULL, int* out_prev = NULL)
     {
         int hash = key % hash_count(table);
         int curr = table.buffer->hashs[hash];
@@ -221,9 +221,9 @@ namespace table
                     memory::dealloc(table.buffer->keys);
                     memory::dealloc(table.buffer->values);
 
-                    table.buffer->nexts  = null;
-                    table.buffer->keys   = null;
-                    table.buffer->values = null;
+                    table.buffer->nexts  = NULL;
+                    table.buffer->keys   = NULL;
+                    table.buffer->values = NULL;
                     return false;
                 }
             }

@@ -20,7 +20,7 @@ public:
 
 public:
     constexpr List(void)
-        : buffer(null)
+        : buffer(NULL)
     {
     }
 
@@ -61,7 +61,7 @@ public: // RAII
     inline List(List<TItem>&& other)
         : buffer(other.buffer)
     {
-        other.buffer = null;
+        other.buffer = NULL;
     }
 
     inline List<TItem>& operator=(List<TItem>&& other)
@@ -71,7 +71,7 @@ public: // RAII
 
         // Assign new buffer
         buffer = other.buffer;
-        other.buffer = null;
+        other.buffer = NULL;
 
         return *this;
     }
@@ -83,12 +83,12 @@ public: // Properties
 
     __forceinline TItem* get_items(void)
     {
-        return buffer ? buffer->items : null;
+        return buffer ? buffer->items : NULL;
     }
 
     __forceinline const TItem* get_items(void) const
     {
-        return buffer ? buffer->items : null;
+        return buffer ? buffer->items : NULL;
     }
 
     __forceinline int get_length(void) const
@@ -123,7 +123,7 @@ public: // Buffer sizing
             }
 
             memory::dealloc(buffer);
-            buffer = null;
+            buffer = NULL;
         }
     }
 

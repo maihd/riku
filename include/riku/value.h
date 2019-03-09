@@ -2,32 +2,31 @@
 
 #include "./core.h"
 #include "./array.h"
-#include "./table.h"
+#include "./hash_table.h"
+
+enum struct ValueType
+{
+    Null,
+    Number,
+    String,
+    Boolean,
+
+    Array,
+    Table,
+};
 
 struct Value 
 {
 public:
-    enum struct Type
-    {
-        Null,
-        Number,
-        String,
-        Boolean,
-
-        Array,
-        Table,
-    };
-
-public:
-    Type type;
+    ValueType type;
     union 
     {
-        double number;
-        String string;  
-        bool   boolean;
+        double      number;
+        const char* string;  
+        bool        boolean;
 
-        Array<Value*>         array;
-        Table<String, Value*> table;
+        Array<Value*>     array;
+        HashTable<Value*> table;
     };
 };
 

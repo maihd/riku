@@ -18,7 +18,7 @@ public:
 
 public:
     inline Thread(void)
-        : handle(null)
+        : handle(NULL)
         {}
 
 public:
