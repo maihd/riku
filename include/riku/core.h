@@ -4,21 +4,7 @@
 #error "riku: No GCC support, sorry man."
 #endif
 
-#include <stdarg.h>
-
-#ifndef RIKU_API
-#   ifdef RIKU_SHARED
-#       ifdef RIKU_EXPORT
-#           define RIKU_API __declspec(dllexport)
-#       else
-#           define RIKU_API __declspec(dllimport)
-#       endif
-#   else
-#       define RIKU_API
-#   endif
-#endif
-
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(_WIN32)
 #define OS_WINDOWS 1
 #else
 #define OS_WINDOWS 0
@@ -62,6 +48,22 @@
 #else
 #define OS_BIG_ENDIAN    1
 #define OS_LITTLE_ENDIAN 0
+#endif
+
+#ifndef __rikuapi
+#   ifdef RIKU_SHARED
+#       if OS_WINDOWS
+#           ifdef RIKU_EXPORT
+#               define __rikuapi __declspec(dllexport)
+#           else
+#               define __rikuapi __declspec(dllimport)
+#           endif
+#       else
+#           define __rikuapi __attribute__((visible("default")))
+#       endif
+#   else
+#       define __rikuapi
+#   endif
 #endif
 
 #define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
@@ -166,6 +168,7 @@ struct NullPtr
 };
 
 // ArgsList: alias of va_list
+#include <stdarg.h>
 using ArgsList = va_list;
 #define argslist_begin(args_list, prev_arg) va_start(args_list, prev_arg)
 #define argslist_end(args_list)             va_end(args_list)
@@ -182,7 +185,7 @@ using ArgsList = va_list;
 #endif
 
 // Assertion functions
-RIKU_API void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
+__rikuapi void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
 
 //
 // Memory management
@@ -197,13 +200,13 @@ RIKU_API void __assert_abort(const char* exp, const char* func, const char* file
 
 namespace memory
 {
-    RIKU_API void* alloc(usize size);
-    RIKU_API void  dealloc(void* ptr);
-    RIKU_API void* realloc(void* ptr, usize size);
+    __rikuapi void* alloc(usize size);
+    __rikuapi void  dealloc(void* ptr);
+    __rikuapi void* realloc(void* ptr, usize size);
 
-    RIKU_API void* init(void* dst, int val, usize size);
-    RIKU_API void* copy(void* dst, const void* src, usize size);
-    RIKU_API void* move(void* dst, const void* src, usize size);
+    __rikuapi void* init(void* dst, int val, usize size);
+    __rikuapi void* copy(void* dst, const void* src, usize size);
+    __rikuapi void* move(void* dst, const void* src, usize size);
 }
 
 struct RefCount
@@ -286,7 +289,7 @@ __forceinline void destroy_array(T* ptr)
 // 
 namespace string
 {
-    RIKU_API usize length(const char* s);
+    __rikuapi usize length(const char* s);
 }
 
 //
@@ -410,7 +413,7 @@ public:
     }
 
 public: // Factory functions
-    RIKU_API static Buffer alloc(usize length);
+    __rikuapi static Buffer alloc(usize length);
 };
 
 //
@@ -665,25 +668,25 @@ struct WeakPtr
 // Console
 namespace console
 {
-    RIKU_API void log(const char* fmt, ...);
-    RIKU_API void info(const char* fmt, ...);
-    RIKU_API void warn(const char* fmt, ...);
-    RIKU_API void error(const char* fmt, ...);
+    __rikuapi void log(const char* fmt, ...);
+    __rikuapi void info(const char* fmt, ...);
+    __rikuapi void warn(const char* fmt, ...);
+    __rikuapi void error(const char* fmt, ...);
 
-    RIKU_API void log_args(const char* fmt, ArgsList args_list);
-    RIKU_API void info_args(const char* fmt, ArgsList args_list);
-    RIKU_API void warn_args(const char* fmt, ArgsList args_list);
-    RIKU_API void error_args(const char* fmt, ArgsList args_list);
+    __rikuapi void log_args(const char* fmt, ArgsList args_list);
+    __rikuapi void info_args(const char* fmt, ArgsList args_list);
+    __rikuapi void warn_args(const char* fmt, ArgsList args_list);
+    __rikuapi void error_args(const char* fmt, ArgsList args_list);
 }
 
 // Current process
 namespace process
 {
     // Get environment variable
-    RIKU_API const char* getenv(const char* name);
+    __rikuapi const char* getenv(const char* name);
 
     // Set environment variable
-    RIKU_API bool setenv(const char* name, const char* value);
+    __rikuapi bool setenv(const char* name, const char* value);
     
     // Environment container, read-only
     static struct
@@ -694,14 +697,14 @@ namespace process
         };
     } env;
 
-    RIKU_API const char* cwd(void);
-    RIKU_API usize       cwd(char* buffer, usize length);
-    RIKU_API bool        chdir(const char* directory);
+    __rikuapi const char* cwd(void);
+    __rikuapi usize       cwd(char* buffer, usize length);
+    __rikuapi bool        chdir(const char* directory);
 
-    RIKU_API void        exit(int code);
-    RIKU_API void        abort(void);
+    __rikuapi void        exit(int code);
+    __rikuapi void        abort(void);
 
-    RIKU_API int         getpid(void);
+    __rikuapi int         getpid(void);
 }
 
 // Date and time
@@ -743,29 +746,29 @@ public: // UTC properties
     propdef(get_utc_seconds     , set_utc_seconds       ) int utc_seconds;
     propdef(get_utc_milliseconds, set_utc_milliseconds  ) int utc_milliseconds;
 
-    RIKU_API int  get_utc_day(void) const;
-    RIKU_API void set_utc_day(int day);
+    __rikuapi int  get_utc_day(void) const;
+    __rikuapi void set_utc_day(int day);
     
-    RIKU_API int  get_utc_month(void) const;
-    RIKU_API void set_utc_month(int month);
+    __rikuapi int  get_utc_month(void) const;
+    __rikuapi void set_utc_month(int month);
     
-    RIKU_API int  get_utc_year(void) const;
-    RIKU_API void set_utc_year(int year);
+    __rikuapi int  get_utc_year(void) const;
+    __rikuapi void set_utc_year(int year);
     
-    RIKU_API int  get_utc_weekday(void) const;
-    RIKU_API void set_utc_weekday(int weekday);
+    __rikuapi int  get_utc_weekday(void) const;
+    __rikuapi void set_utc_weekday(int weekday);
     
-    RIKU_API int  get_utc_yearday(void) const;
-    RIKU_API void set_utc_yearday(int yearday);
+    __rikuapi int  get_utc_yearday(void) const;
+    __rikuapi void set_utc_yearday(int yearday);
     
-    RIKU_API int  get_utc_hours(void) const;
-    RIKU_API void set_utc_hours(int hours);
+    __rikuapi int  get_utc_hours(void) const;
+    __rikuapi void set_utc_hours(int hours);
     
-    RIKU_API int  get_utc_minutes(void) const;
-    RIKU_API void set_utc_minutes(int minutes);
+    __rikuapi int  get_utc_minutes(void) const;
+    __rikuapi void set_utc_minutes(int minutes);
     
-    RIKU_API int  get_utc_seconds(void) const;
-    RIKU_API void set_utc_seconds(int seconds);
+    __rikuapi int  get_utc_seconds(void) const;
+    __rikuapi void set_utc_seconds(int seconds);
 #endif
 
 public:
@@ -809,15 +812,15 @@ public:
     }
     
 public: // Conversation
-    RIKU_API const char* to_string(void) const;
+    __rikuapi const char* to_string(void) const;
 
 public:
-    RIKU_API static Date now(void);
-    RIKU_API static Date parse(const char* date_string);
+    __rikuapi static Date now(void);
+    __rikuapi static Date parse(const char* date_string);
 
-    RIKU_API static Date utc(void);
-    RIKU_API static Date utc(const Date& date);
-    RIKU_API static Date utc(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0);
+    __rikuapi static Date utc(void);
+    __rikuapi static Date utc(const Date& date);
+    __rikuapi static Date utc(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0);
 
 public: // Utils
     // Compute the day of week at given year, month, day

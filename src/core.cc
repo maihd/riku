@@ -305,6 +305,7 @@ Date Date::now(void)
 
 Date Date::parse(const char* date_string)
 {
+    (void)date_string;
     return Date();
 }
 

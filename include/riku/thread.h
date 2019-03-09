@@ -22,7 +22,7 @@ public:
         {}
 
 public:
-    RIKU_API void start(const ThreadFunc& func);
-    RIKU_API void stop(void);
-    RIKU_API void wait(void);
+    __rikuapi void start(const ThreadFunc& func);
+    __rikuapi void stop(void);
+    __rikuapi void wait(void);
 };

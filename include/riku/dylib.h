@@ -4,7 +4,7 @@
 
 namespace dylib
 {
-    RIKU_API void* open(const char* path);
-    RIKU_API bool  close(void* handle);
-    RIKU_API void* symbol(void* handle, const char* name);
+    __rikuapi void* open(const char* path);
+    __rikuapi bool  close(void* handle);
+    __rikuapi void* symbol(void* handle, const char* name);
 }

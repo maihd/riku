@@ -66,11 +66,11 @@ namespace os
     #endif
     }
 
-    RIKU_API usize freemem(void);
-    RIKU_API usize totalmem(void);
+    __rikuapi usize freemem(void);
+    __rikuapi usize totalmem(void);
 
-    RIKU_API usize tmpdir(char* buffer, usize length);
-    RIKU_API usize homedir(char* buffer, usize length);
-    RIKU_API const char* tmpdir(void);
-    RIKU_API const char* homedir(void);
+    __rikuapi usize tmpdir(char* buffer, usize length);
+    __rikuapi usize homedir(char* buffer, usize length);
+    __rikuapi const char* tmpdir(void);
+    __rikuapi const char* homedir(void);
 }
