@@ -1,0 +1,35 @@
+language: cpp
+matrix:
+  include:
+    - compiler: clang
+      os: linux
+    - compiler: clang
+      os: osx
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - clang
+
+script:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
+  -   cd ./build/projects/gmake-linux         \
+  - fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then   \
+  -   cd ./build/projects/gmake-osx           \
+  - fi
+  - make config=debug32
+  - make config=debug64
+  - make config=release32
+  - make config=release64
+
+branches:
+  only:
+    - master
+
+notifications:
+  email: false
+
+osx_image: xcode9.3
