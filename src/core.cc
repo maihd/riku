@@ -265,7 +265,33 @@ namespace performance
         LARGE_INTEGER value;
         return QueryPerformanceCounter(&value) ? (long)value.QuadPart : 0;
     #elif OS_UNIX
-        return (long)clock();
+        long ticks;
+        if (has_monotonic())
+        {
+        #if HAVE_CLOCK_GETTIME
+            struct timespec now;
+            clock_gettime("__riku_monotonic_clock__", &now);
+
+            // Get counter in nanoseconds
+            ticks  = now.tv_sec;
+            ticks *= 1000000000;
+            ticks += now.tv_nsec;
+        #elif defined(__APPLE__)
+            ticks  = mach_absolute_time();
+        #endif
+        }
+        else
+        {
+            struct timeval now;
+            gettimeofday(&now, NULL);
+
+            // Get counter in microseconds
+            ticks  = now.tv_sec;
+            ticks *= 1000 * 1000; // To microseconds
+            ticks += now.tv_usec;
+            ticks += now.tv_msec * 1000;
+        }
+        return ticks;
     #endif
     }
 
@@ -275,7 +301,25 @@ namespace performance
         LARGE_INTEGER value;
         return QueryPerformanceFrequency(&value) ? (long)value.QuadPart : 0;
     #elif OS_UNIX
-        return (long)CLOCKS_PER_SEC;
+    #if HAVE_CLOCK_GETTIME
+        if (has_monotonic())
+        {
+            return 1000 * 1000 * 1000; /* nanoseconds per second */
+        }
+    #elif defined(__APPLE__)
+        mach_timebase_info_data_t mach_info;
+        kern_return_t ret = mach_time_base_info(&mach_info);
+        if (ret == 0)
+        {
+            long frequency;
+            frequency  = mach_info.denom;
+            frequency *= 1000 * 1000 * 1000;
+            frequency /= mach_info.numer;
+            return frequency;
+        }
+    #endif
+
+        return 1000 * 1000; /* microseconds per second */
     #endif
     }
 
@@ -332,6 +376,19 @@ namespace performance
     #elif OS_UNIX
         return ::nsleep((struct timespec[]){ { 0, nanoseconds } }, NULL) == 0;
     #endif
+    }
+
+    bool has_monotonic(void)
+    {
+#if OS_UNIX && HAVE_CLOCK_GETTIME
+        return clock_gettime(CLOCK_ID, NULL) == 0;
+#elif defined(__APPLE__)
+        mach_timebase_info_data_t mach_info;
+        kern_return_t ret = mach_time_base_info(&mach_info);
+        return ret == 0;
+#else
+        return false;
+#endif
     }
 }
 

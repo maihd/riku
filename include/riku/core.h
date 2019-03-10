@@ -719,6 +719,8 @@ namespace performance
     __rikuapi bool sleep(long milliseconds);
     __rikuapi bool usleep(long microseconds);
     __rikuapi bool nsleep(long nanoseconds);
+
+    __rikuapi bool has_monotonic(void);
 }
 
 // Date and time
