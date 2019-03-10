@@ -16,4 +16,9 @@ TEST_CASE("OS module testing", "[os]")
     usize tmem = os::totalmem();
     console::log("fmem: %u", fmem);
     console::log("tmem: %u", tmem);
+
+    console::log("os::version: %s", os::version());
+    console::log("os::hostname: %s", os::hostname());
+
+    console::log("os::uptime: %lus", (ulong)os::uptime());
 }
