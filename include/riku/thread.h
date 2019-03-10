@@ -8,9 +8,9 @@ using ThreadFunc = Func<void(void)>;
 struct Thread
 { 
 public:
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
     void* handle; // HANDLE
-#elif OS_UNIX
+#elif PLATFORM_UNIX
     void* handle; // pthread_t
 #endif
 

@@ -1,4 +1,7 @@
-﻿#pragma once
+﻿// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
+#pragma once
 
 #include <math.h> // C module
 #include "./core.h"
@@ -7,7 +10,7 @@
 #undef max // When Windows.h is included, max is an macro
 
 #if defined(__ARM_NEON)
-#if defined(__aarch64__) && defined(OS_ANDROID)        
+#if CPU_ARM && !ARCH_64BIT && !PLATFORM_ANDROID        
 #define MATH_ENABLE_NEON 0
 #else
 #include <arm_neon.h>     
@@ -17,7 +20,7 @@
 #define MATH_ENABLE_NEON 0
 #endif
 
-#if OS_ANDROID // Android support for log2 and log2f
+#if PLATFORM_ANDROID // Android support for log2 and log2f
 extern "C"
 {
     __forceinline float log2f(float x)

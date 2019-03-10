@@ -1,68 +1,93 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #pragma once
 
 #include "./core.h"
 
+enum struct Platform
+{
+    WinRT,
+    Windows,
+    Android,
+    Linux,
+    iOS,
+    OSX,
+    AsmJS,
+    WebAssembly,
+};
+
+enum struct PlatformFamily
+{
+    Linux,
+    Darwin,
+    Windows,
+    WebNative,
+};
+
 namespace os
 {
+    // Get cpu name
     constexpr const char* arch(void)
     {
-    #if defined(__mips__)
-        return "mips";
-    #elif defined(__MIPSEL__)
-        return "mipsel";
-    #elif defined(__aarch64__)
-        return "arm64";
-    #elif defined(__arm__)
-        return "arm";
-    #elif defined(__i386__)
-        return "x32";
-    #elif defined(__powerpc__)
-        return "ppc";
-    #elif defined(__powerpc64__)
-        return "ppc64";
-    #elif defined(__x86_64__) || defined(_M_X64)
-        return "x64";
-    #else
-        return "x32";
-    #endif
+        return CPU_NAME;
     }
 
+    // Get edianness name
     constexpr const char* edianness(void)
     {
-    #if OS_LITTLE_ENDIAN
+    #if CPU_LITTLE_ENDIAN
         return "LE";
     #else
         return "BE";
     #endif
     }
 
-    constexpr const char* platform(void)
+    // Get os name
+    constexpr const char* name(void)
     {
-    #if OS_WINDOWS
-        return "windows";
-    #elif OS_ANDROID
-        return "android";
-    #elif OS_LINUX
-        return "linux";
-    #elif __asmjs__
-        return "asmjs";
-    #elif __EMSCRIPTEN__
-        return "wasm";
+        return PLATFORM_NAME;
+    }
+
+    // Get os family name
+    constexpr const char* uname(void)
+    {
+        return PLATFORM_FAMILY;
+    }
+
+    // Get platform of os
+    constexpr Platform platform(void)
+    {
+    #if PLATFORM_WINRT
+        return Platform::WinRT;
+    #elif PLATFORM_WINDOWS
+        return Platform::Windows;
+    #elif PLATFORM_ANDROID
+        return Platform::Android;
+    #elif PLATFORM_LINUX
+        return Platform::Linux;
+    #elif PLATFORM_ASMJS
+        return Platform::AsmJS;
+    #elif PLATFORM_WASM
+        return Platform::WebAssembly;
+    #elif PLATFORM_IOS
+        return Platform::iOS;
+    #elif PLATFORM_OSX
+        return Platform::OSX;
     #endif
     }
 
-    constexpr const char* type(void)
+    // Get platform family os os
+    constexpr PlatformFamily family(void)
     {
-    #if OS_WINDOWS
-        return "Windows_NT";
-    #elif OS_ANDROID
-        return "Android";
-    #elif OS_LINUX
-        return "Linux";
-    #elif __asmjs__
-        return "AsmJS";
-    #elif __EMSCRIPTEN__
-        return "WebAssembly";
+    #if PLATFORM_WINRT || PLATFORM_WINDOWS
+        return PlatformFamily::Windows;
+    #elif PLATFORM_ANDROID || PLATFORM_LINUX
+        return PlatformFamily::Linux;
+    #elif PLATFORM_ASMJS || PLATFORM_WASM
+        return PlatformFamily::WebNative;
+    #elif PLATFORM_IOS || PLATFORM_OSX
+        return PlatformFamily::Darwin;
     #endif
     }
 

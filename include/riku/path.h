@@ -1,13 +1,16 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #pragma once
 
 #include "./core.h"
 
 namespace path
 {
-#if OS_WINDOWS
-    const char* delimiter = ";";
+#if PLATFORM_WINDOWS
+    const char* const delimiter = ";";
 #else
-    const char* delimiter = ":";
+    const char* const delimiter = ":";
 #endif
 
     usize basename(const char* path, char* buffer, usize length);

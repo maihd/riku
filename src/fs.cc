@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <riku/fs.h>
 
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
 #include <Windows.h>
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
-#undef  OS_WINDOWS
-#define OS_WINDOWS 1
-#elif OS_UNIX
+#undef  PLATFORM_WINDOWS
+#define PLATFORM_WINDOWS 1
+#elif PLATFORM_UNIX
 #include <unistd.h>
 #endif
 
@@ -15,9 +15,9 @@ namespace fs
 {
     bool exists(const char* path)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         return PathFileExistsA(path);
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         return access(path, F_OK) != -1 ;
     #endif
     }

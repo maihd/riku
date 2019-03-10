@@ -1,3 +1,6 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #include <riku/core.h>
 
 #include <time.h>
@@ -5,9 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
 #include <Windows.h>
-#elif OS_ANDROID
+#elif PLATFORM_ANDROID
 #include <unistd.h>
 #include <android/log.h>
 #endif
@@ -18,7 +21,7 @@
 
 void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
 {
-#if OS_ANDROID
+#if PLATFORM_ANDROID
     char final_fmt[4096];
     sprintf(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
 
@@ -143,7 +146,7 @@ namespace console
 
     void log_args(const char* fmt, ArgsList args_list)
     {
-    #if OS_ANDROID
+    #if PLATFORM_ANDROID
         __android_log_vprint(ANDROID_LOG_DEFAULT, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
@@ -153,7 +156,7 @@ namespace console
 
     void info_args(const char* fmt, ArgsList args_list)
     {
-    #if OS_ANDROID
+    #if PLATFORM_ANDROID
         __android_log_vprint(ANDROID_LOG_INFO, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
@@ -163,7 +166,7 @@ namespace console
 
     void warn_args(const char* fmt, ArgsList args_list)
     {
-    #if OS_ANDROID
+    #if PLATFORM_ANDROID
         __android_log_vprint(ANDROID_LOG_WARN, "riku", fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
@@ -173,7 +176,7 @@ namespace console
 
     void error_args(const char* fmt, ArgsList args_list)
     {
-    #if OS_ANDROID
+    #if PLATFORM_ANDROID
         __android_log_vprint(ANDROID_LOG_ERROR, "riku", fmt, args_list);
     #else
         vfprintf(stderr, fmt, args_list);
@@ -197,9 +200,9 @@ namespace process
     // Set environment variable
     bool setenv(const char* name, const char* value)
     {
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
         return SetEnvironmentVariableA(name, value);
-#elif OS_UNIX
+#elif PLATFORM_UNIX
         return ::setenv(name, value, true) == 0;
 #endif
     }
@@ -214,19 +217,19 @@ namespace process
 
     usize cwd(char* buffer, usize length)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         uint size = GetCurrentDirectoryA(length, buffer);
         return size;
-    #elif OS_ANDROID
+    #elif PLATFORM_ANDROID
         return (usize)(::getcwd(buffer, length) - buffer);
     #endif
     }
 
     bool chdir(const char* directory)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         return SetCurrentDirectoryA(directory);
-    #elif OS_ANDROID
+    #elif PLATFORM_ANDROID
         return ::chdir(directory) != 0;
     #endif
     }
@@ -243,11 +246,11 @@ namespace process
     
     int getpid(void)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         return (int)GetCurrentProcessId();
-    #elif OS_WEB
+    #elif PLATFORM_WEB
         return -1;
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         return (int)::getpid();
     #endif
     }
@@ -261,10 +264,10 @@ namespace performance
 {
     long now(void)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
         return QueryPerformanceCounter(&value) ? (long)value.QuadPart : 0;
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         long ticks;
         if (has_monotonic())
         {
@@ -297,10 +300,10 @@ namespace performance
 
     long frequency(void)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
         return QueryPerformanceFrequency(&value) ? (long)value.QuadPart : 0;
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
     #if HAVE_CLOCK_GETTIME
         if (has_monotonic())
         {
@@ -325,7 +328,7 @@ namespace performance
 
     bool sleep(long milliseconds)
     {
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
         ::Sleep(milliseconds);
         return true;
 #else
@@ -335,7 +338,7 @@ namespace performance
 
     bool usleep(long microseconds)
     {
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
         return performance::nsleep(microseconds * 1000);
 #else
         return ::usleep(microseconds) == 0;
@@ -344,7 +347,7 @@ namespace performance
 
     bool nsleep(long nanoseconds)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         /* 'NTSTATUS NTAPI NtDelayExecution(BOOL Alerted, PLARGE_INTEGER time);' */
         /* 'typedef LONG NTSTATUS;' =)) */
         /* '#define NTAPI __stdcall' =)) */
@@ -373,14 +376,14 @@ namespace performance
             Sleep(nanoseconds / (1000 * 1000));
             return true;
         }
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         return ::nsleep((struct timespec[]){ { 0, nanoseconds } }, NULL) == 0;
     #endif
     }
 
     bool has_monotonic(void)
     {
-#if OS_UNIX && HAVE_CLOCK_GETTIME
+#if PLATFORM_UNIX && HAVE_CLOCK_GETTIME
         return clock_gettime(CLOCK_ID, NULL) == 0;
 #elif defined(__APPLE__)
         mach_timebase_info_data_t mach_info;

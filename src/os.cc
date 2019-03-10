@@ -1,8 +1,11 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #include <riku/os.h>
 
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
 #include <Windows.h>
-#elif OS_UNIX
+#elif PLATFORM_UNIX
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +18,7 @@ namespace os
 {
     usize freemem(void)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         MEMORYSTATUSEX mem;
         mem.dwLength = sizeof(mem);
         if (::GlobalMemoryStatusEx(&mem))
@@ -26,7 +29,7 @@ namespace os
         {
             return 0;
         }
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         struct sysinfo info;
         if (sysinfo(&info) == 0)
         {
@@ -41,7 +44,7 @@ namespace os
 
     usize totalmem(void)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         MEMORYSTATUSEX mem;
         mem.dwLength = sizeof(mem);
         if (::GlobalMemoryStatusEx(&mem))
@@ -52,7 +55,7 @@ namespace os
         {
             return 0;
         }    
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         struct sysinfo info;
         if (sysinfo(&info) == 0)
         {
@@ -67,9 +70,9 @@ namespace os
 
     usize tmpdir(char* buffer, usize length)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         return ::GetTempPathA(length, buffer);
-    #elif OS_UNIX
+    #elif PLATFORM_UNIX
         const char* envbuf;
         #define GET_ENV_VAR(name)           \
             do {                            \
@@ -91,7 +94,7 @@ namespace os
 
     usize homedir(char* buffer, usize length)
     {
-    #if OS_WINDOWS
+    #if PLATFORM_WINDOWS
         usize drive_size = ::GetEnvironmentVariableA("HOMEDRIVE", buffer, length);
         usize path_size  = ::GetEnvironmentVariableA("HOMEPATH", buffer + drive_size, length - drive_size);
 
@@ -104,7 +107,7 @@ namespace os
         {
             return path_size;
         }
-    #elif OS_UNIX 
+    #elif PLATFORM_UNIX 
         const char* homedir = getenv("HOME");
         if (!homedir) 
         {

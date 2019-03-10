@@ -1,3 +1,6 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #include <functional>
 #include <riku/func.h>
 #include <riku/hash_table.h>

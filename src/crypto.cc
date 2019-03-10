@@ -1,3 +1,6 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #include <riku/crypto.h>
 
 #define MD5_F1(x, y, z) (z ^ (x & (y ^ z)))

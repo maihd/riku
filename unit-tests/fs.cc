@@ -1,3 +1,6 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #include "./unit_test.h"
 #include <riku/fs.h>
 #include <memory>
@@ -6,7 +9,7 @@ TEST_CASE("Filesystem testing", "[fs]")
 {
     console::log("cwd: %s", process::cwd());
 
-#if OS_WINDOWS
+#if PLATFORM_WINDOWS
     const char* path = "x32/debug/riku.unit_tests.exe";
 #else
     const char* path = "x32/debug/riku.unit_tests";
