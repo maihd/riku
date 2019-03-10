@@ -6,5 +6,9 @@
 
 TEST_CASE("JSON testing", "[JSON]")
 {
-    JSON::Value value = JSON::parse("[ 1 ]");
+    json::Value value = json::parse("[ 1 ]");
+    REQUIRE(value.type == json::Type::Array);
+    REQUIRE(value.length == 1);
+    REQUIRE(value[0].type == json::Type::Number);
+    REQUIRE(value[0].number == 1.0);
 }   

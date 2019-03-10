@@ -5,7 +5,7 @@
 
 #include "./core.h"
 
-namespace JSON 
+namespace json 
 {
     /**
      * JSON type of json value
@@ -96,7 +96,8 @@ namespace JSON
         }
 
     public: // @region: Properties
-        __forceinline int length() const
+        propdef_readonly(get_length) int length;
+        __forceinline int get_length() const
         {
             switch (type)
             {
@@ -114,13 +115,14 @@ namespace JSON
             }
         }
         
+    public: // @region: Util methods
         __rikuapi static bool  equals(const Value& a, const Value& b);
         __rikuapi const Value& find(const char* name) const;
 
     public: // @region: Indexor
         __forceinline const Value& operator[] (int index) const
         {
-            if (type != Type::Array || index < 0 || index > this->length())
+            if (type != Type::Array || index < 0 || index > this->length)
             {
                 return NONE;
             }
@@ -163,7 +165,7 @@ namespace JSON
                 return true;
 
             case Type::String:
-                return this->string && this->length() > 0;
+                return this->string && this->length > 0;
 
             default: 
                 return false;
