@@ -254,6 +254,88 @@ namespace process
 }
 
 //
+// Performance
+// 
+
+namespace performance
+{
+    long now(void)
+    {
+    #if OS_WINDOWS
+        LARGE_INTEGER value;
+        return QueryPerformanceCounter(&value) ? (long)value.QuadPart : 0;
+    #elif OS_UNIX
+        return (long)clock();
+    #endif
+    }
+
+    long frequency(void)
+    {
+    #if OS_WINDOWS
+        LARGE_INTEGER value;
+        return QueryPerformanceFrequency(&value) ? (long)value.QuadPart : 0;
+    #elif OS_UNIX
+        return (long)CLOCKS_PER_SEC;
+    #endif
+    }
+
+    bool sleep(long milliseconds)
+    {
+#if OS_WINDOWS
+        ::Sleep(milliseconds);
+        return true;
+#else
+        return performance::usleep(milliseconds * 1000);
+#endif
+    }
+
+    bool usleep(long microseconds)
+    {
+#if OS_WINDOWS
+        return performance::nsleep(microseconds * 1000);
+#else
+        return ::usleep(microseconds) == 0;
+#endif
+    }
+
+    bool nsleep(long nanoseconds)
+    {
+    #if OS_WINDOWS
+        /* 'NTSTATUS NTAPI NtDelayExecution(BOOL Alerted, PLARGE_INTEGER time);' */
+        /* 'typedef LONG NTSTATUS;' =)) */
+        /* '#define NTAPI __stdcall' =)) */
+        typedef LONG(__stdcall * NtDelayExecutionFN)(BOOL, PLARGE_INTEGER);
+
+        static int done_finding;
+        static NtDelayExecutionFN NtDelayExecution;
+
+        if (!NtDelayExecution && !done_finding)
+        {
+            done_finding = 1;
+            HMODULE module = GetModuleHandle(TEXT("ntdll.dll"));
+            const char* func = "NtDelayExecution";
+            NtDelayExecution = (NtDelayExecutionFN)GetProcAddress(module, func);
+        }
+
+        if (NtDelayExecution)
+        {
+            LARGE_INTEGER times;
+            times.QuadPart = -nanoseconds / 100;
+            NtDelayExecution(FALSE, &times);
+            return true;
+        }
+        else
+        {
+            Sleep(nanoseconds / (1000 * 1000));
+            return true;
+        }
+    #elif OS_UNIX
+        return ::nsleep((struct timespec[]){ { 0, nanoseconds } }, NULL) == 0;
+    #endif
+    }
+}
+
+//
 // Date and time
 // 
 

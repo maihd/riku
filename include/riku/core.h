@@ -707,6 +707,20 @@ namespace process
     __rikuapi int         getpid(void);
 }
 
+//
+// Performance
+// 
+
+namespace performance
+{
+    __rikuapi long now(void);
+    __rikuapi long frequency(void);
+
+    __rikuapi bool sleep(long milliseconds);
+    __rikuapi bool usleep(long microseconds);
+    __rikuapi bool nsleep(long nanoseconds);
+}
+
 // Date and time
 struct Date
 {
