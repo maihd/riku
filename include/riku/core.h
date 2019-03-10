@@ -35,11 +35,11 @@
 #endif
 
 #if defined(__MINGW64__) || defined(__x86_64__) || defined(__X86_64__) || defined(_M_X64) || defined(__aarch64__)
-#define RUNTIME_64BITS 1
-#define RUNTIME_32BITS 0
+#define ARCH_64BITS 1
+#define ARCH_32BITS 0
 #else
-#define RUNTIME_64BITS 0
-#define RUNTIME_32BITS 1
+#define ARCH_64BITS 0
+#define ARCH_32BITS 1
 #endif
 
 #if defined(__MIPSEL__) || defined(__LITTLE_ENDIAN__)
@@ -147,7 +147,7 @@ using sbyte   = char;
 
 // Memory address and size
 
-#if RUNTIME_64BITS
+#if ARCH_64BITS
 using usize  = ulong;
 using isize  = long;
 #else 
