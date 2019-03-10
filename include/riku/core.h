@@ -231,12 +231,16 @@
 #define short int16_t
 #endif
 
-using uint    = unsigned int;
-using ulong   = unsigned long;
-using ushort  = unsigned short;
+using uint      = unsigned int;
+using ulong     = unsigned long int;
+using ushort    = unsigned short int;
 
-using byte    = unsigned char;
-using sbyte   = char;
+using bigint    = long long int;
+using biguint   = unsigned long long int;
+using bigfloat  = long double;
+
+using byte      = unsigned char;
+using sbyte     = char;
 
 // Memory address and size
 
