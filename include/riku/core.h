@@ -218,7 +218,7 @@
 // Extension operators and specifier
 
 #define countof(buffer)        (sizeof(x) / sizeof((x)[0]))
-#define offsetof(Type, member) ((usize)&((Type*)0)->member)
+//#define offsetof(Type, member) ((usize)&((Type*)0)->member)
 #define deprecate(message)     __declspec(deprecated(message))
 
 #define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
@@ -259,6 +259,12 @@ using isize  = int;
 using iptr = isize;
 using uptr = usize;
 
+// NULL
+#if !defined(NULL)
+#   define NULL 0
+#endif
+
+// Type of null pointer
 struct NullPtr
 {
     template <typename T>
@@ -276,8 +282,8 @@ using ArgsList = va_list;
 #define argslist_copy(dst, src)             va_copy(dst, src)
 
 // Assertion helper
-#include <assert.h> // Include 
-#undef assert       // to remove std assert
+//#include <assert.h> // Include 
+//#undef assert       // to remove std assert
 #define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #if !defined(NDEBUG) || !NDEBUG
 #define assert(exp, fmt, ...) always_assert(exp, fmt, ##__VA_ARGS__)

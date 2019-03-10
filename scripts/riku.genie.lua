@@ -1,47 +1,47 @@
-local RIKU_DIR = path.getabsolute('..')
+local RIKU_DIR = path.getabsolute("..")
 
 function riku_project(BUILD_DIR, TARGET_PLATFORM)
-   project 'riku'
+   project "riku"
    do
-      kind 'staticlib'
+      kind "staticlib"
 
       flags {
-         'NoPCH',
-         'NoRTTI',
-         'NoWinRT',
-         'NoExceptions',
+         "NoPCH",
+         "NoRTTI",
+         "NoWinRT",
+         "NoExceptions",
          "NoFramePointer",
-         'NoEditAndContinue',
-         'NoBufferSecurityCheck',
+         "NoEditAndContinue",
+         "NoBufferSecurityCheck",
 
-         'ExtraWarnings'
+         "ExtraWarnings"
       }
 
       includedirs {
-         path.join(RIKU_DIR, 'include')
+         path.join(RIKU_DIR, "include")
       }
 
       files {
-         path.join(RIKU_DIR, 'src/*.cc'),
-         path.join(RIKU_DIR, 'src/**/*.cc'),
-         path.join(RIKU_DIR, 'include/*.h'),
-         path.join(RIKU_DIR, 'include/**/*.h'),
+         path.join(RIKU_DIR, "src/*.cc"),
+         path.join(RIKU_DIR, "src/**/*.cc"),
+         path.join(RIKU_DIR, "include/*.h"),
+         path.join(RIKU_DIR, "include/**/*.h"),
       }
 
       defines {
       }
 
-      configuration { 'debug' }
+      configuration { "debug" }
       do
          defines {
-            '_DEBUG'
+            "_DEBUG"
          }
       end
 
-      configuration { 'release' }
+      configuration { "release" }
       do
          defines {
-            'NDEBUG'
+            "NDEBUG"
          }
 
          flags {
@@ -49,47 +49,11 @@ function riku_project(BUILD_DIR, TARGET_PLATFORM)
          }
       end
 
-      configuration { 'debug', 'x32' }
+      configuration { "linux-*" }
       do
-         targetdir (path.join(BUILD_DIR, TARGET_PLATFORM, 'x32/debug'))
-      end
-
-      configuration { 'debug', 'x64' }
-      do
-         targetdir (path.join(BUILD_DIR, TARGET_PLATFORM, 'x64/debug'))
-      end
-
-      configuration { 'release', 'x32' }
-      do
-         targetdir (path.join(BUILD_DIR, TARGET_PLATFORM, 'x32/release'))
-      end
-
-      configuration { 'release', 'x64' }
-      do
-         targetdir (path.join(BUILD_DIR, TARGET_PLATFORM, 'x32/release'))
-      end
-      
-      configuration { 'vs*' }
-      do
-         defines {
-            '_CRT_SECURE_NO_WARNINGS',
-            --'_CRT_NO_VA_START_VALIDATION',
-            '_USRLIB'
-         }
-
          buildoptions {
-         }
-
-         linkoptions {
-         }
-
-         buildoptions {
-            '/wd4201', -- warning C4201: nonstandard extension used : nameless struct/union
-            '/wd4458', -- warning C4458: declaration of '*' hides class member
-            '/wd4005', -- warning C4005: macro redefinition
+            "-fPIC",
          }
       end
    end
 end
-
-return riku_project

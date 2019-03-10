@@ -229,7 +229,10 @@ namespace process
     {
     #if PLATFORM_WINDOWS
         return SetCurrentDirectoryA(directory);
-    #elif PLATFORM_ANDROID
+    #elif PLATFORM_WEB
+        (void)(directory);
+        return false;
+    #elif PLATFORM_UNIX
         return ::chdir(directory) != 0;
     #endif
     }
@@ -267,11 +270,13 @@ namespace performance
     #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
         return QueryPerformanceCounter(&value) ? (long)value.QuadPart : 0;
+    #elif PLATFORM_WEB
+        return 0;
     #elif PLATFORM_UNIX
-        long ticks;
+        long ticks = 0;
         if (has_monotonic())
         {
-        #if HAVE_CLOCK_GETTIME
+        #if defined(HAVE_CLOCK_GETTIME)
             struct timespec now;
             clock_gettime("__riku_monotonic_clock__", &now);
 
@@ -292,7 +297,7 @@ namespace performance
             ticks  = now.tv_sec;
             ticks *= 1000 * 1000; // To microseconds
             ticks += now.tv_usec;
-            ticks += now.tv_msec * 1000;
+            //ticks += now.tv_msec * 1000;
         }
         return ticks;
     #endif
@@ -304,7 +309,7 @@ namespace performance
         LARGE_INTEGER value;
         return QueryPerformanceFrequency(&value) ? (long)value.QuadPart : 0;
     #elif PLATFORM_UNIX
-    #if HAVE_CLOCK_GETTIME
+    #if defined(HAVE_CLOCK_GETTIME)
         if (has_monotonic())
         {
             return 1000 * 1000 * 1000; /* nanoseconds per second */
@@ -340,7 +345,10 @@ namespace performance
     {
 #if PLATFORM_WINDOWS
         return performance::nsleep(microseconds * 1000);
-#else
+#elif PLATFORM_WEB
+        (void)(microseconds);
+        return false;
+#elif PLATFORM_UNIX
         return ::usleep(microseconds) == 0;
 #endif
     }
@@ -376,6 +384,11 @@ namespace performance
             Sleep(nanoseconds / (1000 * 1000));
             return true;
         }
+    #elif PLATFORM_ANDROID
+        return ::usleep(nanoseconds / 1000);
+    #elif PLATFORM_WEB
+        (void)(nanoseconds);
+        return false;
     #elif PLATFORM_UNIX
         return ::nsleep((struct timespec[]){ { 0, nanoseconds } }, NULL) == 0;
     #endif
@@ -383,7 +396,7 @@ namespace performance
 
     bool has_monotonic(void)
     {
-#if PLATFORM_UNIX && HAVE_CLOCK_GETTIME
+#if PLATFORM_UNIX && defined(HAVE_CLOCK_GETTIME)
         return clock_gettime(CLOCK_ID, NULL) == 0;
 #elif defined(__APPLE__)
         mach_timebase_info_data_t mach_info;

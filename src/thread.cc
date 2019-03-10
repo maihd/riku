@@ -43,6 +43,8 @@ void Thread::stop(void)
 {
 #if PLATFORM_WINDOWS
     CloseHandle((HANDLE)handle);
+#elif PLATFORM_ANDROID
+    pthread_kill((pthread_t)handle, SIGUSR1); // pthread_t
 #elif PLATFORM_UNIX
     pthread_cancel((pthread_t)handle); // pthread_t
 #endif

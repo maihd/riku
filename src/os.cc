@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/sysinfo.h>
+#include <sys/utsname.h>
 #endif
 
 namespace os
@@ -83,7 +84,7 @@ namespace os
         GET_ENV_VAR("TEMPDIR");
         #undef GET_ENV_VAR
 
-    failed:
+    //failed:
         buffer[0] = 0;
         return 0;
 
@@ -226,7 +227,7 @@ namespace os
     {
     #if PLATFORM_WINDOWS
         return (biguint)(GetTickCount64() / 1000);
-    #elif
+    #elif PLATFORM_UNIX
         struct sysinfo info;
         return sysinfo(&info) == 0 ? (biguint)info.uptime : 0;
     #endif
@@ -234,6 +235,8 @@ namespace os
 
     usize cpus(CPU* buffer, usize length)
     {
+        (void)buffer;
+        (void)length;
         return 0;
     }
 }

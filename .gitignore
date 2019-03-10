@@ -2,5 +2,10 @@
 *.obj
 *.out
 
-/build
-/node_modules
+/build/wasm
+/build/asmjs
+/build/linux*
+/build/android*
+/build/win32_*
+/build/winrt_*
+/build/windows_*
