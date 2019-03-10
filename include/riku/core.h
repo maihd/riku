@@ -217,6 +217,10 @@
 
 // Extension operators and specifier
 
+#define countof(buffer)        (sizeof(x) / sizeof((x)[0]))
+#define offsetof(Type, member) ((usize)&((Type*)0)->member)
+#define deprecate(message)     __declspec(deprecated(message))
+
 #define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
 #define propdef_readonly(getter)  __declspec(property(get=getter))
 #define propdef_writeonly(setter) __declspec(property(put=setter))
