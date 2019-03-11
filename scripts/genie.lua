@@ -2,6 +2,10 @@ local RIKU_DIR          = path.getabsolute("..")
 local RIKU_BUILD_DIR    = path.join(RIKU_DIR, "build")
 local RIKU_3RDPARTY_DIR = path.join(RIKU_DIR, "3rdparty")
 
+-- Loading toolchain
+dofile "toolchain.genie.lua"
+toolchain(RIKU_BUILD_DIR, RIKU_3RDPARTY_DIR)
+
 newaction {
    trigger = 'clean',
    description = 'Clean all generated projects',
@@ -32,11 +36,8 @@ do
    startproject 'riku.unit_tests'
 end
 
+-- Loading riku project
 dofile "riku.genie.lua"
-dofile "toolchain.genie.lua"
-
-toolchain(RIKU_BUILD_DIR, RIKU_3RDPARTY_DIR)
-riku_project(RIKU_BUILD_DIR, TARGET_PLATFORM)
 
 project "riku.unit_tests"
 do
