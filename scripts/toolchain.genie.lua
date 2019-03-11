@@ -194,7 +194,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
 
 	_PLATFORM = _OPTIONS["platform"]
 	if _ACTION == "gmake" or _ACTION == "ninja" then
-
 		if nil == _PLATFORM then
 			print("Platform must be specified for gmake or ninja build!")
 			os.exit(1)
@@ -296,16 +295,12 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.cc   = "$(CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(CLANG)/bin/clang++"
 			premake.gcc.ar   = "$(MINGW)/bin/ar"
---			premake.gcc.ar   = "$(CLANG)/bin/llvm-ar"
---			premake.gcc.llvm = true
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-mingw"))
 
 		elseif "windows-clang" == _PLATFORM then
 			premake.gcc.cc   = "clang"
 			premake.gcc.cxx  = "clang++"
 			premake.gcc.ar   = "ar"
---			premake.gcc.ar   = "$(CLANG)/bin/llvm-ar"
---			premake.gcc.llvm = true
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-windows-clang"))
 
         --[[
@@ -577,10 +572,39 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"/ignore:4264" -- LNK4264: archiving object file compiled with /ZW into a static library; note that when authoring Windows Runtime types it is not recommended to link with a static library that contains Windows Runtime metadata
 		}
 
-	configuration { "*-gcc* or osx" }
+	configuration { "osx" }
 		buildoptions {
 			"-Wshadow",
 		}
+		
+	configuration { "windows-clang" }
+		buildoptions {
+			"-fdeclspec",
+			"-fms-extensions",
+			--"-isystem$(MINGW)/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++",
+			--"-isystem$(MINGW)/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/x86_64-w64-mingw32",
+			--"-isystem$(MINGW)/x86_64-w64-mingw32/include",
+		}
+		linkoptions {
+			"-Qunused-arguments",
+			"-Wno-error=unused-command-line-argument-hard-error-in-future",
+		}
+
+	configuration { "x32", "windows-clang" }
+		targetdir (path.join(BUILD_DIR, "windows_x32_clang/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x32_clang/obj"))
+		libdirs {
+			path.join(LIB_DIR, "lib/windows_x32_clang"),
+		}
+		buildoptions { "-m32" }
+
+	configuration { "x64", "windows-clang" }
+		targetdir (path.join(BUILD_DIR, "windows_x64_clang/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x64_clang/obj"))
+		libdirs {
+			path.join(LIB_DIR, "lib/windows_x64_clang"),
+		}
+		buildoptions { "-m64" }
 
 	configuration { "mingw-*" }
 		defines { "WIN32" }
@@ -603,74 +627,21 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-static-libstdc++",
 		}
 
-    --[[
-	configuration { "x32", "mingw-gcc" }
-		targetdir (path.join(BUILD_DIR, "win32_mingw-gcc/bin"))
-		objdir (path.join(BUILD_DIR, "win32_mingw-gcc/obj"))
-		libdirs {
-			path.join(LIB_DIR, "lib/win32_mingw-gcc"),
-		}
-		buildoptions {
-			"-m32",
-			"-mstackrealign",
-		}
-
-	configuration { "x64", "mingw-gcc" }
-		targetdir (path.join(BUILD_DIR, "win64_mingw-gcc/bin"))
-		objdir (path.join(BUILD_DIR, "win64_mingw-gcc/obj"))
-		libdirs {
-			path.join(LIB_DIR, "lib/win64_mingw-gcc"),
-		}
-		buildoptions { "-m64" }]]
-
-	configuration { "mingw-clang" }
-		buildoptions {
-            "-fdeclspec",
-            "-fms-extensions",
-			"-isystem$(MINGW)/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++",
-			"-isystem$(MINGW)/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/x86_64-w64-mingw32",
-			"-isystem$(MINGW)/x86_64-w64-mingw32/include",
-		}
-		linkoptions {
-			"-Qunused-arguments",
-			"-Wno-error=unused-command-line-argument-hard-error-in-future",
-		}
-
 	configuration { "x32", "mingw-clang" }
-		targetdir (path.join(BUILD_DIR, "win32_mingw-clang/bin"))
-		objdir (path.join(BUILD_DIR, "win32_mingw-clang/obj"))
+		targetdir (path.join(BUILD_DIR, "windows_x32_mingw-clang/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x32_mingw-clang/obj"))
 		libdirs {
-			path.join(LIB_DIR, "lib/win32_mingw-clang"),
+			path.join(LIB_DIR, "lib/windows_x32_mingw-clang"),
 		}
 		buildoptions { "-m32" }
 
 	configuration { "x64", "mingw-clang" }
-		targetdir (path.join(BUILD_DIR, "win64_mingw-clang/bin"))
-		objdir (path.join(BUILD_DIR, "win64_mingw-clang/obj"))
+		targetdir (path.join(BUILD_DIR, "windows_x64_mingw-clang/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x64_mingw-clang/obj"))
 		libdirs {
-			path.join(LIB_DIR, "lib/win64_mingw-clang"),
+			path.join(LIB_DIR, "lib/windows_x64_mingw-clang"),
 		}
 		buildoptions { "-m64" }
-
-    --[[
-	configuration { "linux-gcc-6" }
-		buildoptions {
---			"-fno-omit-frame-pointer",
---			"-fsanitize=address",
---			"-fsanitize=undefined",
---			"-fsanitize=float-divide-by-zero",
---			"-fsanitize=float-cast-overflow",
-		}
-		links {
---			"asan",
---			"ubsan",
-		}
-
-	configuration { "linux-gcc" }
-		buildoptions {
-			"-mfpmath=sse",
-        }
-    ]]
 
 	configuration { "linux*" }
 		buildoptions {
@@ -696,29 +667,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-Wl,--as-needed",
 		}
 
-    --[[
-	configuration { "linux-gcc*" }
-		buildoptions {
-			"-Wlogical-op",
-		}
-
-	configuration { "linux-gcc*", "x32" }
-		targetdir (path.join(BUILD_DIR, "linux32_gcc/bin"))
-		objdir (path.join(BUILD_DIR, "linux32_gcc/obj"))
-		libdirs { path.join(LIB_DIR, "lib/linux32_gcc") }
-		buildoptions {
-			"-m32",
-		}
-
-	configuration { "linux-gcc*", "x64" }
-		targetdir (path.join(BUILD_DIR, "linux64_gcc/bin"))
-		objdir (path.join(BUILD_DIR, "linux64_gcc/obj"))
-		libdirs { path.join(LIB_DIR, "lib/linux64_gcc") }
-		buildoptions {
-			"-m64",
-        }
-    ]]
-
 	configuration { "linux*", "x32" }
 		targetdir (path.join(BUILD_DIR, "linux_x32/bin"))
 		objdir (path.join(BUILD_DIR, "linux_x32/obj"))
@@ -734,40 +682,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		buildoptions {
 			"-m64",
 		}
-
-    --[[
-	configuration { "linux-mips-gcc" }
-		targetdir (path.join(BUILD_DIR, "linux32_mips_gcc/bin"))
-		objdir (path.join(BUILD_DIR, "linux32_mips_gcc/obj"))
-		libdirs { path.join(LIB_DIR, "lib/linux32_mips_gcc") }
-		buildoptions {
-			"-Wunused-value",
-			"-Wundef",
-		}
-		links {
-			"rt",
-			"dl",
-		}
-		linkoptions {
-			"-Wl,--gc-sections",
-		}
-
-	configuration { "linux-arm-gcc" }
-		targetdir (path.join(BUILD_DIR, "linux32_arm_gcc/bin"))
-		objdir (path.join(BUILD_DIR, "linux32_arm_gcc/obj"))
-		libdirs { path.join(LIB_DIR, "lib/linux32_arm_gcc") }
-		buildoptions {
-			"-Wunused-value",
-			"-Wundef",
-		}
-		links {
-			"rt",
-			"dl",
-		}
-		linkoptions {
-			"-Wl,--gc-sections",
-        }
-    ]]
 
 	configuration { "android-*" }
 		targetprefix ("lib")
@@ -939,9 +853,9 @@ function toolchain(BUILD_DIR, LIB_DIR)
             "-s WASM=0", -- no Wasm
             "-fdeclspec",
             "-fms-extensions",
-			--"-I\"$(EMSCRIPTEN)/system/include\"",
-			--"-I\"$(EMSCRIPTEN)/system/include/libcxx\"",
-			--"-I\"$(EMSCRIPTEN)/system/include/libc\"",
+			--"-isystem\"$(EMSCRIPTEN)/system/include\"",
+			--"-isystem\"$(EMSCRIPTEN)/system/include/libcxx\"",
+			--"-isystem\"$(EMSCRIPTEN)/system/include/libc\"",
 			"-Wunused-value",
 			"-Wundef",
 		}
@@ -954,9 +868,9 @@ function toolchain(BUILD_DIR, LIB_DIR)
             "-s WASM=0", -- no Wasm
             "-fdeclspec",
             "-fms-extensions",
-            --"-I\"$(EMSCRIPTEN)/system/include\"",
-            --"-I\"$(EMSCRIPTEN)/system/include/libcxx\"",
-            --"-I\"$(EMSCRIPTEN)/system/include/libc\"",
+            --"-isystem\"$(EMSCRIPTEN)/system/include\"",
+            --"-isystem\"$(EMSCRIPTEN)/system/include/libcxx\"",
+            --"-isystem\"$(EMSCRIPTEN)/system/include/libc\"",
             "-Wunused-value",
             "-Wundef",
         }
@@ -1083,6 +997,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		}
 
 	configuration { "ios-simulator" }
+	do
 		targetdir (path.join(BUILD_DIR, "ios-simulator/bin"))
 		objdir (path.join(BUILD_DIR, "ios-simulator/obj"))
 		libdirs { path.join(LIB_DIR, "lib/ios-simulator") }
@@ -1099,8 +1014,10 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-arch i386",
 			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator" ..ios_platform .. ".sdk",
 		}
+	end
 
 	configuration { "ios-simulator64" }
+	do
 		targetdir (path.join(BUILD_DIR, "ios-simulator64/bin"))
 		objdir (path.join(BUILD_DIR, "ios-simulator64/obj"))
 		libdirs { path.join(LIB_DIR, "lib/ios-simulator64") }
@@ -1117,8 +1034,10 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-arch x86_64",
 			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator" ..ios_platform .. ".sdk",
 		}
+	end
 
 	configuration { "tvos*" }
+	do
 		linkoptions {
 			"-lc++",
 		}
@@ -1130,12 +1049,16 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-Wundef",
 		}
 		includedirs { path.join(ROOT_DIR, "include/compat/ios") }
+	end
 
 	configuration { "xcode*", "tvos*" }
+	do
 		targetdir (path.join(BUILD_DIR, "tvos-arm64/bin"))
 		objdir (path.join(BUILD_DIR, "tvos-arm64/obj"))
+	end
 
 	configuration { "tvos-arm64" }
+	do
 		targetdir (path.join(BUILD_DIR, "tvos-arm64/bin"))
 		objdir (path.join(BUILD_DIR, "tvos-arm64/obj"))
 		libdirs { path.join(LIB_DIR, "lib/tvos-arm64") }
@@ -1152,8 +1075,10 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-arch arm64",
 			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk",
 		}
+	end
 
 	configuration { "tvos-simulator" }
+	do
 		targetdir (path.join(BUILD_DIR, "tvos-simulator/bin"))
 		objdir (path.join(BUILD_DIR, "tvos-simulator/obj"))
 		libdirs { path.join(LIB_DIR, "lib/tvos-simulator") }
@@ -1170,6 +1095,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-arch i386",
 			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk",
 		}
+	end
 
     --[[
 	configuration { "orbis" }
@@ -1235,36 +1161,47 @@ end
 
 function strip()
 	configuration { "android-arm", "release" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) $(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-strip -s \"$(TARGET)\""
 		}
+	end
 
 	configuration { "android-x86", "release" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) $(ANDROID_NDK_X86)/bin/i686-linux-android-strip -s \"$(TARGET)\""
 		}
+	end
 
 	configuration { "linux-steamlink", "release" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) $(MARVELL_SDK_PATH)/toolchain/bin/armv7a-cros-linux-gnueabi-strip -s \"$(TARGET)\""
 		}
+	end
 
 	configuration { "linux-* or rpi", "not linux-steamlink", "release" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) strip -s \"$(TARGET)\""
 		}
+	end
 
 	configuration { "mingw*", "release" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) $(MINGW)/bin/strip -s \"$(TARGET)\""
 		}
+	end
 
 	configuration { "asmjs" }
+	do
 		postbuildcommands {
 			"$(SILENT) echo Running asmjs finalize.",
 			"$(SILENT) \"$(EMSCRIPTEN)/emcc\" -O2 "
@@ -1282,8 +1219,10 @@ function strip()
 				.. "\"$(TARGET)\" -o \"$(TARGET)\".html "
 --				.. "--preload-file ../../../examples/runtime@/ "
 		}
+	end
 
-    configuration { "wasm" }
+	configuration { "wasm" }
+	do
         postbuildcommands {
             "$(SILENT) echo Running asmjs finalize.",
             "$(SILENT) \"$(EMSCRIPTEN)/emcc\" -O2 "
@@ -1301,6 +1240,7 @@ function strip()
                 .. "\"$(TARGET)\" -o \"$(TARGET)\".html "
 --				.. "--preload-file ../../../examples/runtime@/ "
         }
+	end
 
     --[[
 	configuration { "riscv" }

@@ -593,13 +593,13 @@ public: // Copy
     {
         if (other.buffer)
         {
-            int length = other.length;
+            int len = other.length;
 
-            buffer = (Buffer*)memory::alloc(sizeof(Buffer) + length);
-            buffer->length   = length;
-            buffer->capacity = length;
+            buffer = (Buffer*)memory::alloc(sizeof(Buffer) + len);
+            buffer->length   = len;
+            buffer->capacity = len;
 
-            memory::copy(buffer->characters, other.buffer->characters, length + 1);
+            memory::copy(buffer->characters, other.buffer->characters, len + 1);
         }
         else
         {
@@ -611,15 +611,15 @@ public: // Copy
     {
         if (other.buffer)
         {
-            int length = other.length;
-            if (buffer->capacity < length)
+            int len = other.length;
+            if (buffer->capacity < len)
             {
-                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + length);
-                buffer->capacity = length;
+                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + len);
+                buffer->capacity = len;
             }
 
-            buffer->length = length;
-            memory::copy(buffer->characters, other.buffer->characters, length + 1);
+            buffer->length = len;
+            memory::copy(buffer->characters, other.buffer->characters, len + 1);
         }
         else if (buffer)
         {
