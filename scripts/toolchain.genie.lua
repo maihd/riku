@@ -26,7 +26,7 @@ local function crt_none()
 	}
 
 	configuration { "linux-*" }
-
+	do
 		buildoptions {
 			"-mpreferred-stack-boundary=4",
 			"-mstackrealign",
@@ -36,14 +36,16 @@ local function crt_none()
 			"-mpreferred-stack-boundary=4",
 			"-mstackrealign",
 		}
+	end
 
+	-- Clear config
 	configuration {}
 end
 
 function toolchain(BUILD_DIR, LIB_DIR)
 	newoption {
 		trigger = "platform",
-		value = "PLATFORM",
+		value = "_PLATFORM",
 		description = "Choose platform",
 		allowed = {
 			{ "android-arm",     "Android - ARM"              },
@@ -170,14 +172,14 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		osx_platform = _OPTIONS["osx"]
 	end
 
-	local tvosPlatform = ""
+	local tvos_platform = ""
 	if _OPTIONS["tvos"] then
-		tvosPlatform = _OPTIONS["tvos"]
+		tvos_platform = _OPTIONS["tvos"]
 	end
 
-	local windowsPlatform = string.gsub(os.getenv("WindowsSDKVersion") or "8.1", "\\", "")
+	local windows_platform = string.gsub(os.getenv("WindowsSDKVersion") or "8.1", "\\", "")
 	if _OPTIONS["windows"] then
-		windowsPlatform = _OPTIONS["windows"]
+		windows_platform = _OPTIONS["windows"]
 	end
 
 	local compiler_32bit = false
@@ -190,14 +192,15 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		"ExtraWarnings",
 	}
 
+	_PLATFORM = _OPTIONS["platform"]
 	if _ACTION == "gmake" or _ACTION == "ninja" then
 
-		if nil == _OPTIONS["platform"] then
+		if nil == _PLATFORM then
 			print("Platform must be specified for gmake or ninja build!")
 			os.exit(1)
 		end
 
-		if string.startwith(_OPTIONS["platform"], "android-") then
+		if string.startwith(_PLATFORM, "android-") then
             if not os.getenv("ANDROID_NDK_ARM")
             or not os.getenv("ANDROID_NDK_ARM64")
 			or not os.getenv("ANDROID_NDK_CLANG")
@@ -208,9 +211,9 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.cc   = "$(ANDROID_NDK_CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(ANDROID_NDK_CLANG)/bin/clang++"
 			premake.gcc.llvm = true
-            location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _OPTIONS["platform"]))
+            location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _PLATFORM))
 
-		elseif "asmjs" == _OPTIONS["platform"] then
+		elseif "asmjs" == _PLATFORM then
 			if not os.getenv("EMSCRIPTEN") then
 				print("Set EMSCRIPTEN environment variable.")
 			end
@@ -221,7 +224,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.llvm = true
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-asmjs"))
 
-		elseif "wasm" == _OPTIONS["platform"] then
+		elseif "wasm" == _PLATFORM then
 			if not os.getenv("EMSCRIPTEN") then
 				print("Set EMSCRIPTEN environment variable.")
 			end
@@ -232,54 +235,54 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.llvm = true
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-wasm"))
 
-		elseif "freebsd" == _OPTIONS["platform"] then
+		elseif "freebsd" == _PLATFORM then
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-freebsd"))
 
-		elseif "ios-arm"   == _OPTIONS["platform"]
-			or "ios-arm64" == _OPTIONS["platform"] then
+		elseif "ios-arm"   == _PLATFORM
+			or "ios-arm64" == _PLATFORM then
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
-			location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _OPTIONS["platform"]))
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _PLATFORM))
 
-		elseif "ios-simulator" == _OPTIONS["platform"] then
+		elseif "ios-simulator" == _PLATFORM then
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-ios-simulator"))
 
-		elseif "ios-simulator64" == _OPTIONS["platform"] then
+		elseif "ios-simulator64" == _PLATFORM then
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-ios-simulator64"))
 
-		elseif "tvos-arm64" == _OPTIONS["platform"] then
+		elseif "tvos-arm64" == _PLATFORM then
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-tvos-arm64"))
 
-		elseif "tvos-simulator" == _OPTIONS["platform"] then
+		elseif "tvos-simulator" == _PLATFORM then
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
             location (path.join(BUILD_DIR, "projects", _ACTION .. "-tvos-simulator"))
             
-		elseif "linux" == _OPTIONS["platform"] then
+		elseif "linux" == _PLATFORM then
 			premake.gcc.cc  = "clang"
 			premake.gcc.cxx = "clang++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux"))
 
-		elseif "linux-afl" == _OPTIONS["platform"] then
+		elseif "linux-afl" == _PLATFORM then
 			premake.gcc.cc  = "afl-clang"
 			premake.gcc.cxx = "afl-clang++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux"))
 
         --[[
-		elseif "linux-steamlink" == _OPTIONS["platform"] then
+		elseif "linux-steamlink" == _PLATFORM then
 			if not os.getenv("MARVELL_SDK_PATH") then
 				print("Set MARVELL_SDK_PATH environment variable.")
 			end
@@ -289,7 +292,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.ar  = "$(MARVELL_SDK_PATH)/toolchain/bin/armv7a-cros-linux-gnueabi-ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux-steamlink"))]]
 
-		elseif "mingw-clang" == _OPTIONS["platform"] then
+		elseif "mingw-clang" == _PLATFORM then
 			premake.gcc.cc   = "$(CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(CLANG)/bin/clang++"
 			premake.gcc.ar   = "$(MINGW)/bin/ar"
@@ -297,7 +300,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 --			premake.gcc.llvm = true
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-mingw"))
 
-		elseif "windows-clang" == _OPTIONS["platform"] then
+		elseif "windows-clang" == _PLATFORM then
 			premake.gcc.cc   = "clang"
 			premake.gcc.cxx  = "clang++"
 			premake.gcc.ar   = "ar"
@@ -306,10 +309,10 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-windows-clang"))
 
         --[[
-		elseif "netbsd" == _OPTIONS["platform"] then
+		elseif "netbsd" == _PLATFORM then
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-netbsd"))]]
 
-		elseif "osx" == _OPTIONS["platform"] then
+		elseif "osx" == _PLATFORM then
 
 			if os.is("linux") then
 				if not os.getenv("OSXCROSS") then
@@ -324,7 +327,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-osx"))
 
         --[[
-		elseif "orbis" == _OPTIONS["platform"] then
+		elseif "orbis" == _PLATFORM then
 
 			if not os.getenv("SCE_ORBIS_SDK_DIR") then
 				print("Set SCE_ORBIS_SDK_DIR environment variable.")
@@ -337,10 +340,10 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.ar  = orbisToolchain .. "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-orbis"))
 
-		elseif "rpi" == _OPTIONS["platform"] then
+		elseif "rpi" == _PLATFORM then
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-rpi"))
 
-		elseif "riscv" == _OPTIONS["platform"] then
+		elseif "riscv" == _PLATFORM then
 			premake.gcc.cc  = "$(FREEDOM_E_SDK)/work/build/riscv-gnu-toolchain/riscv64-unknown-elf/prefix/bin/riscv64-unknown-elf-gcc"
 			premake.gcc.cxx = "$(FREEDOM_E_SDK)/work/build/riscv-gnu-toolchain/riscv64-unknown-elf/prefix/bin/riscv64-unknown-elf-g++"
 			premake.gcc.ar  = "$(FREEDOM_E_SDK)/work/build/riscv-gnu-toolchain/riscv64-unknown-elf/prefix/bin/riscv64-unknown-elf-ar"
@@ -354,8 +357,8 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		then
 
 		local action = premake.action.current()
-		action.vstudio.windowsTargetPlatformVersion    = windowsPlatform
-		action.vstudio.windowsTargetPlatformMinVersion = windowsPlatform
+		action.vstudio.windowsTargetPlatformVersion    = windows_platform
+		action.vstudio.windowsTargetPlatformMinVersion = windows_platform
 
 		if (_ACTION .. "-clang") == _OPTIONS["vs"] then
 			if "vs2017-clang" == _OPTIONS["vs"] then
@@ -429,7 +432,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-ios"))
 
 		elseif "tvos" == _OPTIONS["xcode"] then
-			action.xcode.tvOSTargetPlatformVersion = str_or(tvosPlatform, "9.0")
+			action.xcode.tvOSTargetPlatformVersion = str_or(tvos_platform, "9.0")
 			premake.xcode.toolset = "appletvos"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-tvos"))
 		end
@@ -1139,15 +1142,15 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		linkoptions {
 			"-mtvos-version-min=9.0",
 			"-arch arm64",
-			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvosPlatform .. ".sdk",
-			"-L/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvosPlatform .. ".sdk/usr/lib/system",
-			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvosPlatform .. ".sdk/System/Library/Frameworks",
-			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvosPlatform .. ".sdk/System/Library/PrivateFrameworks",
+			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk",
+			"-L/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk/usr/lib/system",
+			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk/System/Library/Frameworks",
+			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk/System/Library/PrivateFrameworks",
 		}
 		buildoptions {
 			"-mtvos-version-min=9.0",
 			"-arch arm64",
-			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvosPlatform .. ".sdk",
+			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS" ..tvos_platform .. ".sdk",
 		}
 
 	configuration { "tvos-simulator" }
@@ -1157,15 +1160,15 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		linkoptions {
 			"-mtvos-simulator-version-min=9.0",
 			"-arch i386",
-			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvosPlatform .. ".sdk",
-			"-L/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvosPlatform .. ".sdk/usr/lib/system",
-			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvosPlatform .. ".sdk/System/Library/Frameworks",
-			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvosPlatform .. ".sdk/System/Library/PrivateFrameworks",
+			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk",
+			"-L/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk/usr/lib/system",
+			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk/System/Library/Frameworks",
+			"-F/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk/System/Library/PrivateFrameworks",
 		}
 		buildoptions {
 			"-mtvos-simulator-version-min=9.0",
 			"-arch i386",
-			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvosPlatform .. ".sdk",
+			"--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator" ..tvos_platform .. ".sdk",
 		}
 
     --[[

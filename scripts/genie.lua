@@ -2,41 +2,41 @@ local RIKU_DIR          = path.getabsolute("..")
 local RIKU_BUILD_DIR    = path.join(RIKU_DIR, "build")
 local RIKU_3RDPARTY_DIR = path.join(RIKU_DIR, "3rdparty")
 
--- Loading toolchain
-dofile "toolchain.genie.lua"
-toolchain(RIKU_BUILD_DIR, RIKU_3RDPARTY_DIR)
-
 newaction {
-   trigger = 'clean',
-   description = 'Clean all generated projects',
+   trigger = "clean",
+   description = "Clean all generated projects",
    execute = function ()
-      io.write('Removing build directory...')
+      io.write("Removing build directory...")
       
       if os.rmdir(RIKU_BUILD_DIR) then
-         io.write('DONE!\n')
+         io.write("DONE!\n")
       else
-         io.write('FAILED!\n')
+         io.write("FAILED!\n")
       end
    end,
 }
 
-solution 'riku'
+solution "riku"
 do
-   language 'c++'
+   language "c++"
    location (path.join(RIKU_BUILD_DIR, TARGET_PLATFORM))
    
    platforms {
-      'x32', 'x64', 'native'
+      "x32", "x64", "native"
    }
    
    configurations {
-      'debug', 'release'
+      "debug", "release"
    }
 
-   startproject 'riku.unit_tests'
+   startproject "riku.unit_tests"
 end
 
--- Loading riku project
+-- Setting toolchain
+dofile "toolchain.genie.lua"
+toolchain(RIKU_BUILD_DIR, RIKU_3RDPARTY_DIR)
+
+-- Setting riku project
 dofile "riku.genie.lua"
 
 project "riku.unit_tests"
