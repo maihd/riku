@@ -35,8 +35,8 @@ public:
         buffer->keys     = NULL;
         buffer->values   = NULL;
 
-        new (buffer) RefCount();
-        new (&buffer->hashs) Array<int>();
+        init<RefCount>(buffer);
+        init<Array<int>>(&buffer->hashs);
 
         array::ensure(buffer->hashs, hash_count);
         for (int i = 0; i < hash_count; i++)
@@ -67,7 +67,7 @@ public: // Copy
         }
     }
 
-    inline HashTable<T>& operator=(const HashTable<T>&& other)
+    inline HashTable<T>& operator=(const HashTable<T>& other)
     {
         buffer = other.buffer;
         if (buffer)
@@ -149,7 +149,7 @@ namespace table
     }
 
     template <typename T>
-    T& get_ref(const HashTable<T>& table, int key)
+    T& get_or_add(const HashTable<T>& table, int key)
     {
         int hash, prev;
         int curr = find(table, key, &hash, &prev);
@@ -158,11 +158,12 @@ namespace table
         {
             if (table.buffer->length + 1 > table.buffer->capacity)
             {
-                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity : 8;
+                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
                 table.buffer->nexts = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
                 table.buffer->keys = (int*)memory::realloc(table.buffer->keys, sizeof(int) * new_size);
                 table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
 
+                table.buffer->capacity = new_size;
                 always_assert(!(!table.buffer->nexts || !table.buffer->keys || !table.buffer->values), "Out of memory");
             }
 
@@ -213,11 +214,12 @@ namespace table
         {
             if (table.buffer->length + 1 > table.buffer->capacity)
             {
-                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity : 8;
+                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
                 table.buffer->nexts  = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
                 table.buffer->keys   = (int*)memory::realloc(table.buffer->keys, sizeof(int) * new_size);
                 table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
 
+                table.buffer->capacity = new_size;
                 if (!table.buffer->nexts || !table.buffer->keys || !table.buffer->values)
                 {
                     memory::dealloc(table.buffer->nexts);

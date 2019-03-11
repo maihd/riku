@@ -30,6 +30,13 @@ do
    }
 
    startproject "riku.unit_tests"
+
+   configuration { "debug" }
+   do
+      flags {
+         "Symbols"
+      }
+   end
 end
 
 -- Setting toolchain

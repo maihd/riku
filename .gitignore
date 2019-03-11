@@ -2,6 +2,10 @@
 *.obj
 *.out
 
+.vs
+.vscode
+.DS_Store
+
 /build/wasm
 /build/asmjs
 /build/linux*
