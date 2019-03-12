@@ -452,7 +452,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		"NoExceptions",
 		"NoEditAndContinue",
 		"NoFramePointer",
-		"Symbols",
 	}
 
 	defines {
@@ -462,30 +461,45 @@ function toolchain(BUILD_DIR, LIB_DIR)
 	}
 
 	configuration { "debug" }
+	do
 		targetsuffix "debug"
+
 		defines {
 			"_DEBUG",
 		}
 
+		flags {
+			"Symbols",
+		}
+	end
+
 	configuration { "release" }
+	do
+		targetsuffix "release"
+
 		flags {
 			"NoBufferSecurityCheck",
 			"OptimizeSpeed",
 		}
+
 		defines {
 			"NDEBUG",
 		}
-		targetsuffix "release"
+	end
 
 	configuration { "qbs" }
+	do
 		flags {
 			"ExtraWarnings",
 		}
+	end
 
 	configuration { "vs*", "x32" }
+	do
 		flags {
 			"EnableSSE2",
 		}
+	end
 
 	configuration { "vs*", "not orbis", "not NX32", "not NX64" }
 		--includedirs { path.join(ROOT_DIR, "include/compat/msvc") }
