@@ -125,7 +125,7 @@ public:
     }
 
 public:
-    inline Func& bind(NullPtr)
+    inline Func& assign(NullPtr)
     {
         // unref old stub
         this->~Func();
@@ -136,7 +136,7 @@ public:
         return *this;
     }
 
-    inline Func& bind(FuncType func)
+    inline Func& assign(FuncType func)
     {
         // unref old stub
         this->~Func();
@@ -153,7 +153,7 @@ public:
     }
 
     template <typename T>
-    inline Func& bind(T* object, R(T::*method)(Args...))
+    inline Func& assign(T* object, R(T::*method)(Args...))
     {
         // unref old stub
         this->~Func();
@@ -179,7 +179,7 @@ public:
     }
 
     template <typename T>
-    inline Func& bind(const T& functor)
+    inline Func& assign(const T& functor)
     {
         // unref old stub
         this->~Func();
@@ -199,18 +199,18 @@ public:
 public:
     inline Func& operator=(NullPtr)
     {
-        return this->bind(NullPtr());
+        return this->assign(NullPtr());
     }
 
     inline Func& operator=(FuncType func)
     {
-        return this->bind(func);
+        return this->assign(func);
     }
 
     template <typename T>
     inline Func& operator=(const T& functor)
     {
-        return this->bind(functor);
+        return this->assign(functor);
     }
 
 public:
