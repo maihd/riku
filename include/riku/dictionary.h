@@ -5,12 +5,11 @@
 
 #include "./core.h"
 #include "./array.h"
-#include "./crypto.h"
 
 template <typename TKey, typename TValue>
 struct Dictionary
 {
-public: 
+public:
     struct Buffer : RefCount
     {
         int          length;
@@ -106,7 +105,7 @@ public: // RAII
 public: // Methods
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = crypto::murmur(&key, sizeof(key)) % hash_count;
+        int hash = (int)((uint)calc_hash(key) % hash_count);
         int curr = buffer->hashs[hash];
         int prev = -1;
 

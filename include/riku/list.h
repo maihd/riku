@@ -125,7 +125,14 @@ public: // Buffer sizing
                 buffer->items[i].~TItem();
             }
 
-            memory::dealloc(buffer);
+            if (buffer->release() <= 0)
+            {
+                memory::dealloc(buffer);
+            }
+            else
+            {
+                buffer->length = 0;
+            }
             buffer = NULL;
         }
     }

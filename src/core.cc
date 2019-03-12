@@ -2,6 +2,7 @@
 // License: Unlicensed
 
 #include <riku/core.h>
+#include <riku/crypto.h>
 
 #include <time.h>
 #include <stdio.h>
@@ -496,4 +497,9 @@ Date Date::utc(int year, int month, int day, int hours, int minutes, int seconds
         (int)tm->tm_year + 1900, (int)tm->tm_mon,
         (int)tm->tm_mday, (int)tm->tm_wday, (int)tm->tm_yday,
         (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
+}
+
+int calc_hash(const void* buffer, usize length)
+{
+    return crypto::murmur(buffer, length);
 }

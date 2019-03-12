@@ -5,7 +5,11 @@
 #include "./dictionary.h"
 
 // EventEmitter: High-level event emitter. An alternative for C# multicast delegate.
-template <typename TFunc, typename TName = int>
+template <typename TName, typename TFunc>
+struct EventEmitter;
+
+// EventEmitter: High-level event emitter. An alternative for C# multicast delegate.
+template <typename TName, typename TFunc>
 struct EventEmitter
 {
 public:
@@ -38,27 +42,25 @@ public:
 
     bool once(const TName& name, const TFunc& func)
     {
-        List<TFunc>& once_listeners = entries[name];
-        return listeners.push(func);
+        List<TFunc>& once_listeners = once_entries[name];
+        return once_listeners.push(func);
     }
 
     template <typename... TArgs>
-    bool emit(const TName& name, TArgs... args) const
+    uint emit(const TName& name, TArgs... args) const
     {
-        bool result = false;
+        uint result = 0;
 
-        const List<TFunc>& listeners = entries[name];
-        for (int i = 0, n = listeners.length; i < n; i++)
+        List<TFunc> listeners = entries[name];
+        for (int i = 0, n = listeners.length; i < n; i++, result++)
         {
             listeners[i](args...);
-            result = true;
         }
 
-        List<TFunc>& once_listeners = (List<TFunc>&)once_entries[name];
-        for (int i = 0, n = once_listeners.length; i < n; i++)
+        List<TFunc> once_listeners = once_entries[name];
+        for (int i = 0, n = once_listeners.length; i < n; i++, result++)
         {
             once_listeners[i](args...); 
-            result = true;
         }
 
         // Remove all listeners that emit once time only

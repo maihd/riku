@@ -243,6 +243,7 @@ using bigint    = long long int;
 using biguint   = unsigned long long int;
 using bigfloat  = long double;
 
+using cstr      = const char*;
 using byte      = unsigned char;
 using sbyte     = char;
 
@@ -964,3 +965,18 @@ public: // Utils
         return N1 - (N2 * N3) + day - 30;
     }
 };
+
+// Common hash function
+__rikuapi int calc_hash(const void* buffer, usize length);
+
+template <typename T>
+inline int calc_hash(const T& x)
+{
+    return calc_hash(&x, sizeof(x));
+}
+
+template <>
+inline int calc_hash<cstr>(const cstr& x)
+{
+    return calc_hash(x, string::length(x));
+}

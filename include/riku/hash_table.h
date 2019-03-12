@@ -114,7 +114,7 @@ namespace table
     template <typename T>
     int find(const HashTable<T>& table, int key, int* out_hash = NULL, int* out_prev = NULL)
     {
-        int hash = key % hash_count(table);
+        int hash = ((int)(uint)key) % hash_count(table);
         int curr = table.buffer->hashs[hash];
         int prev = -1;
 
