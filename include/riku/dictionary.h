@@ -137,7 +137,7 @@ public: // Methods
         return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
-    TValue& get_or_add(const TKey& key)
+    TValue& get_or_new(const TKey& key)
     {
         int hash, prev;
         int curr = index_of(key, &hash, &prev);
@@ -240,7 +240,7 @@ public: // Methods
 public: // Operator 
     inline TValue& operator[](const TKey& key)
     {
-        return get_or_add(key);
+        return get_or_new(key);
     }
 
     inline TValue  operator[](const TKey& key) const

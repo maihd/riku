@@ -149,7 +149,7 @@ namespace table
     }
 
     template <typename T>
-    T& get_or_add(const HashTable<T>& table, int key)
+    T& get_or_new(const HashTable<T>& table, int key)
     {
         int hash, prev;
         int curr = index_of(table, key, &hash, &prev);
