@@ -85,7 +85,7 @@ public:
     inline Func(FuncType func)
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         stub->size      = sizeof(Stub);
         stub->func      = &Stub::call_func;
@@ -96,7 +96,7 @@ public:
     inline Func(T* object, R (T::*method)(Args...))
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         using TMethod = R(T::*)(Args...);
         union 
@@ -116,7 +116,7 @@ public:
     inline Func(const T& functor)
         : stub((Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor))))
     {
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         stub->size   = sizeof(Stub);
         stub->func   = &Stub::template call_functor<T>;
@@ -160,7 +160,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub)); 
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         using TMethod = R(T::*)(Args...);
         union
@@ -186,7 +186,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor)));
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         stub->size = sizeof(Stub);
         stub->func = &Stub::template call_functor<T>;

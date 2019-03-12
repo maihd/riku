@@ -35,8 +35,8 @@ public:
         buffer->keys     = NULL;
         buffer->values   = NULL;
 
-        init<RefCount>(buffer);
-        init<Array<int>>(&buffer->hashs);
+        INIT(buffer) RefCount();
+        INIT(&buffer->hashs) Array<int>();
 
         array::ensure(buffer->hashs, hash_count);
         for (int i = 0; i < hash_count; i++)

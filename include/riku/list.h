@@ -149,7 +149,7 @@ public: // Buffer sizing
             if (!old_buf)
             {
                 // Initialize RefCount
-                init<RefCount>(new_buf);
+                INIT(new_buf) RefCount();
 
                 // Initialize Buffer
                 new_buf->length = 0;
@@ -159,7 +159,7 @@ public: // Buffer sizing
             {
                 for (int i = old_size; i < new_size; i++)
                 {
-                    init<TItem>(&new_buf->items[i]);
+                    INIT(&new_buf->items[i]) TItem();
                 }
             }
 

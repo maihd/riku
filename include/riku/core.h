@@ -353,42 +353,22 @@ struct NewDummy {};
 __forceinline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
 __forceinline void  operator delete(void*, NewDummy, void*)     {             }
 
-template <typename T, typename... Args>
-__forceinline T* init(void* ptr, Args...args)
-{
-    return new (NewDummy(), ptr) T(args...);
-}
-
-template <typename T, typename... Args>
-__forceinline T* create(Args...args)
-{
-    return new (NewDummy(), memory::alloc(sizeof(T))) T(args...);
-}
+#define INIT(ptr)    new (NewDummy(), ptr)
+#define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
+#define DESTROY(ptr) __DO_DESTROY(ptr)
 
 template <typename T>
-__forceinline void destroy(T* ptr)
+__forceinline bool __DO_DESTROY(T* ptr)
 {
-    if (ptr)
-    {
-        ptr->~T();
-        memory::dealloc(ptr);
+    if (ptr) 
+    { 
+        (ptr)->~T(); 
+        memory::dealloc(ptr); 
+        return true;
     }
-}
-
-template <typename T>
-__forceinline T* create_array(long count)
-{
-    assert(count > 0, "Number of items must be non-zero positive");
-    return new (NewDummy(), memory::alloc(count * sizeof(T))) T[count];
-}
-
-template <typename T>
-__forceinline void destroy_array(T* ptr)
-{
-    if (ptr)
+    else
     {
-        ptr->~T();
-        memory::dealloc((void*)ptr);
+        return false;
     }
 }
 

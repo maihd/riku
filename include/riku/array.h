@@ -272,7 +272,7 @@ namespace array
             if (!old_buf)
             {
                 // Initialize RefCount
-                init<RefCount>(new_buf);
+                INIT(new_buf) RefCount();
 
                 // Initialize Buffer
                 new_buf->length = 0;

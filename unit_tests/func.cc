@@ -53,9 +53,9 @@ TEST_CASE("Testing Func<...>", "[Func<>]")
     //init<decltype(print)>(&table::get_or_add(func_table, 3), print3);
 
     FuncTable func_table;
-    init<decltype(print)>(&table::get_or_add(func_table, 1), print);
-    init<decltype(print)>(&table::get_or_add(func_table, 2), print2);
-    init<decltype(print)>(&table::get_or_add(func_table, 3), print3);
+    INIT(&table::get_or_add(func_table, 1)) Func<void(const char*)>(print);
+    INIT(&table::get_or_add(func_table, 2)) Func<void(const char*)>(print2);
+    INIT(&table::get_or_add(func_table, 3)) Func<void(const char*)>(print3);
 
     table::get(func_table, 1)("FuncTable: Hello world");
     table::get(func_table, 2)("FuncTable: Hello world 2");
