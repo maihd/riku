@@ -30,6 +30,9 @@
     <ClInclude Include="..\..\..\include\riku\dylib.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\events.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\fs.h">
       <Filter>include\riku</Filter>
     </ClInclude>

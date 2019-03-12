@@ -259,4 +259,23 @@ public:
 
         return -1;
     }
+
+public:
+    inline bool erase(int index)
+    {
+        if (index > -1 && index < length)
+        {
+            memory::move(buffer->items + index, buffer->items + index + 1, length - index - 2);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    inline bool remove(const TItem& value)
+    {
+        return erase(index_of(value));
+    }
 };

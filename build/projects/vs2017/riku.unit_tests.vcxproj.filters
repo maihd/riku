@@ -23,6 +23,9 @@
     <ClCompile Include="..\..\..\unit_tests\dictionary.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\events.cc">
+      <Filter>unit_tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\fs.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>

@@ -185,7 +185,7 @@ public: // Methods
 
     bool try_get(const TKey& key, TValue* out_value) const
     {
-        int curr = index_of(table, key);
+        int curr = index_of(key);
         if (curr > -1)
         {
             *out_value = buffer->values[curr];
@@ -244,7 +244,7 @@ public: // Operator
         return get_or_add(key);
     }
 
-    inline TValue operator[](const TValue& key) const
+    inline TValue  operator[](const TKey& key) const
     {
         TValue value;
         return try_get(key, &value) ? value : TValue();

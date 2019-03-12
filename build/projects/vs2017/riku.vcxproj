@@ -248,6 +248,7 @@
     <ClInclude Include="..\..\..\include\riku\crypto.h" />
     <ClInclude Include="..\..\..\include\riku\dictionary.h" />
     <ClInclude Include="..\..\..\include\riku\dylib.h" />
+    <ClInclude Include="..\..\..\include\riku\events.h" />
     <ClInclude Include="..\..\..\include\riku\fs.h" />
     <ClInclude Include="..\..\..\include\riku\func.h" />
     <ClInclude Include="..\..\..\include\riku\hash_table.h" />

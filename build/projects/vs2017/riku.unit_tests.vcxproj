@@ -243,6 +243,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\dictionary.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\events.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\fs.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\func.cc">
