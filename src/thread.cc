@@ -1,5 +1,8 @@
 #include <riku/thread.h>
 
+#include <errno.h>
+#include <stdlib.h>
+
 #if PLATFORM_WINDOWS
 #include <Windows.h>
 #elif PLATFORM_UNIX
@@ -172,7 +175,7 @@ void Condition::wait(const Mutex& mutex)
         abort();
     }
 #elif PLATFORM_UNIX
-    if (pthread_cond_wait((CONDITION_VARIABLE*)handle, mutex))
+    if (pthread_cond_wait((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle))
     {
         abort();
     }
@@ -212,17 +215,17 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
         abort();
     timeout += tv.tv_sec * NANOSEC + tv.tv_usec * 1e3;
 #else
-    timeout += uv__hrtime(UV_CLOCK_PRECISE);
+    //timeout += uv__hrtime(UV_CLOCK_PRECISE);
 #endif
-    ts.tv_sec = timeout / NANOSEC;
-    ts.tv_nsec = timeout % NANOSEC;
+    ts.tv_sec  = nanoseconds / 1000000000;
+    ts.tv_nsec = nanoseconds % 1000000000;
 #if defined(__ANDROID_API__) && __ANDROID_API__ < 21
 
     /*
      * The bionic pthread implementation doesn't support CLOCK_MONOTONIC,
      * but has this alternative function instead.
      */
-    r = pthread_cond_timedwait_monotonic_np((CONDITION_VARIABLE*)handle, mutex, &ts);
+    r = pthread_cond_timedwait_monotonic_np((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle, &ts);
 #else
     r = pthread_cond_timedwait((CONDITION_VARIABLE*)handle, mutex, &ts);
 #endif /* __ANDROID_API__ */
@@ -230,13 +233,17 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 
 
     if (r == 0)
-        return 0;
+    {
+        return true;
+    }
 
     if (r == ETIMEDOUT)
-        return UV_ETIMEDOUT;
+    {
+        return false;
+    }
 
     abort();
-    return UV_EINVAL; /* Satisfy the compiler. */
+    return false; /* Satisfy the compiler. */
 #endif
 }
 

@@ -13,3 +13,8 @@
 /build/win32_*
 /build/winrt_*
 /build/windows_*
+
+/build/projects/vs2017_android/x86
+/build/projects/vs2017_android/ARM
+/build/projects/vs2017_android/**/ARM
+/build/projects/vs2017_android/**/x86
