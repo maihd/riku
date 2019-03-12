@@ -112,7 +112,7 @@ namespace table
     }
 
     template <typename T>
-    int find(const HashTable<T>& table, int key, int* out_hash = NULL, int* out_prev = NULL)
+    int index_of(const HashTable<T>& table, int key, int* out_hash = NULL, int* out_prev = NULL)
     {
         int hash = ((int)(uint)key) % hash_count(table);
         int curr = table.buffer->hashs[hash];
@@ -137,14 +137,14 @@ namespace table
     template <typename T>
     const T& get(const HashTable<T>& table, int key)
     {
-        int curr = find(table, key);
+        int curr = index_of(table, key);
         return table.buffer->values[curr];
     }
 
     template <typename T>
     const T& get(const HashTable<T>& table, int key, const T& def_value)
     {
-        int curr = find(table, key);
+        int curr = index_of(table, key);
         return (curr > -1) ? table.buffer->values[curr] : def_value;
     }
 
@@ -152,7 +152,7 @@ namespace table
     T& get_or_add(const HashTable<T>& table, int key)
     {
         int hash, prev;
-        int curr = find(table, key, &hash, &prev);
+        int curr = index_of(table, key, &hash, &prev);
 
         if (curr < 0)
         {
@@ -186,13 +186,13 @@ namespace table
     template <typename T>
     bool has(const HashTable<T>& table, int key)
     {
-        return find(table, key) > -1;
+        return index_of(table, key) > -1;
     }
 
     template <typename T>
     bool try_get(const HashTable<T>& table, int key, T* out_value)
     {
-        int curr = find(table, key);
+        int curr = index_of(table, key);
         if (curr > -1)
         {
             *out_value = table.buffer->values[curr];
@@ -208,7 +208,7 @@ namespace table
     bool set(HashTable<T>& table, int key, const T& value)
     {
         int hash, prev;
-        int curr = find(table, key, &hash, &prev);
+        int curr = index_of(table, key, &hash, &prev);
 
         if (curr < 0)
         {
