@@ -372,14 +372,6 @@ __forceinline bool __DO_DESTROY(T* ptr)
     }
 }
 
-// 
-// C-String operator
-// 
-namespace string
-{
-    __rikuapi usize length(const char* s);
-}
-
 //
 // Right value trait
 //
@@ -508,6 +500,30 @@ public: // Factory functions
 // String types
 //
 
+// C-string operator
+namespace string
+{
+    __rikuapi usize       length(const char* s);
+
+#if 0 && PREVIEWING
+    __rikuapi const char* sub(const char* str, int start);
+    __rikuapi const char* sub(const char* str, int start, char* buffer, usize length);
+
+    __rikuapi const char* sub(const char* str, int start, int end);
+    __rikuapi const char* sub(const char* str, int start, int end, char* buffer, usize length);
+#endif
+
+    __rikuapi const char* copy(char* dst, const char* src);
+    __rikuapi const char* copy(char* dst, const char* src, usize length);
+
+    __rikuapi const char* concat(char* dst, const char* src);
+    __rikuapi const char* concat(char* dst, const char* src, usize length);
+
+    __rikuapi int         compare(const char* dst, const char* src);
+    __rikuapi int         compare(const char* dst, const char* src, usize length);
+}
+
+// String: high-level string type
 struct String 
 {
 public: // Members

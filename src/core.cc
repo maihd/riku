@@ -96,14 +96,66 @@ namespace memory
 }
 
 //
-// String
+// C-string
 // 
 
 namespace string
 {
-    usize length(const char* s)
+    usize length(const char* str)
     {
-        return strlen(s);
+        return strlen(str);
+    }
+
+#if 0 && PREVIEWING
+    const char* sub(const char* str, int start)
+    {
+        return "";
+    }
+
+    const char* sub(const char* str, int start, char* buffer, usize length)
+    {
+        return "";
+    }
+
+    const char* sub(const char* str, int start, int end)
+    {
+        return "";
+    }
+
+    const char* sub(const char* str, int start, int end, char* buffer, usize length)
+    {
+        return "";
+    }
+#endif
+
+    const char* copy(char* dst, const char* src)
+    {
+        return strcpy(dst, src);
+    }
+
+    const char* copy(char* dst, const char* src, usize length)
+    {
+        return strncpy(dst, src, length);
+    }
+
+    const char* concat(char* dst, const char* src)
+    {
+        return strcat(dst, src);
+    }
+
+    const char* concat(char* dst, const char* src, usize length)
+    {
+        return strncat(dst, src, length);
+    }
+
+    int compare(const char* dst, const char* src)
+    {
+        return strcmp(dst, src);
+    }
+
+    int compare(const char* dst, const char* src, usize length)
+    {
+        return strncmp(dst, src, length);
     }
 }
 
