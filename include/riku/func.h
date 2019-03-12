@@ -143,7 +143,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub)); 
-        init<RefCount>(stub);
+        INIT(stub) RefCount();
 
         stub->size      = sizeof(Stub);
         stub->func      = &Stub::call_func;

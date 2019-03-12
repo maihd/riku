@@ -155,13 +155,14 @@ public: // Buffer sizing
                 new_buf->length = 0;
             }
 
+            /* NO
             if (new_size > old_size)
             {
                 for (int i = old_size; i < new_size; i++)
                 {
                     INIT(&new_buf->items[i]) TItem();
                 }
-            }
+            }*/
 
             buffer           = new_buf;
             buffer->capacity = new_size;
@@ -201,7 +202,7 @@ public: // Buffer modifying
             return false;
         }
 
-        buffer->items[buffer->length++] = value;
+        INIT(&buffer->items[buffer->length++], value) TItem(value);
         return true;
     }
     
@@ -236,7 +237,7 @@ public: // Buffer modifying
         memory::move(buffer->items + 1, buffer->items, this->length * sizeof(TItem));
         
         buffer->length++;
-        init<TItem>(&buffer->items[0], value);
+        INIT(&buffer->items[0], value) TItem(value);
         return true;
     }
 

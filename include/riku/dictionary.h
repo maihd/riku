@@ -215,8 +215,8 @@ public: // Methods
                 buffer->capacity = new_size;
                 for (int i = buffer->length; i < new_size; i++)
                 {
-                    init<TKey>(&buffer->keys[i]);
-                    init<TValue>(&buffer->values[i]);
+                    INIT(&buffer->keys[i]) TKey();
+                    INIT(&buffer->values[i]) TValue();
                 }
             }
 
