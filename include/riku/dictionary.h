@@ -24,7 +24,14 @@ public:
     Buffer* buffer;
 
 public: // Properties
+    propdef_readonly(get_length)     int length;
     propdef_readonly(get_hash_count) int hash_count;
+
+    __forceinline int get_length(void) const
+    {
+        return buffer ? buffer->length : 0;
+    }
+
     __forceinline int get_hash_count(void) const
     {
         return buffer ? buffer->hashs.length : 0;
