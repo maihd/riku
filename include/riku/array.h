@@ -51,6 +51,12 @@ namespace array
 
     template <typename TItem>
     inline Array<TItem> clone(const Array<TItem>& array);
+
+    template <typename TItem>
+    inline int erase(const Array<TItem>& array, int index);
+
+    template <typename TItem>
+    inline int remove(const Array<TItem>& array, const TItem& value);
 }
 
 // Array: POD growable continuos-sequence container
@@ -421,6 +427,26 @@ namespace array
         }
 
         return make_rvalue(res);
+    }
+
+    template <typename TItem>
+    inline int erase(const Array<TItem>& array, int index)
+    {
+        if (index > -1 && index < array.length)
+        {
+            memory::move(array.buffer->items + index, array.buffer->items + index + 1, array.length - index - 2);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    template <typename TItem>
+    inline int remove(const Array<TItem>& array, const TItem& value)
+    {
+        return array::erase(array, array::index_of(array, value));
     }
 
     template <typename TItem>
