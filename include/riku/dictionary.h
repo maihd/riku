@@ -24,8 +24,20 @@ public:
     Buffer* buffer;
 
 public: // Properties
-    propdef_readonly(get_length)     int length;
-    propdef_readonly(get_hash_count) int hash_count;
+    propdef_readonly(get_keys)       TKey*      keys;
+    propdef_readonly(get_values)     TValue*    values;
+    propdef_readonly(get_length)     int        length;
+    propdef_readonly(get_hash_count) int        hash_count;
+
+    __forceinline const TKey* get_keys(void) const
+    {
+        return buffer ? buffer->keys : 0;
+    }
+
+    __forceinline const TValue* get_values(void) const
+    {
+        return buffer ? buffer->values : 0;
+    }
 
     __forceinline int get_length(void) const
     {

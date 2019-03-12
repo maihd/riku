@@ -23,6 +23,32 @@ public:
 public:
     Buffer* buffer;
 
+public: // Properties
+    propdef_readonly(get_keys)       int*   keys;
+    propdef_readonly(get_values)     T*     values;
+    propdef_readonly(get_length)     int    length;
+    propdef_readonly(get_hash_count) int    hash_count;
+
+    __forceinline const int* get_keys(void) const
+    {
+        return buffer ? buffer->keys : 0;
+    }
+
+    __forceinline const T* get_values(void) const
+    {
+        return buffer ? buffer->values : 0;
+    }
+
+    __forceinline int get_length(void) const
+    {
+        return buffer ? buffer->length : 0;
+    }
+
+    __forceinline int get_hash_count(void) const
+    {
+        return buffer ? buffer->hashs.length : 0;
+    }
+
 public:
     inline HashTable(int hash_count = 64)
         : buffer((Buffer*)memory::alloc(sizeof(Buffer)))
