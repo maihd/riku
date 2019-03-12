@@ -5,7 +5,7 @@
 
 #include "./core.h"
 
-// List: highlevel, non-POD continuos-sequence container, call constructor and desctructor of object
+// List: high-level, non-POD continuos-sequence container, call constructor and desctructor of object
 // @note: Donot use pointer of this type
 template <typename TItem>
 struct List
@@ -231,5 +231,32 @@ public: // Buffer modifying
         buffer->length++;
         init<TItem>(&buffer->items[0], value);
         return true;
+    }
+
+public:
+    inline int index_of(const TItem& value)
+    {
+        for (int i = 0, n = length; i < n; i++)
+        {
+            if (value == buffer->items[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    inline int last_index_of(const TItem& value)
+    {
+        for (int i = length - 1; i > -1; i--)
+        {
+            if (value == buffer->items[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 };
