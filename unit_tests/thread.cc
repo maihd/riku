@@ -8,7 +8,12 @@ TEST_CASE("Thread testing", "[thread]")
 {
     Thread* thread = CREATE(Thread) Thread();
     thread->start([]() {
-        console::log("Thread: hello world!");
+        int count = 0;
+        while (count--)
+        {
+            console::log("Thread: hello world!");
+            performance::sleep(1000);
+        }
     });
 
     thread->wait();
