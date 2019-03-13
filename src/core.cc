@@ -322,13 +322,13 @@ namespace process
         return path;
     }
 
-    usize cwd(char* buffer, usize length)
+    const char* cwd(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
-        uint size = GetCurrentDirectoryA(length, buffer);
-        return size;
+        GetCurrentDirectoryA(length, buffer);
+        return buffer;
     #elif PLATFORM_ANDROID
-        return (usize)(::getcwd(buffer, length) - buffer);
+        return ::getcwd(buffer, length);
     #endif
     }
 

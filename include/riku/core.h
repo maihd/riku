@@ -319,19 +319,6 @@ namespace memory
     __rikuapi int   compare(const void* a, const void* b, usize size);
 }
 
-struct RefCount
-{
-public:
-    int __refcount; // __ for avoid member collision.
-
-public:
-    constexpr RefCount(void) : __refcount(1) {}
-
-public:
-    inline int retain(void)  { return ++__refcount; };
-    inline int release(void) { return --__refcount; };
-};
-
 #if 0 && EXPERIMENTAL
 __forceinline void* operator new(usize size) 
 {
@@ -445,6 +432,19 @@ public:
 
 public:
     inline operator bool() const { return has_value; }
+};
+
+struct RefCount
+{
+public:
+    int __refcount; // __ for avoid member collision.
+
+public:
+    constexpr RefCount(void) : __refcount(1) {}
+
+public:
+    inline int retain(void) { return ++__refcount; };
+    inline int release(void) { return --__refcount; };
 };
 
 // Simple memory buffer
@@ -662,123 +662,6 @@ public:
     } 
 };
 
-//
-// Ptr types
-//
-
-template <typename T>
-struct UniPtr 
-{
-public:
-    T* raw;
-
-public:
-    inline UniPtr(T* ptr)
-        : raw(ptr)
-    {
-    }
-
-    inline ~UniPtr(void)
-    {
-        memory::dealloc(raw);
-    }
-
-public:
-    inline UniPtr(UniPtr<T>&& other)
-        : raw(other.raw)
-    {
-        other.raw = NULL;
-    }
-
-    inline UniPtr<T>& operator=(UniPtr<T>&& other)
-    {
-        raw = other.raw; other.raw = NULL; return *this;
-    }
-
-public:
-    inline       T* operator->(void)       { return raw; }
-    inline const T* operator->(void) const { return raw; }
-};
-
-template <typename T>
-struct SharedPtr
-{
-public:
-    T*        raw;
-    RefCount* ref;
-
-public:
-    inline SharedPtr(T* ptr)
-        : raw(ptr)
-        , ref(new RefCount()) {}
-
-    inline ~SharedPtr(void)
-    {
-        if (ref->release() <= 0)
-        {
-            memory::dealloc(raw);
-            delete ref;
-        }
-    }
-
-public:
-    inline SharedPtr(SharedPtr<T>&& other)
-        : raw(other.raw)
-        , ref(other.ref) 
-    {
-        other.raw = 0;
-        other.ref = 0;
-    }
-
-    inline SharedPtr<T>& operator=(SharedPtr<T>&& other)
-    {
-        // Should release old pointer
-        this->~SharedPtr();
-
-        // Assign new pointer
-        raw = other.raw;
-        ref = other.ref; 
-        other.raw = 0;
-        other.ref = 0;
-
-        return *this;
-    }
-
-    inline SharedPtr(const SharedPtr<T>& other)
-        : raw(other.raw)
-        , ref(other.ref) 
-    {
-        ref->retain();
-    }
-
-    inline SharedPtr<T>& operator=(const SharedPtr<T>& other)
-    {
-        // Should release old pointer
-        this->~SharedPtr();
-
-        // Assign new pointer
-        raw = other.raw;
-        ref = other.ref;
-        ref->retain();
-        return *this;
-    }
-
-public:
-    inline       T* operator->(void)       { return raw; }
-    inline const T* operator->(void) const { return raw; }
-};
-
-// WeakPtr: tell the others that donot make hurt the pointer
-template <typename T>
-struct WeakPtr
-{
-    T* raw;
-    inline WeakPtr(T* ptr) : raw(ptr) {}
-
-    inline       T* operator->(void)       { return raw; }
-    inline const T* operator->(void) const { return raw; }
-};
-
 // Console
 namespace console
 {
@@ -812,7 +695,7 @@ namespace process
     } env;
 
     __rikuapi const char* cwd(void);
-    __rikuapi usize       cwd(char* buffer, usize length);
+    __rikuapi const char* cwd(char* buffer, usize length);
     __rikuapi bool        chdir(const char* directory);
 
     __rikuapi void        exit(int code);
