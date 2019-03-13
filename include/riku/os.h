@@ -102,17 +102,17 @@ namespace os
 
     __rikuapi const char*   tmpdir(void);
     __rikuapi const char*   homedir(void);
-    __rikuapi usize         tmpdir(char* buffer, usize length);
-    __rikuapi usize         homedir(char* buffer, usize length);
+    __rikuapi const char*   tmpdir(char* buffer, usize length);
+    __rikuapi const char*   homedir(char* buffer, usize length);
 
     __rikuapi const char*   hostname(void);
-    __rikuapi usize         hostname(char* buffer, usize length);
+    __rikuapi const char*   hostname(char* buffer, usize length);
 
     __rikuapi void          loadavg(float avgs[3]);
     __rikuapi void          loadavg(double avgs[3]);
 
     __rikuapi const char*   version(void);
-    __rikuapi usize         version(char* buffer, usize length);
+    __rikuapi const char*   version(char* buffer, usize length);
 
     __rikuapi biguint       uptime(void);
     __rikuapi usize         cpus(CPU* buffer, usize length);

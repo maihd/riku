@@ -71,10 +71,11 @@ namespace os
     #endif
     }
 
-    usize tmpdir(char* buffer, usize length)
+    const char* tmpdir(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
-        return ::GetTempPathA(length, buffer);
+        ::GetTempPathA(length, buffer);
+        return buffer;
     #elif PLATFORM_UNIX
         const char* envbuf;
         #define GET_ENV_VAR(name) if ((envbuf = getenv(name))) goto success
@@ -86,15 +87,15 @@ namespace os
 
     //failed:
         buffer[0] = 0;
-        return 0;
+        return buffer;
 
     success:
         strncpy(buffer, envbuf, length);
-        return string::length(buffer);
+        return buffer;
     #endif
     }
 
-    usize homedir(char* buffer, usize length)
+    const char* homedir(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
         usize drive_size = ::GetEnvironmentVariableA("HOMEDRIVE", buffer, length);
@@ -103,11 +104,11 @@ namespace os
         if (!path_size)
         {
             buffer[0] = 0;
-            return 0;
+            return buffer;
         }
         else
         {
-            return path_size + drive_size;
+            return buffer;
         }
     #elif PLATFORM_UNIX 
         const char* homedir = getenv("HOME");
@@ -116,7 +117,7 @@ namespace os
             homedir = getpwuid(getuid())->pw_dir;
         }
         strncpy(buffer, homedir, length);
-        return string::length(buffer);
+        return buffer;
     #endif
     }
 
@@ -141,13 +142,15 @@ namespace os
         return name;
     }
 
-    usize hostname(char* buffer, usize length)
+    const char* hostname(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
         DWORD size = (DWORD)length;
-        return GetComputerNameExA(ComputerNameDnsHostname, buffer, &size) ? (usize)size : 0;
+        GetComputerNameExA(ComputerNameDnsHostname, buffer, &size) ? (usize)size : 0;
+        return buffer;
     #elif PLATFORM_UNIX
-        return gethostname(buffer, length) == 0 ? length : 0;
+        gethostname(buffer, length);
+        return buffer;
     #endif
     }
 
@@ -191,12 +194,12 @@ namespace os
 
     const char* version(void)
     {
-        __threadstatic char res[1024];
-        version(res, sizeof(res));
-        return res;
+        __threadstatic char buffer[1024];
+        version(buffer, sizeof(buffer));
+        return buffer;
     }
 
-    usize version(char* buffer, usize length)
+    const char* version(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
         OSVERSIONINFOA os_info;
@@ -207,7 +210,7 @@ namespace os
             return 0;
         }
 
-        return (usize)snprintf(buffer, length,
+        return string::format(buffer, length,
             "Windows_NT-%u.%u",
             (uint)os_info.dwMajorVersion,
             (uint)os_info.dwMinorVersion);
@@ -219,7 +222,7 @@ namespace os
             return 0;
         }
 
-        return (usize)snprintf(buffer, length, "%s.%s", buf.version, buf.release);
+        return string::format(buffer, length, "%s.%s", buf.version, buf.release);
     #endif
     }
 
