@@ -15,4 +15,9 @@ TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
     string0 = heap_string0;
     console::log("heap_string0 = \"%s\"", (const char*)heap_string0);
     console::log("string0 = \"%s\"", (const char*)string0);
+
+    REQUIRE(string::compare(string::format("Hello world %d", 0), "Hello world 0") == 0);
+
+    char buffer[2048];
+    REQUIRE(string::compare(string::format(buffer, sizeof(buffer), "Hello world %d", 0), "Hello world 0") == 0);
 }

@@ -315,6 +315,8 @@ namespace memory
     __rikuapi void* init(void* dst, int val, usize size);
     __rikuapi void* copy(void* dst, const void* src, usize size);
     __rikuapi void* move(void* dst, const void* src, usize size);
+
+    __rikuapi int   compare(const void* a, const void* b, usize size);
 }
 
 struct RefCount
@@ -518,6 +520,14 @@ namespace string
 
     __rikuapi const char* concat(char* dst, const char* src);
     __rikuapi const char* concat(char* dst, const char* src, usize length);
+
+    __rikuapi const char* format(const char* fmt, ...);
+    //__rikuapi const char* format(char* buffer, const char* fmt, ...);
+    __rikuapi const char* format(char* buffer, usize length, const char* fmt, ...);
+
+    __rikuapi const char* format_args(const char* fmt, ArgsList args_list);
+    //__rikuapi const char* format_args(char* buffer, const char* fmt, ArgsList args_list);
+    __rikuapi const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list);
 
     __rikuapi int         compare(const char* dst, const char* src);
     __rikuapi int         compare(const char* dst, const char* src, usize length);

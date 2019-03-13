@@ -162,6 +162,55 @@ namespace string
     {
         return strncmp(dst, src, length);
     }
+
+    const char* format(const char* fmt, ...)
+    {
+        ArgsList args_list;
+        argslist_begin(args_list, fmt);
+        const char* result = format_args(fmt, args_list);
+        argslist_end(args_list);
+
+        return result;
+    }
+
+    //const char* format(char* buffer, const char* fmt, ...)
+    //{
+    //    ArgsList args_list;
+    //    argslist_begin(args_list, fmt);
+    //    const char* result = format_args(buffer, fmt, args_list);
+    //    argslist_end(args_list);
+    //
+    //    return result;
+    //}
+
+    const char* format(char* buffer, usize length, const char* fmt, ...)
+    {
+        ArgsList args_list;
+        argslist_begin(args_list, fmt);
+        const char* result = format_args(buffer, length, fmt, args_list);
+        argslist_end(args_list);
+
+        return result;
+    }
+
+    const char* format_args(const char* fmt, ArgsList args_list)
+    {
+        __threadstatic char buffer[2048];
+        vsnprintf(buffer, sizeof(buffer), fmt, args_list);
+        return buffer;
+    }
+
+    //const char* format_args(char* buffer, const char* fmt, ArgsList args_list)
+    //{
+    //    vsprintf(buffer, fmt, args_list);
+    //    return buffer;
+    //}
+
+    const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list)
+    {
+        vsnprintf(buffer, length, fmt, args_list);
+        return buffer; 
+    }
 }
 
 //
