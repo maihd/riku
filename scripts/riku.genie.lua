@@ -17,7 +17,8 @@ do
    }
 
    includedirs {
-      path.join(RIKU_DIR, "include")
+      path.join(RIKU_DIR, "include"),
+      path.join(RIKU_DIR, "3rdparty/zlib-1.2.11")
    }
 
    files {
@@ -25,6 +26,8 @@ do
       path.join(RIKU_DIR, "src/**/*.cc"),
       path.join(RIKU_DIR, "include/*.h"),
       path.join(RIKU_DIR, "include/**/*.h"),
+      path.join(RIKU_DIR, "3rdparty/zlib-1.2.11/*.h"),
+      path.join(RIKU_DIR, "3rdparty/zlib-1.2.11/*.c"),
    }
 
    defines {

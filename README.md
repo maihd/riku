@@ -31,6 +31,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [ ] Http and Https
 * [ ] Dylib (low level)
 * [ ] Zlib
+* [ ] ArgsParse (parsing command line)
 * [ ] Stream: Readable, Writable, Transform, Duplex
 * [x] Func
 * [x] EventEmitter
