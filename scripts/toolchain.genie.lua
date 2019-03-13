@@ -62,7 +62,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			{ "ios-simulator64", "iOS - Simulator 64"         },
 			{ "tvos-arm64",      "tvOS - ARM64"               },
 			{ "tvos-simulator",  "tvOS - Simulator"           },
-			{ "mingw-clang",     "MinGW (clang compiler)"     },
+			--{ "mingw-clang",     "MinGW (clang compiler)"     },
 			--{ "netbsd",          "NetBSD"                     },
 			{ "osx",             "OSX"                        },
 			--{ "orbis",           "Orbis"                      },
