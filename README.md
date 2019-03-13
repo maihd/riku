@@ -27,10 +27,11 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Operator System functions
 * [ ] FileSystem
 * [ ] Path
-* [ ] Net
+* [ ] Net: Socket, TcpSocket, UdpSocket, WebSocket
 * [ ] Http and Https
 * [ ] Dylib (low level)
 * [ ] Zlib
+* [ ] Stream: Readable, Writable, Transform, Duplex
 * [x] Func
 * [x] EventEmitter
 * [x] List (high level continous container)
