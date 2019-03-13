@@ -13,28 +13,29 @@ namespace path
     const char* const delimiter = ":";
 #endif
 
-    usize basename(const char* path, char* buffer, usize length);
-    usize basename(const char* path, const char* ext, char* buffer, usize length);
-
     const char* basename(const char* path);
     const char* basename(const char* path, const char* ext);
+    const char* basename(const char* path, char* buffer, usize length);
+    const char* basename(const char* path, const char* ext, char* buffer, usize length);
 
-    usize       dirname(const char* path, char* buffer, usize length);
+    const char* dirname(const char* path, char* buffer, usize length);
     const char* dirname(const char* path);
 
-    usize       extname(const char* path, char* buffer, usize length);
+    const char* extname(const char* path, char* buffer, usize length);
     const char* extname(const char* path);
 
     bool        is_absolute(const char* path);
-    const char* get_absolute(const char* path);
-    usize       get_absolute(const char* path, char* buffer, usize length);
+    bool        is_relative(const char* path);
 
-    const char* join(const char* path, ...);
-    usize       join(char* buffer, usize length, const char* path, ...);
+    const char* absolute(const char* path);
+    const char* absolute(const char* path, char* buffer, usize length);
 
     const char* relative(const char* from, const char* to);
-    usize       relative(const char* from, const char* to, char* buffer, usize length);
+    const char* relative(const char* from, const char* to, char* buffer, usize length);
 
     const char* relative(const char* path, ...);
-    usize       relative(char* buffer, usize length, const char* path, ...);
+    const char* relative(char* buffer, usize length, const char* path, ...);
+
+    const char* join(const char* path, ...);
+    const char* join(char* buffer, usize length, const char* path, ...);
 }
