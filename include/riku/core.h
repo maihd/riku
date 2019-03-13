@@ -275,6 +275,12 @@ struct NullPtr
     }
 };
 
+// Flags
+using Flags = uint;
+
+// Flags64
+using Flags64 = ulong;
+
 // ArgsList: alias of va_list
 #include <stdarg.h>
 using ArgsList = va_list;
