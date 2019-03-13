@@ -31,9 +31,9 @@ static void* thread_routine(void* params)
 #endif
 }
 
-void Thread::start(const ThreadFunc& func)
+void Thread::start(const ThreadFunc& _func)
 {
-    this->func = func;
+    this->func = _func;
     
 #if PLATFORM_WINDOWS
     handle = (void*)CreateThread(NULL, 0, thread_routine, this, 0, NULL); // HANDLE
@@ -192,12 +192,8 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
     else if (GetLastError() != ERROR_TIMEOUT)
     {
         abort();
-        return false;
     }
-    else
-    {
-        return true;
-    }
+    return true;
 #elif PLATFORM_UNIX
     int r;
     struct timespec ts;
@@ -274,7 +270,7 @@ void Condition::broadcast(void)
 Semaphore::Semaphore(int count)
 {
 #if PLATFORM_WINDOWS
-    handle = CreateSemaphoreA(NULL, count, 1 << (sizeof(int) * 8), NULL);
+    handle = CreateSemaphoreA(NULL, count, 1 << (sizeof(int) * 8) - 1, NULL);
 #elif PLATFORM_UNIX
     pthread_mutex_unlock((pthread_mutex_t*)handle);
 #endif

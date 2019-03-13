@@ -20,4 +20,18 @@ TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
 
     char buffer[2048];
     REQUIRE(string::compare(string::format(buffer, sizeof(buffer), "Hello world %d", 0), "Hello world 0") == 0);
+
+    const char* tmp = "hello world";
+    ulong tmp_hash1 = calc_hash("hello world");
+    ulong tmp_hash0 = calc_hash(tmp);
+    switch (tmp_hash0)
+    {
+    case calc_hash("hello world"):
+        REQUIRE(true);
+        break;
+
+    default:
+        REQUIRE(false);
+        break;
+    }
 }

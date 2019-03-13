@@ -16,7 +16,7 @@ public:
         int          capacity;
         Array<int>   hashs;
         int*         nexts;
-        int*         keys;
+        ulong*       keys;
         T*           values;
     };
 
@@ -24,12 +24,12 @@ public:
     Buffer* buffer;
 
 public: // Properties
-    propdef_readonly(get_keys)       int*   keys;
+    propdef_readonly(get_keys)       ulong* keys;
     propdef_readonly(get_values)     T*     values;
     propdef_readonly(get_length)     int    length;
     propdef_readonly(get_hash_count) int    hash_count;
 
-    __forceinline const int* get_keys(void) const
+    __forceinline const ulong* get_keys(void) const
     {
         return buffer ? buffer->keys : 0;
     }
@@ -138,9 +138,9 @@ namespace table
     }
 
     template <typename T>
-    int index_of(const HashTable<T>& table, int key, int* out_hash = NULL, int* out_prev = NULL)
+    int index_of(const HashTable<T>& table, ulong key, int* out_hash = NULL, int* out_prev = NULL)
     {
-        int hash = ((int)(uint)key) % hash_count(table);
+        int hash = (int)(ulong)(key % hash_count(table));
         int curr = table.buffer->hashs[hash];
         int prev = -1;
 
@@ -161,21 +161,21 @@ namespace table
     }
 
     template <typename T>
-    const T& get(const HashTable<T>& table, int key)
+    const T& get(const HashTable<T>& table, ulong key)
     {
         int curr = index_of(table, key);
         return table.buffer->values[curr];
     }
 
     template <typename T>
-    const T& get(const HashTable<T>& table, int key, const T& def_value)
+    const T& get(const HashTable<T>& table, ulong key, const T& def_value)
     {
         int curr = index_of(table, key);
         return (curr > -1) ? table.buffer->values[curr] : def_value;
     }
 
     template <typename T>
-    T& get_or_new(const HashTable<T>& table, int key)
+    T& get_or_new(const HashTable<T>& table, ulong key)
     {
         int hash, prev;
         int curr = index_of(table, key, &hash, &prev);
@@ -185,8 +185,8 @@ namespace table
             if (table.buffer->length + 1 > table.buffer->capacity)
             {
                 int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
-                table.buffer->nexts = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
-                table.buffer->keys = (int*)memory::realloc(table.buffer->keys, sizeof(int) * new_size);
+                table.buffer->nexts  = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
+                table.buffer->keys   = (ulong*)memory::realloc(table.buffer->keys, sizeof(ulong) * new_size);
                 table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
 
                 table.buffer->capacity = new_size;
@@ -210,13 +210,13 @@ namespace table
     }
 
     template <typename T>
-    bool has(const HashTable<T>& table, int key)
+    bool has(const HashTable<T>& table, ulong key)
     {
         return index_of(table, key) > -1;
     }
 
     template <typename T>
-    bool try_get(const HashTable<T>& table, int key, T* out_value)
+    bool try_get(const HashTable<T>& table, ulong key, T* out_value)
     {
         int curr = index_of(table, key);
         if (curr > -1)
@@ -231,7 +231,7 @@ namespace table
     }
 
     template <typename T>
-    bool set(HashTable<T>& table, int key, const T& value)
+    bool set(HashTable<T>& table, ulong key, const T& value)
     {
         int hash, prev;
         int curr = index_of(table, key, &hash, &prev);
@@ -242,7 +242,7 @@ namespace table
             {
                 int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
                 table.buffer->nexts  = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
-                table.buffer->keys   = (int*)memory::realloc(table.buffer->keys, sizeof(int) * new_size);
+                table.buffer->keys   = (ulong*)memory::realloc(table.buffer->keys, sizeof(ulong) * new_size);
                 table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
 
                 table.buffer->capacity = new_size;

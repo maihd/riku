@@ -310,11 +310,11 @@ namespace crypto
             {
                 uint k = *key_x4++;
                 k *= 0xcc9e2d51;
-                k = (k << 15) | (k >> 17);
+                k  = (k << 15) | (k >> 17);
                 k *= 0x1b873593;
                 h ^= k;
-                h = (h << 13) | (h >> 19);
-                h = (h * 5) + 0xe6546b64;
+                h  = (h << 13) | (h >> 19);
+                h  = (h * 5) + 0xe6546b64;
             } while (--i);
 
             key = (const byte*) key_x4;
@@ -328,11 +328,11 @@ namespace crypto
 
             do {
                 k <<= 8;
-                k |= *key--;
+                k  |= *key--;
             } while (--i);
             
             k *= 0xcc9e2d51;
-            k = (k << 15) | (k >> 17);
+            k  = (k << 15) | (k >> 17);
             k *= 0x1b873593;
             h ^= k;
         }

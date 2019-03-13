@@ -139,8 +139,6 @@ public: // Buffer sizing
 
     inline bool grow(int new_size)
     {
-        int old_size = this->capacity;
-
         auto old_buf = buffer;
         auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
@@ -202,7 +200,7 @@ public: // Buffer modifying
             return false;
         }
 
-        INIT(&buffer->items[buffer->length++], value) TItem(value);
+        INIT(&buffer->items[buffer->length++]) TItem(value);
         return true;
     }
     
@@ -237,7 +235,7 @@ public: // Buffer modifying
         memory::move(buffer->items + 1, buffer->items, this->length * sizeof(TItem));
         
         buffer->length++;
-        INIT(&buffer->items[0], value) TItem(value);
+        INIT(&buffer->items[0]) TItem(value);
         return true;
     }
 

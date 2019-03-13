@@ -856,16 +856,81 @@ public: // Utils
 };
 
 // Common hash function
-__rikuapi int calc_hash(const void* buffer, usize length);
+__rikuapi ulong calc_hash(const void* buffer, usize length);
 
 template <typename T>
-inline int calc_hash(const T& x)
+inline ulong calc_hash(const T& x)
 {
     return calc_hash(&x, sizeof(x));
 }
 
 template <>
-inline int calc_hash<cstr>(const cstr& x)
+inline ulong calc_hash<cstr>(const cstr& x)
 {
     return calc_hash(x, string::length(x));
+}
+
+template <ulong length>
+constexpr ulong calc_hash(const char (&buffer)[length])
+{
+    ulong h = 0;
+
+    const ulong c1  = 0xcc9e2d51;
+    const ulong c2  = 0x1b873593;
+    const ulong len = length - 1;
+
+    for (ulong i = 0, n = len >> 2; i < n; i++)
+    {
+        ulong idx = i * 4;
+        ulong b0  = buffer[idx + 0];
+        ulong b1  = buffer[idx + 1];
+        ulong b2  = buffer[idx + 2];
+        ulong b3  = buffer[idx + 3];
+#if CPU_LITTLE_ENDIAN
+        ulong k   = (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
+#else
+        ulong k   = (b3 << 0) | (b2 << 8) | (b1 << 16) | (b0 << 24);
+#endif
+
+        k *= c1;
+        k  = (k << 15) | (k >> 17);
+        k *= c2;
+
+        h ^= k;
+        h  = (h << 13) | (h >> 19);
+        h  = (h * 5) + 0xe6546b64;
+    }
+
+    ulong k = 0;
+    switch (len & 3) 
+    {
+    case 3:
+        k ^= (byte)buffer[len - 1] << 16;
+        k ^= (byte)buffer[len - 2] <<  8;
+        k ^= (byte)buffer[len - 3] <<  0;
+        break;
+
+    case 2:
+        k ^= (byte)buffer[len - 1] <<  8;
+        k ^= (byte)buffer[len - 2] <<  0;
+        break;
+
+    case 1:
+        k ^= (byte)buffer[len - 1] <<  0;
+        break;
+    };
+
+    k *= c1;
+    k  = (k << 15) | (k >> 17);
+    k *= c2;
+    h ^= k;
+
+    h ^= len;
+    h ^= h >> 16;
+    h *= 0x85ebca6b;
+    h ^= h >> 13;
+    h *= 0xc2b2ae35;
+    h ^= h >> 16;
+
+    return h;
 }
