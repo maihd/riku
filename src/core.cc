@@ -93,6 +93,11 @@ namespace memory
     {
         return memmove(dst, src, size);
     }
+
+    int compare(const void* a, const void* b, usize size)
+    {
+        return memcmp(a, b, size);
+    }
 }
 
 //
