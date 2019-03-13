@@ -19,11 +19,12 @@ Main purpose of this library for using as a standard library, replacement for C/
 10. VisualC's __declspec(property) for cross-platform
 
 ## Modules
-* [x] Core
+* [x] Core (many global modules of JS and NodeJS)
 * [x] JSON
 * [x] Crypto
 * [x] Thread
 * [x] High-level math
+* [x] Operator System functions
 * [ ] FileSystem
 * [ ] Path
 * [ ] Net
