@@ -52,13 +52,13 @@ public:
         uint result = 0;
 
         List<TFunc> listeners = entries[name];
-        for (int i = 0, n = listeners.length; i < n; i++, result++)
+        for (int i = 0, n = listeners.get_length(); i < n; i++, result++)
         {
             listeners[i](args...);
         }
 
         List<TFunc> once_listeners = once_entries[name];
-        for (int i = 0, n = once_listeners.length; i < n; i++, result++)
+        for (int i = 0, n = once_listeners.get_length(); i < n; i++, result++)
         {
             once_listeners[i](args...); 
         }

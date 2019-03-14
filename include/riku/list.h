@@ -80,9 +80,9 @@ public: // RAII
     }
 
 public: // Properties
-    propdef_readonly(get_items)    TItem* items;
-    propdef_readonly(get_length)   int    length;
-    propdef_readonly(get_capacity) int    capacity;
+    PROPERTY_READONLY(TItem*, items, get_items);
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, capacity, get_capacity);
 
     inline TItem* get_items(void)
     {
@@ -174,13 +174,13 @@ public: // Buffer sizing
 
     inline bool ensure(int size)
     {
-        if (this->capacity >= size)
+        if (this->get_capacity() >= size)
         {
             return true;
         }
         else
         {
-            int new_size = this->capacity;
+            int new_size = this->get_capacity();
             new_size = new_size * 2 + (new_size <= 0) * 8; // no if statement or '?' operator (ternary operator)
             while (new_size < size) new_size *= 2;
             return this->grow(new_size);
@@ -189,13 +189,13 @@ public: // Buffer sizing
 
     inline bool ensure(int size) const
     {
-        return (this->capacity >= size);
+        return (this->get_capacity() >= size);
     }
 
 public: // Buffer modifying
     inline bool push(const TItem& value)
     {
-        if (!this->ensure(this->length + 1))
+        if (!this->ensure(this->get_length() + 1))
         {
             return false;
         }
@@ -206,7 +206,8 @@ public: // Buffer modifying
     
     inline TItem pop(void)
     {
-        assert(this->length > 0, "Attempt to pop the List<>, which is empty.");
+        assert(this->get_length() > 0, "Attempt to pop the List<>, which is empty.");
+
         TItem item = buffer->items[--buffer->length];
         buffer->items[buffer->length].~TItem();
         return item;
@@ -214,7 +215,7 @@ public: // Buffer modifying
 
     inline TItem shift(void)
     {
-        assert(this->length > 0, "Attempt to shift the List<>, which is empty.");
+        assert(this->get_length() > 0, "Attempt to shift the List<>, which is empty.");
 
         TItem result = buffer->items[0];
         buffer->items[0].~TItem();
@@ -227,12 +228,12 @@ public: // Buffer modifying
 
     inline bool unshift(const TItem& value)
     {
-        if (!this->ensure(this->length + 1))
+        if (!this->ensure(this->get_length() + 1))
         {
             return false;
         }
 
-        memory::move(buffer->items + 1, buffer->items, this->length * sizeof(TItem));
+        memory::move(buffer->items + 1, buffer->items, this->get_length() * sizeof(TItem));
         
         buffer->length++;
         INIT(&buffer->items[0]) TItem(value);
@@ -242,7 +243,7 @@ public: // Buffer modifying
 public:
     inline int index_of(const TItem& value)
     {
-        for (int i = 0, n = length; i < n; i++)
+        for (int i = 0, n = get_length(); i < n; i++)
         {
             if (value == buffer->items[i])
             {
@@ -255,7 +256,7 @@ public:
 
     inline int last_index_of(const TItem& value)
     {
-        for (int i = length - 1; i > -1; i--)
+        for (int i = get_length() - 1; i > -1; i--)
         {
             if (value == buffer->items[i])
             {
@@ -269,9 +270,10 @@ public:
 public:
     inline bool erase(int index)
     {
-        if (index > -1 && index < length)
+        if (index > -1 && index < this->get_length())
         {
-            memory::move(buffer->items + index, buffer->items + index + 1, length - index - 2);
+            memory::move(buffer->items + index, buffer->items + index + 1, this->get_length() - index - 2);
+            buffer->length--;
             return true;
         }
         else

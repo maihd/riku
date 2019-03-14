@@ -96,7 +96,7 @@ namespace json
         }
 
     public: // @region: Properties
-        propdef_readonly(get_length) int length;
+        PROPERTY_READONLY(int, length, get_length);
         inline int get_length() const
         {
             switch (type)
@@ -122,7 +122,7 @@ namespace json
     public: // @region: Indexor
         inline const Value& operator[] (int index) const
         {
-            if (type != Type::Array || index < 0 || index > this->length)
+            if (type != Type::Array || index < 0 || index > this->get_length())
             {
                 return NONE;
             }
@@ -165,7 +165,7 @@ namespace json
                 return true;
 
             case Type::String:
-                return this->string && this->length > 0;
+                return this->string && this->get_length() > 0;
 
             default: 
                 return false;

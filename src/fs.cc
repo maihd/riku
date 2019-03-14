@@ -44,7 +44,7 @@ namespace fs
     
     bool read_file(const char* path, Buffer& buffer)
     {
-        return read_file(path, buffer.data, buffer.length);
+        return read_file(path, buffer.data, buffer.get_length());
     }
 
     bool read_file(const char* path, void* buffer, int length)
@@ -64,7 +64,7 @@ namespace fs
     
     bool write_file(const char* path, const Buffer& buffer)
     {
-        return write_file(path, buffer.data, buffer.length);
+        return write_file(path, buffer.data, buffer.get_length());
     }
 
     bool write_file(const char* path, const void* buffer, int length)

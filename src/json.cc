@@ -1379,7 +1379,7 @@ namespace json
             return a.boolean == b.boolean;
 
         case Type::Array:
-            if ((n = a.length) == b.length)
+            if ((n = a.get_length()) == b.get_length())
             {
                 for (i = 0; i < n; i++)
                 {
@@ -1392,7 +1392,7 @@ namespace json
             return true;
 
         case Type::Object:
-            if ((n = a.length) == b.length)
+            if ((n = a.get_length()) == b.get_length())
             {
                 for (i = 0; i < n; i++)
                 {
@@ -1425,7 +1425,7 @@ namespace json
         {
             int i, n;
             int hash = json__hash((void*)name, strlen(name));
-            for (i = 0, n = this->length; i < n; i++)
+            for (i = 0, n = this->get_length(); i < n; i++)
             {
                 const char* str = this->object[i].name;
                 if (hash == ((int*)str - 2)[1] && strcmp(str, name) == 0)

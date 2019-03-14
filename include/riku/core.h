@@ -216,9 +216,23 @@
 //#define offsetof(Type, member) ((usize)&((Type*)0)->member)
 #define deprecate(message)     __declspec(deprecated(message))
 
-#define propdef(getter, setter)   __declspec(property(get=getter, put=setter))
-#define propdef_readonly(getter)  __declspec(property(get=getter))
-#define propdef_writeonly(setter) __declspec(property(put=setter))
+#ifndef __has_declspec_attribute       // Optional of course.
+#define __has_declspec_attribute(x) 0  // Compatibility with non-clang compilers.
+#endif
+
+#if defined(_MSC_VER)
+#   define PROPERTY(Type, name, getter, setter)   __declspec(property(get=getter, put=setter)) Type name
+#   define PROPERTY_READONLY(Type, name, getter)  __declspec(property(get=getter)) Type name
+#   define PROPERTY_WRITEONLY(Type, name, setter) __declspec(property(put=setter)) Type name
+#elif (defined(__has_declspec_attribute) && __has_declspec_attribute(property))
+#   define PROPERTY(Type, name, getter, setter)   __declspec(property(get=getter, put=setter)) Type name
+#   define PROPERTY_READONLY(Type, name, getter)  __declspec(property(get=getter)) Type name
+#   define PROPERTY_WRITEONLY(Type, name, setter) __declspec(property(put=setter)) Type name
+#else
+#   define PROPERTY(Type, name, getter, setter)   
+#   define PROPERTY_READONLY(Type, name, getter)  
+#   define PROPERTY_WRITEONLY(Type, name, setter) 
+#endif
 
 #if defined(_MSC_VER)
 #   define __threadstatic __declspec(thread) static
@@ -292,9 +306,11 @@ using ArgsList = va_list;
 //#undef assert       // to remove std assert
 #define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #if !defined(NDEBUG) || !NDEBUG
-#define assert(exp, fmt, ...) always_assert(exp, fmt, ##__VA_ARGS__)
+#   define assert(exp, fmt, ...)  always_assert(exp, fmt, ##__VA_ARGS__)
+#   define false_assert(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #else
-#define assert(exp, fmt, ...)
+#   define assert(exp, fmt, ...)
+#   define false_assert(fmt, ...)
 #endif
 
 // Assertion functions
@@ -306,9 +322,9 @@ __rikuapi void __assert_abort(const char* exp, const char* func, const char* fil
 
 #if PLATFORM_WINDOWS
 #include <malloc.h>
-#define stackalloc _alloca
+#   define stackalloc _alloca
 #else
-#define stackalloc __builtin_alloca 
+#   define stackalloc __builtin_alloca 
 #endif
 
 namespace memory
@@ -482,7 +498,7 @@ public:
     }
 
 public:
-    propdef_readonly(get_length) usize length;
+    PROPERTY_READONLY(usize, length, get_length);
     inline usize get_length(void) const
     {
         return data ? *((usize*)data - 1) : 0;
@@ -605,7 +621,7 @@ public: // Copy
     {
         if (other.buffer)
         {
-            int len = other.length;
+            int len = other.get_length();
 
             buffer = (Buffer*)memory::alloc(sizeof(Buffer) + len);
             buffer->length   = len;
@@ -623,7 +639,7 @@ public: // Copy
     {
         if (other.buffer)
         {
-            int len = other.length;
+            int len = other.get_length();
             if (buffer->capacity < len)
             {
                 buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + len);
@@ -642,8 +658,8 @@ public: // Copy
     }
 
 public:
-    propdef_readonly(get_length) int length;
-    propdef_readonly(get_capacity) int capacity;
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, capacity, get_capacity);
 
     inline int get_length(void) const
     {
@@ -741,7 +757,7 @@ public:
     int seconds;
 
 public: // Properties
-    propdef(get_full_year, set_full_year) int full_year;
+    PROPERTY(int, full_year, get_full_year, set_full_year);
     inline int get_full_year(void) const
     {
         return year + 1900;
@@ -754,15 +770,15 @@ public: // Properties
 
 #if 0 && PREVIEWING
 public: // UTC properties
-    propdef(get_utc_day         , set_utc_day           ) int utc_day;
-    propdef(get_utc_month       , set_utc_month         ) int utc_month;
-    propdef(get_utc_year        , set_utc_year          ) int utc_year;
-    propdef(get_utc_weekday     , set_utc_weekday       ) int utc_weekday;
-    propdef(get_utc_yearday     , set_utc_yearday       ) int utc_yearday;
-    propdef(get_utc_hours       , set_utc_hours         ) int utc_hours;
-    propdef(get_utc_minutes     , set_utc_minutes       ) int utc_minutes;
-    propdef(get_utc_seconds     , set_utc_seconds       ) int utc_seconds;
-    propdef(get_utc_milliseconds, set_utc_milliseconds  ) int utc_milliseconds;
+    PROPERTY(get_utc_day         , set_utc_day           ) int utc_day;
+    PROPERTY(get_utc_month       , set_utc_month         ) int utc_month;
+    PROPERTY(get_utc_year        , set_utc_year          ) int utc_year;
+    PROPERTY(get_utc_weekday     , set_utc_weekday       ) int utc_weekday;
+    PROPERTY(get_utc_yearday     , set_utc_yearday       ) int utc_yearday;
+    PROPERTY(get_utc_hours       , set_utc_hours         ) int utc_hours;
+    PROPERTY(get_utc_minutes     , set_utc_minutes       ) int utc_minutes;
+    PROPERTY(get_utc_seconds     , set_utc_seconds       ) int utc_seconds;
+    PROPERTY(get_utc_milliseconds, set_utc_milliseconds  ) int utc_milliseconds;
 
     __rikuapi int  get_utc_day(void) const;
     __rikuapi void set_utc_day(int day);

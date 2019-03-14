@@ -5,12 +5,13 @@
 
 #include "./unit_test.h"
 
+#if (defined(_MSC_VER) || (defined(__has_declspec_attriute) && __has_declspec_attribute(property)))
 #define test_assert(a, b) console::log(#a " = %d - " #b " = %d", a, b)
 
 struct Type
 {
 public:
-    propdef(get_value, set_value) int value;
+    PROPERTY(int, value, get_value, set_value);
 
 public:
     int get_value()
@@ -64,3 +65,4 @@ TEST_CASE("Property testing", "[property]")
     test.value = 9;
     test_assert(test.value, test.real_value);
 }
+#endif

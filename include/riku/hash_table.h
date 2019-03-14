@@ -24,10 +24,10 @@ public:
     Buffer* buffer;
 
 public: // Properties
-    propdef_readonly(get_keys)       ulong* keys;
-    propdef_readonly(get_values)     T*     values;
-    propdef_readonly(get_length)     int    length;
-    propdef_readonly(get_hash_count) int    hash_count;
+    PROPERTY_READONLY(ulong*, keys, get_keys);
+    PROPERTY_READONLY(T*, values, get_values);
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, hash_count, get_hash_count);
 
     inline const ulong* get_keys(void) const
     {
@@ -134,7 +134,7 @@ namespace table
     template <typename T>
     inline int hash_count(const HashTable<T>& table)
     {
-        return table.buffer ? table.buffer->hashs.length : 0;
+        return table.buffer ? table.buffer->hashs.get_length() : 0;
     }
 
     template <typename T>

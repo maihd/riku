@@ -24,10 +24,10 @@ public:
     Buffer* buffer;
 
 public: // Properties
-    propdef_readonly(get_keys)       TKey*      keys;
-    propdef_readonly(get_values)     TValue*    values;
-    propdef_readonly(get_length)     int        length;
-    propdef_readonly(get_hash_count) int        hash_count;
+    PROPERTY_READONLY(TKey*, keys, get_keys);
+    PROPERTY_READONLY(TValue*, values, get_values);
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, hash_count, get_hash_count);
 
     inline const TKey* get_keys(void) const
     {
@@ -46,7 +46,7 @@ public: // Properties
 
     inline int get_hash_count(void) const
     {
-        return buffer ? buffer->hashs.length : 0;
+        return buffer ? buffer->hashs.get_length() : 0;
     }
 
 public:
@@ -124,7 +124,7 @@ public: // RAII
 public: // Methods
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)((uint)calc_hash(key) % hash_count);
+        int hash = (int)((uint)calc_hash(key) % this->get_hash_count());
         int curr = buffer->hashs[hash];
         int prev = -1;
 

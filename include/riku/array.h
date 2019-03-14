@@ -134,9 +134,9 @@ public: // RAII
     }
 
 public: // Properties
-    propdef_readonly(get_items)    TItem* items;
-    propdef_readonly(get_length)   int    length;
-    propdef_readonly(get_capacity) int    capacity;
+    PROPERTY_READONLY(TItem*, items, get_items);
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, capacity, get_capacity);
     
     inline TItem* get_items(void)
     {
@@ -216,7 +216,7 @@ public:
     }
 
 public: // Properties
-    propdef_readonly(get_capacity) int capacity;
+    PROPERTY_READONLY(int, capacity, get_capacity);
     constexpr int get_capacity(void) const
     {
         return capacity;
@@ -233,11 +233,11 @@ public:
     Array<int>   free_items;
 
 public:
-    propdef_readonly(get_length) int length;
+    PROPERTY_READONLY(int, length, get_length);
 
     inline int get_length(void) const
     {
-        return items.length - free_items.length;
+        return items.get_length() - free_items.get_length();
     }
 
 public:
@@ -291,13 +291,13 @@ namespace array
     template <typename TItem>
     inline bool ensure(Array<TItem>& array, int size)
     {
-        if (array.capacity >= size)
+        if (array.get_capacity() >= size)
         {
             return true;
         }
         else
         {
-            int new_size = array.capacity;
+            int new_size = array.get_capacity();
             new_size = new_size * 2 + (new_size <= 0) * 8; // no if statement or '?' operator (ternary operator)
             while (new_size < size) new_size *= 2;
             return grow(array, new_size);
@@ -307,13 +307,13 @@ namespace array
     template <typename TItem>
     inline bool ensure(const Array<TItem>& array, int size)
     {
-        return (array.capacity >= size);
+        return (array.get_capacity() >= size);
     }
 
     template <typename TItem>
     inline bool push(Array<TItem>& array, const TItem& value)
     {
-        if (!ensure(array, array.length + 1))
+        if (!ensure(array, array.get_length() + 1))
         {
             return false;
         }
@@ -342,12 +342,12 @@ namespace array
     template <typename TItem>
     inline bool unshift(Array<TItem>& array, const TItem& value)
     {
-        if (!ensure(array, array.length + 1))
+        if (!ensure(array, array.get_length() + 1))
         {
             return false;
         }
 
-        memory::move(array.buffer->items + 1, array.buffer->items, array.length * sizeof(TItem));
+        memory::move(array.buffer->items + 1, array.buffer->items, array.get_length() * sizeof(TItem));
         array.buffer->length++;
         array.buffer->items[0] = value;
         return true;
@@ -356,7 +356,7 @@ namespace array
     template <typename TItem>
     inline int index_of(const Array<TItem>& array, const TItem& value)
     {
-        for (int i = 0, n = array.length; i < n; i++)
+        for (int i = 0, n = array.get_length(); i < n; i++)
         {
             if (array.buffer->items[i] == value)
             {
@@ -371,7 +371,7 @@ namespace array
     inline int last_index_of(const Array<TItem>& array, const TItem& value)
     {
         int index = -1;
-        for (int i = 0, n = array.length; i < n; i++)
+        for (int i = 0, n = array.get_length(); i < n; i++)
         {
             if (array.buffer->items[i] == value)
             {
@@ -385,8 +385,8 @@ namespace array
     template <typename TItem>
     inline bool concat(Array<TItem>& dst, const Array<TItem>& src)
     {
-        int dst_len = dst.length;
-        int src_len = src.length;
+        int dst_len = dst.get_length();
+        int src_len = src.get_length();
         if (src_len)
         {
             int new_len = dst_len + src_len;
@@ -395,7 +395,7 @@ namespace array
                 return false;
             }
 
-            memcpy(dst.buffer->items + dst.length, src.buffer->items, src_len * sizeof(TItem));
+            memcpy(dst.buffer->items + dst.get_length(), src.buffer->items, src_len * sizeof(TItem));
             dst.buffer->length = new_len;
         }
         return true;
@@ -415,8 +415,8 @@ namespace array
     {
         Array<TItem> res;
 
-        int len = array.length;
-        int cap = array.capacity;
+        int len = array.get_length();
+        int cap = array.get_capacity();
         if (len > 0 && cap > 0)
         {
             if (grow(res, cap))
@@ -432,9 +432,10 @@ namespace array
     template <typename TItem>
     inline int erase(const Array<TItem>& array, int index)
     {
-        if (index > -1 && index < array.length)
+        if (index > -1 && index < array.get_length())
         {
-            memory::move(array.buffer->items + index, array.buffer->items + index + 1, array.length - index - 2);
+            memory::move(array.buffer->items + index, array.buffer->items + index + 1, array.get_length() - index - 2);
+            array.buffer->length--;
             return true;
         }
         else
@@ -453,13 +454,13 @@ namespace array
     inline int new_item(SmartArray<TItem>& array)
     {
         int index;
-        if (array.free_items.length > 0)
+        if (array.free_items.get_length() > 0)
         {
             index = array::pop(array.free_items);
         }
         else
         {
-            if (!ensure(array.items, array.items.length + 1))
+            if (!ensure(array.items, array.items.get_length() + 1))
             {
                 return -1;
             }
@@ -473,7 +474,7 @@ namespace array
     template <typename TItem>
     inline bool remove_at(SmartArray<TItem>& array, int index)
     {
-        if (index > -1 && index < array.items.length)
+        if (index > -1 && index < array.items.get_length())
         {
             return array.free_items.push(index);
         }
