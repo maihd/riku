@@ -1,22 +1,25 @@
 language: cpp
 matrix:
   include:
-    - compiler: clang
-      os: linux
-    - compiler: clang
-      os: osx
+    - os: linux
+      compiler: gcc
+      
+    - os: osx
+      compiler: clang
 
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - clang
+      - gcc-8
+      - g++-8
+      - clang
 
 script:
   - echo "Build done!"
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ./build/projects/gmake-linux fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then cd ./build/projects/gmake-osx fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ./build/projects/gmake-linux; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then cd ./build/projects/gmake-osx; fi
   - make config=debug32
   - make config=debug64
   - make config=release32
