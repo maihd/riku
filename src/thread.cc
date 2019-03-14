@@ -204,7 +204,7 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 #if defined(__APPLE__) && defined(__MACH__)
     ts.tv_sec = timeout / NANOSEC;
     ts.tv_nsec = timeout % NANOSEC;
-    r = pthread_cond_timedwait_relative_np((CONDITION_VARIABLE*)handle, mutex, &ts);
+    r = pthread_cond_timedwait_relative_np((pthread_cond_t*)handle, mutex, &ts);
 #else
 #if defined(__MVS__)
     if (gettimeofday(&tv, NULL))
@@ -223,7 +223,7 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
      */
     r = pthread_cond_timedwait_monotonic_np((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle, &ts);
 #else
-    r = pthread_cond_timedwait((CONDITION_VARIABLE*)handle, mutex, &ts);
+    r = pthread_cond_timedwait((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle, &ts);
 #endif /* __ANDROID_API__ */
 #endif
 

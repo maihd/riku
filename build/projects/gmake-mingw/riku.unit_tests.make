@@ -30,7 +30,7 @@ endif
 
 CC  = gcc
 CXX = g++
-AR  = ar
+AR  = $(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ar
 
 ifndef RESCOMP
   ifdef WINDRES
@@ -43,21 +43,21 @@ endif
 MAKEFILE = riku.unit_tests.make
 
 ifeq ($(config),debug32)
-  OBJDIR              = ../../osx32_clang/obj/x32/debug/riku.unit_tests
-  TARGETDIR           = ../../osx32_clang/bin
-  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
+  OBJDIR              = ../../windows_x32_mingw/obj/x32/debug/riku.unit_tests
+  TARGETDIR           = ../../windows_x32_mingw/bin
+  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -m32
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -m32
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++11 -fno-rtti -m32
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -m32
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++11 -fno-rtti -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../osx32_clang/bin" -m32
-  LIBDEPS            += ../../osx32_clang/bin/libriku.debug.a
-  LDDEPS             += ../../osx32_clang/bin/libriku.debug.a
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/windows_x32_mingw" -L"../../windows_x32_mingw/bin" -m32
+  LIBDEPS            += ../../windows_x32_mingw/bin/librikudebug.a
+  LDDEPS             += ../../windows_x32_mingw/bin/librikudebug.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -92,21 +92,21 @@ ifeq ($(config),debug32)
 endif
 
 ifeq ($(config),release32)
-  OBJDIR              = ../../osx32_clang/obj/x32/release/riku.unit_tests
-  TARGETDIR           = ../../osx32_clang/bin
-  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
+  OBJDIR              = ../../windows_x32_mingw/obj/x32/release/riku.unit_tests
+  TARGETDIR           = ../../windows_x32_mingw/bin
+  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -Wshadow -m32 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -m32
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -m32
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -m32
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -m32
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../osx32_clang/bin" -s -m32
-  LIBDEPS            += ../../osx32_clang/bin/libriku.a
-  LDDEPS             += ../../osx32_clang/bin/libriku.a
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/windows_x32_mingw" -L"../../windows_x32_mingw/bin" -s -m32
+  LIBDEPS            += ../../windows_x32_mingw/bin/librikurelease.a
+  LDDEPS             += ../../windows_x32_mingw/bin/librikurelease.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -137,25 +137,28 @@ ifeq ($(config),release32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	$(SILENT) echo Stripping symbols.
+	$(SILENT) $(MINGW)/bin/strip -s "$(TARGET)"
   endef
 endif
 
 ifeq ($(config),debug64)
-  OBJDIR              = ../../osx64_clang/obj/x64/debug/riku.unit_tests
-  TARGETDIR           = ../../osx64_clang/bin
-  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
+  OBJDIR              = ../../windows_x64_mingw/obj/x64/debug/riku.unit_tests
+  TARGETDIR           = ../../windows_x64_mingw/bin
+  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -m64
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -m64
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++11 -fno-rtti -m64
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -m64
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++11 -fno-rtti -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../osx64_clang/bin" -m64
-  LIBDEPS            += ../../osx64_clang/bin/libriku.debug.a
-  LDDEPS             += ../../osx64_clang/bin/libriku.debug.a
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/windows_x64_mingw" -L"../../windows_x64_mingw/bin" -m64
+  LIBDEPS            += ../../windows_x64_mingw/bin/librikudebug.a
+  LDDEPS             += ../../windows_x64_mingw/bin/librikudebug.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -190,21 +193,21 @@ ifeq ($(config),debug64)
 endif
 
 ifeq ($(config),release64)
-  OBJDIR              = ../../osx64_clang/obj/x64/release/riku.unit_tests
-  TARGETDIR           = ../../osx64_clang/bin
-  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
+  OBJDIR              = ../../windows_x64_mingw/obj/x64/release/riku.unit_tests
+  TARGETDIR           = ../../windows_x64_mingw/bin
+  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -Wshadow -m64 -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -m64
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -m64
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -m64
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -m64
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../osx64_clang/bin" -s -m64
-  LIBDEPS            += ../../osx64_clang/bin/libriku.a
-  LDDEPS             += ../../osx64_clang/bin/libriku.a
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/windows_x64_mingw" -L"../../windows_x64_mingw/bin" -s -m64
+  LIBDEPS            += ../../windows_x64_mingw/bin/librikurelease.a
+  LDDEPS             += ../../windows_x64_mingw/bin/librikurelease.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -235,25 +238,28 @@ ifeq ($(config),release64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	$(SILENT) echo Stripping symbols.
+	$(SILENT) $(MINGW)/bin/strip -s "$(TARGET)"
   endef
 endif
 
 ifeq ($(config),debug)
   OBJDIR              = obj/debug/riku.unit_tests
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
+  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++11 -fno-rtti
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++11 -fno-rtti
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../scripts"
-  LIBDEPS            += ../../../scripts/libriku.debug.a
-  LDDEPS             += ../../../scripts/libriku.debug.a
+  LIBDEPS            += ../../../scripts/librikudebug.a
+  LDDEPS             += ../../../scripts/librikudebug.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -290,19 +296,19 @@ endif
 ifeq ($(config),release)
   OBJDIR              = obj/release/riku.unit_tests
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
+  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include/compat/osx" -I"../../../include"
+  INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -Wshadow -fdeclspec -fms-extensions -Wfatal-errors -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../scripts" -s
-  LIBDEPS            += ../../../scripts/libriku.a
-  LDDEPS             += ../../../scripts/libriku.a
+  LIBDEPS            += ../../../scripts/librikurelease.a
+  LDDEPS             += ../../../scripts/librikurelease.a
   LIBS               += $(LDDEPS)
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
@@ -333,6 +339,9 @@ ifeq ($(config),release)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	$(SILENT) echo Stripping symbols.
+	$(SILENT) $(MINGW)/bin/strip -s "$(TARGET)"
   endef
 endif
 

@@ -14,6 +14,9 @@
 #elif PLATFORM_ANDROID
 #include <unistd.h>
 #include <android/log.h>
+#elif PLATFORM_UNIX
+#include <unistd.h>
+#include <sys/time.h>
 #endif
 
 //
@@ -491,13 +494,12 @@ namespace performance
             Sleep(nanoseconds / (1000 * 1000));
             return true;
         }
-    #elif PLATFORM_ANDROID
-        return ::usleep(nanoseconds / 1000);
     #elif PLATFORM_WEB
         (void)(nanoseconds);
         return false;
     #elif PLATFORM_UNIX
-        return ::nsleep((struct timespec[]){ { 0, nanoseconds } }, NULL) == 0;
+        struct timespec t = { 0, nanoseconds };
+        return ::nanosleep(&t, NULL) == 0;
     #endif
     }
 

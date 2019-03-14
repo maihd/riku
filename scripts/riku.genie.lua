@@ -4,18 +4,6 @@ project "riku"
 do
    kind "staticlib"
 
-   flags {
-      "NoPCH",
-      "NoRTTI",
-      "NoWinRT",
-      "NoExceptions",
-      "NoFramePointer",
-      "NoEditAndContinue",
-      "NoBufferSecurityCheck",
-
-      "ExtraWarnings"
-   }
-
    includedirs {
       path.join(RIKU_DIR, "include"),
       path.join(RIKU_DIR, "3rdparty/zlib-1.2.11")
@@ -33,28 +21,5 @@ do
    defines {
    }
 
-   configuration { "debug" }
-   do
-      defines {
-         "_DEBUG"
-      }
-   end
-
-   configuration { "release" }
-   do
-      defines {
-         "NDEBUG"
-      }
-
-      flags {
-         "NoBufferSecurityCheck",
-      }
-   end
-
-   configuration { "linux-*" }
-   do
-      buildoptions {
-         "-fPIC",
-      }
-   end
+   configuration {}
 end

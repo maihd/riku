@@ -28,9 +28,9 @@ else
   RM    = $(SILENT) del /F "$(subst /,\\,$(1))" 2> nul || exit 0
 endif
 
-CC  = clang
-CXX = clang++
-AR  = $(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ar
+CC  = gcc
+CXX = g++
+AR  = ar
 
 ifndef RESCOMP
   ifdef WINDRES
@@ -47,22 +47,37 @@ ifeq ($(config),debug32)
   TARGETDIR           = ../../linux_x32/bin
   TARGET              = $(TARGETDIR)/librikudebug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include"
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m32
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -m32 -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -72,6 +87,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -87,23 +103,38 @@ ifeq ($(config),release32)
   OBJDIR              = ../../linux_x32/obj/x32/release/riku
   TARGETDIR           = ../../linux_x32/bin
   TARGET              = $(TARGETDIR)/librikurelease.a
-  DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG
-  INCLUDES           += -I"../../../include"
+  DEFINES            += -DNDEBUG
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m32 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m32
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -m32 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -s -m32 -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -113,6 +144,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -129,22 +161,37 @@ ifeq ($(config),debug64)
   TARGETDIR           = ../../linux_x64/bin
   TARGET              = $(TARGETDIR)/librikudebug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include"
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m64
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -m64 -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -154,6 +201,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -169,23 +217,38 @@ ifeq ($(config),release64)
   OBJDIR              = ../../linux_x64/obj/x64/release/riku
   TARGETDIR           = ../../linux_x64/bin
   TARGET              = $(TARGETDIR)/librikurelease.a
-  DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG
-  INCLUDES           += -I"../../../include"
+  DEFINES            += -DNDEBUG
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m64 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef -m64
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -m64 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -s -m64 -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -195,6 +258,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -211,22 +275,37 @@ ifeq ($(config),debug)
   TARGETDIR           = ../../../scripts
   TARGET              = $(TARGETDIR)/librikudebug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include"
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"." -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -236,6 +315,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -251,23 +331,38 @@ ifeq ($(config),release)
   OBJDIR              = obj/release/riku
   TARGETDIR           = ../../../scripts
   TARGET              = $(TARGETDIR)/librikurelease.a
-  DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG
-  INCLUDES           += -I"../../../include"
+  DEFINES            += -DNDEBUG
+  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -Wall -Wextra -fomit-frame-pointer -g -O3 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -msse2 -Wshadow -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"." -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"." -s -Wl,--gc-sections -Wl,--as-needed
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lrt -ldl
+  LIBS               += $(LDDEPS) -lm -lrt -ldl
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(AR)  -rcs $(TARGET)
   OBJECTS := \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
+	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/cluster.o \
 	$(OBJDIR)/src/core.o \
 	$(OBJDIR)/src/crypto.o \
@@ -277,6 +372,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/src/net.o \
 	$(OBJDIR)/src/os.o \
 	$(OBJDIR)/src/path.o \
+	$(OBJDIR)/src/stream.o \
 	$(OBJDIR)/src/thread.o \
 	$(OBJDIR)/src/zlib.o \
 
@@ -290,6 +386,7 @@ endif
 
 OBJDIRS := \
 	$(OBJDIR) \
+	$(OBJDIR)/3rdparty/zlib-1.2.11 \
 	$(OBJDIR)/src \
 
 RESOURCES := \
@@ -343,6 +440,66 @@ $(GCH_OBJC): $(PCH) $(MAKEFILE) | $(OBJDIR)
 	$(SILENT) $(CXX) $(ALL_OBJCPPFLAGS) -x objective-c++-header $(DEFINES) $(INCLUDES) -o "$@" -c "$<"
 endif
 
+$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o: ../../../3rdparty/zlib-1.2.11/adler32.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o: ../../../3rdparty/zlib-1.2.11/compress.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/crc32.o: ../../../3rdparty/zlib-1.2.11/crc32.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/deflate.o: ../../../3rdparty/zlib-1.2.11/deflate.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/gzclose.o: ../../../3rdparty/zlib-1.2.11/gzclose.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/gzlib.o: ../../../3rdparty/zlib-1.2.11/gzlib.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/gzread.o: ../../../3rdparty/zlib-1.2.11/gzread.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/gzwrite.o: ../../../3rdparty/zlib-1.2.11/gzwrite.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/infback.o: ../../../3rdparty/zlib-1.2.11/infback.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/inffast.o: ../../../3rdparty/zlib-1.2.11/inffast.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/inflate.o: ../../../3rdparty/zlib-1.2.11/inflate.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/inftrees.o: ../../../3rdparty/zlib-1.2.11/inftrees.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o: ../../../3rdparty/zlib-1.2.11/trees.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o: ../../../3rdparty/zlib-1.2.11/uncompr.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o: ../../../3rdparty/zlib-1.2.11/zutil.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
 $(OBJDIR)/src/cluster.o: ../../../src/cluster.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
@@ -376,6 +533,10 @@ $(OBJDIR)/src/os.o: ../../../src/os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/path.o: ../../../src/path.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/stream.o: ../../../src/stream.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

@@ -214,7 +214,7 @@
 
 #define countof(buffer)        (sizeof(x) / sizeof((x)[0]))
 //#define offsetof(Type, member) ((usize)&((Type*)0)->member)
-#define deprecate(message)     __declspec(deprecated(message))
+//#define deprecate(message)     __declspec(deprecated(message))
 
 #ifndef __has_declspec_attribute       // Optional of course.
 #define __has_declspec_attribute(x) 0  // Compatibility with non-clang compilers.
@@ -237,7 +237,7 @@
 #if defined(_MSC_VER)
 #   define __threadstatic __declspec(thread) static
 #else
-#   define __threadstatic __thread static
+#   define __threadstatic static __thread
 #endif
 
 // Primitive types

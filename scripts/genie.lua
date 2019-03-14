@@ -69,5 +69,12 @@ do
       path.join(RIKU_DIR, "unit_tests/**/*.cc"),
    }
 
+   configuration { "linux" }
+   do
+      links {
+         "pthread"
+      }
+   end
+
    strip()
 end

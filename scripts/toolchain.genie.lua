@@ -10,16 +10,16 @@ local function crt_none()
 	}
 
 	buildoptions {
-		--"-nostdlib",
-		--"-nodefaultlibs",
+		"-nostdlib",
+		"-nodefaultlibs",
 		"-nostartfiles",
 		"-Wa,--noexecstack",
 		"-ffreestanding",
 	}
 
 	linkoptions {
-		--"-nostdlib",
-		--"-nodefaultlibs",
+		"-nostdlib",
+		"-nodefaultlibs",
 		"-nostartfiles",
 		"-Wa,--noexecstack",
 		"-ffreestanding",
@@ -48,20 +48,23 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		value = "_PLATFORM",
 		description = "Choose platform",
 		allowed = {
-			{ "android-arm",     "Android - ARM"              },
-			{ "android-x86",     "Android - x86"              },
-			{ "wasm",            "Emscripten/wasm"            },
-			{ "asmjs",           "Emscripten/asm.js"          },
+			{ "android-arm",     	"Android - ARM"              	},
+			{ "android-x86",     	"Android - x86"              	},
+			{ "wasm",            	"Emscripten/wasm"            	},
+			{ "asmjs",           	"Emscripten/asm.js"          	},
 			--{ "freebsd",         "FreeBSD"                    },
-			{ "linux",           "Linux (Clang compiler)"     },
-			{ "linux-afl",       "Linux (Clang + AFL fuzzer)" },
-			{ "windows-clang",   "Windows (Clang compiler)"   },
-			{ "ios-arm",         "iOS - ARM"                  },
-			{ "ios-arm64",       "iOS - ARM64"                },
-			{ "ios-simulator",   "iOS - Simulator"            },
-			{ "ios-simulator64", "iOS - Simulator 64"         },
-			{ "tvos-arm64",      "tvOS - ARM64"               },
-			{ "tvos-simulator",  "tvOS - Simulator"           },
+			{ "linux",        		"Linux"					     	},
+			{ "linux-afl",        	"Linux (AFL fuzzer)"		 	},
+			{ "linux-clang",        "Linux (Clang compiler)"     	},
+			{ "linux-clang-afl",    "Linux (Clang + AFL fuzzer)" 	},
+			{ "windows-clang",   	"Windows (Clang compiler)"   	},
+			{ "ios-arm",         	"iOS - ARM"                  	},
+			{ "ios-arm64",       	"iOS - ARM64"                	},
+			{ "ios-simulator",   	"iOS - Simulator"            	},
+			{ "ios-simulator64", 	"iOS - Simulator 64"         	},
+			{ "tvos-arm64",      	"tvOS - ARM64"               	},
+			{ "tvos-simulator",  	"tvOS - Simulator"           	},
+			{ "mingw",     			"MinGW"     					},
 			--{ "mingw-clang",     "MinGW (clang compiler)"     },
 			--{ "netbsd",          "NetBSD"                     },
 			{ "osx",             "OSX"                        },
@@ -210,7 +213,15 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.cc   = "$(ANDROID_NDK_CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(ANDROID_NDK_CLANG)/bin/clang++"
 			premake.gcc.llvm = true
-            location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _PLATFORM))
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-" .. _PLATFORM))
+			
+			if "android-arm" == _PLATFORM then
+				premake.gcc.ar = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ar"
+				premake.gcc.ld = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ld"
+			elseif "android-arm64" == _PLATFORM then
+				premake.gcc.ar = "$(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ar"
+				premake.gcc.ld = "$(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ld"
+			end
 
 		elseif "asmjs" == _PLATFORM then
 			if not os.getenv("EMSCRIPTEN") then
@@ -266,19 +277,31 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.cc  = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 			premake.gcc.cxx = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 			premake.gcc.ar  = "ar"
-            location (path.join(BUILD_DIR, "projects", _ACTION .. "-tvos-simulator"))
-            
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-tvos-simulator"))
+			
 		elseif "linux" == _PLATFORM then
-			premake.gcc.cc  = "clang"
-			premake.gcc.cxx = "clang++"
+			premake.gcc.cc  = "gcc"
+			premake.gcc.cxx = "g++"
 			premake.gcc.ar  = "ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux"))
 
 		elseif "linux-afl" == _PLATFORM then
+			premake.gcc.cc  = "afl-gcc"
+			premake.gcc.cxx = "afl-g++"
+			premake.gcc.ar  = "ar"
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux"))
+
+		elseif "linux-clang" == _PLATFORM then
+			premake.gcc.cc  = "clang"
+			premake.gcc.cxx = "clang++"
+			premake.gcc.ar  = "ar"
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux-clang"))
+
+		elseif "linux-clang-afl" == _PLATFORM then
 			premake.gcc.cc  = "afl-clang"
 			premake.gcc.cxx = "afl-clang++"
 			premake.gcc.ar  = "ar"
-			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux"))
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux-clang"))
 
         --[[
 		elseif "linux-steamlink" == _PLATFORM then
@@ -291,11 +314,30 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.ar  = "$(MARVELL_SDK_PATH)/toolchain/bin/armv7a-cros-linux-gnueabi-ar"
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-linux-steamlink"))]]
 
+		elseif "mingw" == _PLATFORM then
+			if not os.getenv("MINGW") then
+				--print("Set MINGW environment variable.")
+			end
+
+			local mingwToolchain = "x86_64-w64-mingw32"
+			if compiler32bit then
+				if os.is("linux") then
+					mingwToolchain = "i686-w64-mingw32"
+				else
+					mingwToolchain = "mingw32"
+				end
+			end
+
+			--premake.gcc.cc  = "$(MINGW)/bin/" .. mingwToolchain .. "-gcc"
+			--premake.gcc.cxx = "$(MINGW)/bin/" .. mingwToolchain .. "-g++"
+			--premake.gcc.ar  = "$(MINGW)/bin/ar"
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-mingw"))
+
 		elseif "mingw-clang" == _PLATFORM then
 			premake.gcc.cc   = "$(CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(CLANG)/bin/clang++"
 			premake.gcc.ar   = "$(MINGW)/bin/ar"
-			location (path.join(BUILD_DIR, "projects", _ACTION .. "-mingw"))
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-mingw-clang"))
 
 		elseif "windows-clang" == _PLATFORM then
 			premake.gcc.cc   = "clang"
@@ -462,7 +504,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 
 	configuration { "debug" }
 	do
-		targetsuffix "debug"
+		targetsuffix ".debug"
 
 		defines {
 			"_DEBUG",
@@ -475,7 +517,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 
 	configuration { "release" }
 	do
-		targetsuffix "release"
+		targetsuffix ""
 
 		flags {
 			"NoBufferSecurityCheck",
@@ -641,6 +683,22 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-static-libstdc++",
 		}
 
+	configuration { "x32", "mingw" }
+		targetdir (path.join(BUILD_DIR, "windows_x32_mingw/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x32_mingw/obj"))
+		libdirs {
+			path.join(LIB_DIR, "lib/windows_x32_mingw"),
+		}
+		buildoptions { "-m32" }
+
+	configuration { "x64", "mingw" }
+		targetdir (path.join(BUILD_DIR, "windows_x64_mingw/bin"))
+		objdir (path.join(BUILD_DIR, "windows_x64_mingw/obj"))
+		libdirs {
+			path.join(LIB_DIR, "lib/windows_x64_mingw"),
+		}
+		buildoptions { "-m64" }
+
 	configuration { "x32", "mingw-clang" }
 		targetdir (path.join(BUILD_DIR, "windows_x32_mingw-clang/bin"))
 		objdir (path.join(BUILD_DIR, "windows_x32_mingw-clang/obj"))
@@ -658,21 +716,21 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		buildoptions { "-m64" }
 
 	configuration { "linux*" }
+	do
 		buildoptions {
-            "-fdeclspec",
-            "-fms-extensions",
 			"-msse2",
 --			"-Wdouble-promotion",
 --			"-Wduplicated-branches",
 --			"-Wduplicated-cond",
 --			"-Wjump-misses-init",
-			"-Wshadow",
+			--"-Wshadow",
 --			"-Wnull-dereference",
 			"-Wunused-value",
 			"-Wundef",
 --			"-Wuseless-cast",
 		}
 		links {
+			"m",
 			"rt",
 			"dl",
 		}
@@ -680,6 +738,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-Wl,--gc-sections",
 			"-Wl,--as-needed",
 		}
+	end
 
 	configuration { "linux*", "x32" }
 		targetdir (path.join(BUILD_DIR, "linux_x32/bin"))
@@ -696,6 +755,34 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		buildoptions {
 			"-m64",
 		}
+
+	configuration { "linux-clang*" }
+	do
+		buildoptions {
+            "-fdeclspec",
+            "-fms-extensions",
+		}
+	end
+
+	configuration { "linux-clang*", "x32" }
+	do
+		targetdir (path.join(BUILD_DIR, "linux_x32_clang/bin"))
+		objdir (path.join(BUILD_DIR, "linux_x32_clang/obj"))
+		libdirs { path.join(LIB_DIR, "lib/linux_x32_clang") }
+		buildoptions {
+			"-m32",
+		}
+	end
+
+	configuration { "linux-clang*", "x64" }
+	do
+		targetdir (path.join(BUILD_DIR, "linux_x64_clang/bin"))
+		objdir (path.join(BUILD_DIR, "linux_x64_clang/obj"))
+		libdirs { path.join(LIB_DIR, "lib/linux_x64_clang") }
+		buildoptions {
+			"-m64",
+		}
+	end
 
 	configuration { "android-*" }
 		targetprefix ("lib")
@@ -793,9 +880,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-march=armv7-a",
 			"-Wl,--fix-cortex-a8",
         }
-
-        premake.gcc.ar = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ar"
-        premake.gcc.ld = "$(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ld"
     end
 
     configuration { "android-arm", "x64" }
@@ -825,9 +909,6 @@ function toolchain(BUILD_DIR, LIB_DIR)
             "-march=armv8-a",
             "-Wl,--fix-cortex-a8",
         }
-        
-        premake.gcc.ar = "$(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ar"
-        premake.gcc.ld = "$(ANDROID_NDK_ARM64)/bin/aarch64-linux-android-ld"
     end
 
 	configuration { "android-x86" }

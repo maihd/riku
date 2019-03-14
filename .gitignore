@@ -8,6 +8,9 @@
 
 /build/wasm
 /build/asmjs
+/build/ios*
+/build/osx*
+/build/tvos*
 /build/linux*
 /build/android*
 /build/win32_*

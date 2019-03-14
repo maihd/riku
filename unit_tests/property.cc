@@ -29,6 +29,12 @@ public:
 };
 static_assert(sizeof(Type) == sizeof(int), "property should not create new member in data structure, it's just syntax sugar man.");
 
+[[noreturn]]
+void force_exit()
+{
+    exit(1);
+}
+
 TEST_CASE("Property testing", "[property]")
 {
     Type test;
