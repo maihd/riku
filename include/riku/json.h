@@ -84,12 +84,12 @@ namespace json
         __rikuapi static const Value NONE;
 
     public: // @region: Constructors
-        __forceinline Value()
+        inline Value()
             : type(Type::Null)
         {	
         }
 
-        __forceinline ~Value()
+        inline ~Value()
         {
             // SHOULD BE EMPTY
             // Memory are managed by State
@@ -97,7 +97,7 @@ namespace json
 
     public: // @region: Properties
         propdef_readonly(get_length) int length;
-        __forceinline int get_length() const
+        inline int get_length() const
         {
             switch (type)
             {
@@ -120,7 +120,7 @@ namespace json
         __rikuapi const Value& find(const char* name) const;
 
     public: // @region: Indexor
-        __forceinline const Value& operator[] (int index) const
+        inline const Value& operator[] (int index) const
         {
             if (type != Type::Array || index < 0 || index > this->length)
             {
@@ -132,23 +132,23 @@ namespace json
             }	
         }
 
-        __forceinline const Value& operator[] (const char* name) const
+        inline const Value& operator[] (const char* name) const
         {
             return this->find(name);
         }
 
     public: // @region: Conversion
-        __forceinline operator const char* () const
+        inline operator const char* () const
         {
             return (this->type == Type::String) ? this->string : "";
         }
 
-        __forceinline operator double () const
+        inline operator double () const
         {
             return this->number;
         }
 
-        __forceinline operator bool () const
+        inline operator bool () const
         {
             switch (type)
             {
@@ -173,12 +173,12 @@ namespace json
         }
     };
 
-    __forceinline bool operator==(const Value& a, const Value& b)
+    inline bool operator==(const Value& a, const Value& b)
     {
         return Value::equals(a, b);
     }
 
-    __forceinline bool operator!=(const Value& a, const Value& b)
+    inline bool operator!=(const Value& a, const Value& b)
     {
         return !Value::equals(a, b);
     }

@@ -27,7 +27,7 @@ public:
     {
     }
 
-    __forceinline ~List(void)
+    inline ~List(void)
     {
         if (buffer && buffer->release() <= 0)
         {
@@ -84,33 +84,33 @@ public: // Properties
     propdef_readonly(get_length)   int    length;
     propdef_readonly(get_capacity) int    capacity;
 
-    __forceinline TItem* get_items(void)
+    inline TItem* get_items(void)
     {
         return buffer ? buffer->items : NULL;
     }
 
-    __forceinline const TItem* get_items(void) const
+    inline const TItem* get_items(void) const
     {
         return buffer ? buffer->items : NULL;
     }
 
-    __forceinline int get_length(void) const
+    inline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
     }
 
-    __forceinline int get_capacity(void) const
+    inline int get_capacity(void) const
     {
         return buffer ? buffer->capacity : 0;
     }
 
 public: // Indexor
-    __forceinline TItem& operator[](int index)
+    inline TItem& operator[](int index)
     {
         return buffer->items[index];
     }
 
-    __forceinline const TItem& operator[](int index) const
+    inline const TItem& operator[](int index) const
     {
         return buffer->items[index];
     }

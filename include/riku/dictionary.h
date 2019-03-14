@@ -29,22 +29,22 @@ public: // Properties
     propdef_readonly(get_length)     int        length;
     propdef_readonly(get_hash_count) int        hash_count;
 
-    __forceinline const TKey* get_keys(void) const
+    inline const TKey* get_keys(void) const
     {
         return buffer ? buffer->keys : 0;
     }
 
-    __forceinline const TValue* get_values(void) const
+    inline const TValue* get_values(void) const
     {
         return buffer ? buffer->values : 0;
     }
 
-    __forceinline int get_length(void) const
+    inline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
     }
 
-    __forceinline int get_hash_count(void) const
+    inline int get_hash_count(void) const
     {
         return buffer ? buffer->hashs.length : 0;
     }

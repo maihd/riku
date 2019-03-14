@@ -3,11 +3,6 @@
 
 #pragma once
 
-// Riku donot support gcc, 'cause it doesnot has __declspec
-#if defined(__GNUC__) && !defined(__clang__)
-#error "riku: No GCC support, sorry man."
-#endif
-
 // Supported platforms
 #define PLATFORM_WINDOWS 0 // Platform family: windows  - winrt, win32
 #define PLATFORM_UNIX    0 // Platform family: unix     - android, linux
@@ -225,7 +220,11 @@
 #define propdef_readonly(getter)  __declspec(property(get=getter))
 #define propdef_writeonly(setter) __declspec(property(put=setter))
 
-#define __threadstatic __declspec(thread) static
+#if defined(_MSC_VER)
+#   define __threadstatic __declspec(thread) static
+#else
+#   define __threadstatic __thread static
+#endif
 
 // Primitive types
 
@@ -326,34 +325,34 @@ namespace memory
 }
 
 #if 0 && EXPERIMENTAL
-__forceinline void* operator new(usize size) 
+inline void* operator new(usize size) 
 {
 	return ::memory::alloc(size);
 }
-__forceinline void operator delete(void* ptr) 
+inline void operator delete(void* ptr) 
 {
 	::memory::dealloc(ptr);
 }
-__forceinline void *operator new[](size_t size) 
+inline void *operator new[](size_t size) 
 {
 	return ::memory::alloc(size);
 }
-__forceinline void operator delete[](void* ptr) 
+inline void operator delete[](void* ptr) 
 {
 	::memory::dealloc(ptr);
 }
 #endif
 
 struct NewDummy {};
-__forceinline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
-__forceinline void  operator delete(void*, NewDummy, void*)     {             }
+inline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
+inline void  operator delete(void*, NewDummy, void*)     {             }
 
 #define INIT(ptr)    new (NewDummy(), ptr)
 #define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
 #define DESTROY(ptr) __DO_DESTROY(ptr)
 
 template <typename T>
-__forceinline bool __DO_DESTROY(T* ptr)
+inline bool __DO_DESTROY(T* ptr)
 {
     if (ptr) 
     { 
@@ -393,7 +392,7 @@ template <typename T>
 using WithoutRef = typename WithoutRefTrait<T>::Type;
 
 template <typename T>
-__forceinline WithoutRef<T>&& make_rvalue(T&& value)
+inline WithoutRef<T>&& make_rvalue(T&& value)
 {
     return (static_cast<WithoutRef<T>&&>(value));
 }
@@ -460,22 +459,22 @@ public:
     byte* data;
 
 public:
-    __forceinline Buffer()
+    inline Buffer()
         : data(NULL) {}
 
-    __forceinline ~Buffer()
+    inline ~Buffer()
     {
         memory::dealloc(data ? (usize*)data - 1 : NULL);
     }
 
 public:
-    __forceinline Buffer(Buffer&& buffer)
+    inline Buffer(Buffer&& buffer)
         : data(buffer.data)
     {
         buffer.data = NULL;
     }
 
-    __forceinline Buffer& operator=(Buffer&& buffer)
+    inline Buffer& operator=(Buffer&& buffer)
     {
         data = buffer.data;
         buffer.data = NULL;
@@ -484,18 +483,18 @@ public:
 
 public:
     propdef_readonly(get_length) usize length;
-    __forceinline usize get_length(void) const
+    inline usize get_length(void) const
     {
         return data ? *((usize*)data - 1) : 0;
     }
 
 public:
-    __forceinline operator byte*(void)
+    inline operator byte*(void)
     {
         return data;
     }
 
-    __forceinline operator const byte*(void) const
+    inline operator const byte*(void) const
     {
         return data;
     }
@@ -743,12 +742,12 @@ public:
 
 public: // Properties
     propdef(get_full_year, set_full_year) int full_year;
-    __forceinline int get_full_year(void) const
+    inline int get_full_year(void) const
     {
         return year + 1900;
     }
 
-    __forceinline void set_full_year(int full_year)
+    inline void set_full_year(int full_year)
     {
         year = full_year - 1900;
     }
@@ -802,7 +801,7 @@ public:
         , seconds(0)
         {}
 
-    __forceinline ~Date(void) {}
+    inline ~Date(void) {}
 
 public:
     Date(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0)
@@ -843,7 +842,7 @@ public:
 
 public: // Utils
     // Compute the day of week at given year, month, day
-    __forceinline static int weekday_of(int year, int month, int day)
+    inline static int weekday_of(int year, int month, int day)
     {
         // Sakamoto's methods
         static int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
@@ -852,7 +851,7 @@ public: // Utils
     }
 
     // Compute the day of year at given year, month, day
-    __forceinline static int yearday_of(int year, int month, int day)
+    inline static int yearday_of(int year, int month, int day)
     {
         int N1 = (int)(275 * month / 9) + 1;
         int N2 = (int)((month + 9) / 12) + 1;

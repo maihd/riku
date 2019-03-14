@@ -15,8 +15,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 6. No lack, no redundant, no unneccessary features. That mean this library is enough to be a strong foundation for all software and application.
 7. Base on above feature, this library must be cross-platform.
 8. GENie toolchain for generate multiple cross-platform projects with no hard way.
-9. Only Clang and VisualC++ support.
-10. VisualC's __declspec(property) for cross-platform
+9. VisualC's __declspec(property) for cross-platform, with -fdeclspec clang options
 
 ## Modules
 * [x] Core (many global modules of JS and NodeJS)
