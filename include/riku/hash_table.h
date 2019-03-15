@@ -6,7 +6,7 @@
 #include "./core.h"
 #include "./array.h"
 
-template <typename T>
+template <typename TValue>
 struct HashTable
 {
 public: 
@@ -17,7 +17,7 @@ public:
         Array<int>   hashs;
         int*         nexts;
         ulong*       keys;
-        T*           values;
+        TValue*      values;
     };
 
 public:
@@ -25,7 +25,7 @@ public:
 
 public: // Properties
     PROPERTY_READONLY(ulong*, keys, get_keys);
-    PROPERTY_READONLY(T*, values, get_values);
+    PROPERTY_READONLY(TValue*, values, get_values);
     PROPERTY_READONLY(int, length, get_length);
     PROPERTY_READONLY(int, hash_count, get_hash_count);
 
@@ -34,7 +34,12 @@ public: // Properties
         return buffer ? buffer->keys : 0;
     }
 
-    inline const T* get_values(void) const
+    inline TValue* get_values(void)
+    {
+        return buffer ? buffer->values : 0;
+    }
+
+    inline const TValue* get_values(void) const
     {
         return buffer ? buffer->values : 0;
     }
@@ -84,7 +89,7 @@ public:
     }
 
 public: // Copy
-    inline HashTable(const HashTable<T>& other)
+    inline HashTable(const HashTable<TValue>& other)
         : buffer(other.buffer)
     {
         if (buffer)
@@ -93,7 +98,7 @@ public: // Copy
         }
     }
 
-    inline HashTable<T>& operator=(const HashTable<T>& other)
+    inline HashTable<TValue>& operator=(const HashTable<TValue>& other)
     {
         buffer = other.buffer;
         if (buffer)
@@ -105,13 +110,13 @@ public: // Copy
     }
 
 public: // RAII
-    inline HashTable(HashTable<T>&& other)
+    inline HashTable(HashTable<TValue>&& other)
         : buffer(other.buffer)
     {
         other.buffer = NULL;
     }
 
-    inline HashTable<T>& operator=(HashTable<T>&& other)
+    inline HashTable<TValue>& operator=(HashTable<TValue>&& other)
     {
         this->~HashTable();
         
@@ -120,39 +125,33 @@ public: // RAII
 
         return *this;
     }
-};
 
-namespace table
-{
-    template <typename T>
-    inline void unref(HashTable<T>& table)
+public: // Methods
+    inline void unref(bool cleanup = true)
     {
-        table.~HashTable();
-        table.buffer = NULL;
+        if (cleanup)
+        {
+            ~HashTable();
+        }
+
+        buffer = NULL;
     }
 
-    template <typename T>
-    inline int hash_count(const HashTable<T>& table)
+    int index_of(ulong key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        return table.buffer ? table.buffer->hashs.get_length() : 0;
-    }
-
-    template <typename T>
-    int index_of(const HashTable<T>& table, ulong key, int* out_hash = NULL, int* out_prev = NULL)
-    {
-        int hash = (int)(ulong)(key % hash_count(table));
-        int curr = table.buffer->hashs[hash];
+        int hash = (int)(ulong)(key % get_hash_count());
+        int curr = buffer->hashs[hash];
         int prev = -1;
 
         while (curr > -1)
         {
-            if (table.buffer->keys[curr] == key)
+            if (buffer->keys[curr] == key)
             {
                 break;
             }
 
             prev = curr;
-            curr = table.buffer->nexts[curr];
+            curr = buffer->nexts[curr];
         }
 
         if (out_hash) *out_hash = hash;
@@ -160,68 +159,38 @@ namespace table
         return curr;
     }
 
-    template <typename T>
-    const T& get(const HashTable<T>& table, ulong key)
+    TValue get(ulong key, const TValue& def_value = TValue()) const
     {
-        int curr = index_of(table, key);
-        return table.buffer->values[curr];
+        int curr = index_of(key);
+        return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
-    template <typename T>
-    const T& get(const HashTable<T>& table, ulong key, const T& def_value)
-    {
-        int curr = index_of(table, key);
-        return (curr > -1) ? table.buffer->values[curr] : def_value;
-    }
-
-    template <typename T>
-    T& get_or_new(const HashTable<T>& table, ulong key)
+    TValue& get_or_new(ulong key)
     {
         int hash, prev;
-        int curr = index_of(table, key, &hash, &prev);
+        int curr = index_of(key, &hash, &prev);
 
         if (curr < 0)
         {
-            if (table.buffer->length + 1 > table.buffer->capacity)
-            {
-                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
-                table.buffer->nexts  = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
-                table.buffer->keys   = (ulong*)memory::realloc(table.buffer->keys, sizeof(ulong) * new_size);
-                table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
-
-                table.buffer->capacity = new_size;
-                always_assert(!(!table.buffer->nexts || !table.buffer->keys || !table.buffer->values), "Out of memory");
-            }
-
-            curr = table.buffer->length++;
-            if (prev > -1)
-            {
-                table.buffer->nexts[prev] = curr;
-            }
-            else
-            {
-                table.buffer->hashs[hash] = curr;
-            }
-            table.buffer->nexts[curr] = -1;
-            table.buffer->keys[curr] = key;
+            always_assert(this->set(key, TValue()), "Out of memory");
         }
 
-        return table.buffer->values[curr];
+        return buffer->values[curr];
     }
 
-    template <typename T>
-    bool has(const HashTable<T>& table, ulong key)
+    template <typename TValue>
+    bool has(ulong key) const
     {
-        return index_of(table, key) > -1;
+        return index_of(key) > -1;
     }
 
-    template <typename T>
-    bool try_get(const HashTable<T>& table, ulong key, T* out_value)
+    template <typename TValue>
+    bool try_get(ulong key, TValue* out_value) const
     {
-        int curr = index_of(table, key);
+        int curr = index_of(key);
         if (curr > -1)
         {
-            *out_value = table.buffer->values[curr];
+            *out_value = buffer->values[curr];
             return true;
         }
         else
@@ -230,49 +199,44 @@ namespace table
         }
     }
 
-    template <typename T>
-    bool set(HashTable<T>& table, ulong key, const T& value)
+    template <typename TValue>
+    bool set(ulong key, const TValue& value)
     {
         int hash, prev;
-        int curr = index_of(table, key, &hash, &prev);
+        int curr = index_of(key, &hash, &prev);
 
         if (curr < 0)
         {
-            if (table.buffer->length + 1 > table.buffer->capacity)
+            if (buffer->length + 1 > buffer->capacity)
             {
-                int new_size = table.buffer->capacity > 0 ? table.buffer->capacity * 2 : 8;
-                table.buffer->nexts  = (int*)memory::realloc(table.buffer->nexts, sizeof(int) * new_size);
-                table.buffer->keys   = (ulong*)memory::realloc(table.buffer->keys, sizeof(ulong) * new_size);
-                table.buffer->values = (T*)memory::realloc(table.buffer->values, sizeof(T) * new_size);
+                int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
+                buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
+                buffer->keys   = (ulong*)memory::realloc(buffer->keys, sizeof(ulong) * new_size);
+                buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
-                table.buffer->capacity = new_size;
-                if (!table.buffer->nexts || !table.buffer->keys || !table.buffer->values)
+                if (!buffer->nexts || !buffer->keys || !buffer->values)
                 {
-                    memory::dealloc(table.buffer->nexts);
-                    memory::dealloc(table.buffer->keys);
-                    memory::dealloc(table.buffer->values);
-
-                    table.buffer->nexts  = NULL;
-                    table.buffer->keys   = NULL;
-                    table.buffer->values = NULL;
+                    memory::dealloc(buffer->nexts);
+                    memory::dealloc(buffer->keys);
+                    memory::dealloc(buffer->values);
                     return false;
                 }
             }
 
-            curr = table.buffer->length++;
+            curr = buffer->length++;
             if (prev > -1)
             {
-                table.buffer->nexts[prev] = curr;
+                buffer->nexts[prev] = curr;
             }
             else
             {
-                table.buffer->hashs[hash] = curr;
+                buffer->hashs[hash] = curr;
             }
-            table.buffer->nexts[curr] = -1;
-            table.buffer->keys[curr] = key;
+            buffer->nexts[curr] = -1;
+            buffer->keys[curr] = key;
         }
 
-        table.buffer->values[curr] = value;
+        buffer->values[curr] = value;
         return true;
     }
-}
+};

@@ -34,6 +34,11 @@ public: // Properties
         return buffer ? buffer->keys : 0;
     }
 
+    inline TValue* get_values(void)
+    {
+        return buffer ? buffer->values : 0;
+    }
+
     inline const TValue* get_values(void) const
     {
         return buffer ? buffer->values : 0;

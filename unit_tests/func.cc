@@ -60,19 +60,21 @@ TEST_CASE("Testing Func<...>", "[Func<>]")
     func_list[1]("FuncList: Hello world 2");
     func_list[2]("FuncList: Hello world 3");
 
+#if 0 && DONOT_USE_THIS_IF_NOT_IT_WILL_CRASH
     //FuncArray func_array;
     //init<decltype(print)>(&table::get_or_add(func_table, 1), print);
     //init<decltype(print)>(&table::get_or_add(func_table, 2), print2);
     //init<decltype(print)>(&table::get_or_add(func_table, 3), print3);
 
     FuncTable func_table;
-    INIT(&table::get_or_new(func_table, 1)) Func<void(const char*)>(print);
-    INIT(&table::get_or_new(func_table, 2)) Func<void(const char*)>(print2);
-    INIT(&table::get_or_new(func_table, 3)) Func<void(const char*)>(print3);
+    INIT(&func_table.get_or_new(1)) Func<void(const char*)>(print);
+    INIT(&func_table.get_or_new(2)) Func<void(const char*)>(print2);
+    INIT(&func_table.get_or_new(3)) Func<void(const char*)>(print3);
 
-    table::get(func_table, 1)("FuncTable: Hello world");
-    table::get(func_table, 2)("FuncTable: Hello world 2");
-    table::get(func_table, 3)("FuncTable: Hello world 3");
+    func_table.get(1)("FuncTable: Hello world");
+    func_table.get(2)("FuncTable: Hello world 2");
+    func_table.get(3)("FuncTable: Hello world 3");
+#endif
 
     FuncDictionary func_dict;
     func_dict[1] = print;

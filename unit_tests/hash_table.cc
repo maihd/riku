@@ -8,12 +8,13 @@ TEST_CASE("HashTable", "[hash_table]")
 {
     HashTable<int> hash_table;
 
-    table::set(hash_table, 10, 10);
-    table::set(hash_table, 11, 10);
-    table::set(hash_table, 12, 10);
-    table::set(hash_table, 13, 10);
-    table::set(hash_table, 14, 10);
+    REQUIRE(hash_table.set(10, 10));
+    REQUIRE(hash_table.set(11, 10));
+    REQUIRE(hash_table.set(12, 10));
+    REQUIRE(hash_table.set(13, 10));
+    REQUIRE(hash_table.set(14, 10));
     
     int value;
-    table::try_get(hash_table, 14, &value);
+    REQUIRE(hash_table.try_get(14, &value));
+    REQUIRE(value == 10);
 }
