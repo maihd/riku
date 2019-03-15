@@ -64,10 +64,10 @@ public:
         INIT(buffer) RefCount();
         INIT(&buffer->hashs) Array<int>();
 
-        array::ensure(buffer->hashs, hash_count);
+        buffer->hashs.ensure(hash_count);
         for (int i = 0; i < hash_count; i++)
         {
-            array::push(buffer->hashs, -1);
+            buffer->hashs.push(-1);
         }
     }
 

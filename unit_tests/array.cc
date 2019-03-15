@@ -25,7 +25,7 @@ TEST_CASE("Test array operations", "[Array]")
 
     for (int i = 0, n = 10; i < n; i++)
     {
-        array::push(int_array, i);
+        int_array.push(i);
     }
     REQUIRE(int_array.get_length() == 10);
 
@@ -39,13 +39,13 @@ TEST_CASE("Test array operations", "[Array]")
     console::log("Clearing int_array with array::pop()");
     for (int i = 0, n = int_array.get_length(); i < n; i++)
     {
-        array::pop(int_array);
+        int_array.pop();
     }
     REQUIRE(int_array.get_length() == 0);
 
     for (int i = 0, n = 10; i < n; i++)
     {
-        array::unshift(int_array, i);
+        int_array.unshift(i);
     }
     REQUIRE(int_array.get_length() == 10);
 
@@ -59,46 +59,46 @@ TEST_CASE("Test array operations", "[Array]")
     console::log("Clearing int_array with array::shift()");
     for (int i = 0, n = int_array.get_length(); i < n; i++)
     {
-        array::shift(int_array);
+        int_array.shift();
     }
     REQUIRE(int_array.get_length() == 0);
 
-    array::push(int_array, 0);
-    array::push(int_array, 1);
-    array::push(int_array, 2);
-    array::push(int_array, 3);
-    array::push(int_array, 4);
-    array::push(int_array, 5);
-    array::push(int_array, 6);
-    array::push(int_array, 7);
-    array::push(int_array, 8);
-    array::push(int_array, 9);
+    int_array.push(0);
+    int_array.push(1);
+    int_array.push(2);
+    int_array.push(3);
+    int_array.push(4);
+    int_array.push(5);
+    int_array.push(6);
+    int_array.push(7);
+    int_array.push(8);
+    int_array.push(9);
     REQUIRE(int_array.get_length() == 10);
 
-    array::unshift(int_array1, 0);
-    array::unshift(int_array1, 1);
-    array::unshift(int_array1, 2);
-    array::unshift(int_array1, 3);
-    array::unshift(int_array1, 4);
-    array::unshift(int_array1, 5);
-    array::unshift(int_array1, 6);
-    array::unshift(int_array1, 7);
-    array::unshift(int_array1, 8);
-    array::unshift(int_array1, 9);
-    REQUIRE(int_array.get_length() == 10);
+    int_array1.unshift(0);
+    int_array1.unshift(1);
+    int_array1.unshift(2);
+    int_array1.unshift(3);
+    int_array1.unshift(4);
+    int_array1.unshift(5);
+    int_array1.unshift(6);
+    int_array1.unshift(7);
+    int_array1.unshift(8);
+    int_array1.unshift(9);
+    REQUIRE(int_array1.get_length() == 10);
 
     for (int i = 0, n = int_array.get_length(); i < n; i++)
     {
-        REQUIRE(array::index_of(int_array, int_array[i]) == i);
+        REQUIRE(int_array.index_of(int_array[i]) == i);
     }
 
     for (int i = 0, n = int_array1.get_length(); i < n; i++)
     {
-        REQUIRE(array::last_index_of(int_array1, int_array1[i]) == i);
+        REQUIRE(int_array1.last_index_of(int_array1[i]) == i);
     }
 
     console::log("Cloning int_array...");
-    Array<int> concat_array = array::clone(int_array);
+    Array<int> concat_array = int_array.clone();
     REQUIRE(concat_array.get_length() == int_array.get_length());
     REQUIRE(concat_array.get_capacity() == int_array.get_capacity());
     for (int i = 0, n = concat_array.get_length(); i < n; i++)
@@ -108,7 +108,7 @@ TEST_CASE("Test array operations", "[Array]")
 
     console::log("Concat int_array1 to concat_array...");
     int new_length = concat_array.get_length() + int_array1.get_length();
-    REQUIRE(array::concat(concat_array, int_array1));
+    REQUIRE(concat_array.concat(int_array1));
     REQUIRE(concat_array.get_length() == new_length);
 
     console::log("int_array after concat...");

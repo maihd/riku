@@ -8,57 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-template <typename TItem>
-struct Array;
-
-namespace array 
-{
-    template <typename TItem>
-    inline void unref(Array<TItem>& array);
-
-    template <typename TItem>
-    inline bool grow(Array<TItem>& array, int new_size);
-
-    template <typename TItem>
-    inline bool ensure(Array<TItem>& array, int size);
-
-    template <typename TItem>
-    inline bool ensure(const Array<TItem>& array, int size);
-
-    template <typename TItem>
-    inline bool push(Array<TItem>& array, const TItem& value);
-
-    template <typename TItem>
-    inline const TItem& pop(Array<TItem>& array);
-
-    template <typename TItem>
-    inline TItem shift(Array<TItem>& array);
-
-    template <typename TItem>
-    inline bool unshift(Array<TItem>& array, const TItem& value);
-
-    template <typename TItem>
-    inline int index_of(const Array<TItem>& array, const TItem& value);
-
-    template <typename TItem>
-    inline int last_index_of(const Array<TItem>& array, const TItem& value);
-
-    template <typename TItem>
-    inline bool concat(Array<TItem>& dst, const Array<TItem>& src);
-    
-    template <typename TItem>
-    inline void clear(Array<TItem>& array);
-
-    template <typename TItem>
-    inline Array<TItem> clone(const Array<TItem>& array);
-
-    template <typename TItem>
-    inline int erase(const Array<TItem>& array, int index);
-
-    template <typename TItem>
-    inline int remove(const Array<TItem>& array, const TItem& value);
-}
-
 // Array: POD growable continuos-sequence container
 // @note: Donot use pointer of this type
 template <typename TItem>
@@ -168,6 +117,195 @@ public: // Indexor
     {
         return buffer->items[index];
     }
+
+public: // Methods
+
+    // Leave buffer ownership free
+    inline void unref(bool cleanup = true)
+    {
+        if (cleanup)
+        {
+            ~Array();
+        }
+
+        buffer = NULL;
+    }
+
+    inline void clear(void)
+    {
+        if (buffer)
+        {
+            buffer->length = 0;
+        }
+    }
+
+    inline bool grow(int new_size)
+    {
+        auto old_buf = buffer;
+        auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+
+        if (new_buf)
+        {
+            if (!old_buf)
+            {
+                // Initialize RefCount
+                INIT(new_buf) RefCount();
+
+                // Initialize Buffer
+                new_buf->length = 0;
+            }
+
+            buffer           = new_buf;
+            buffer->capacity = new_size;
+            return true; 
+        }
+        else 
+        {
+            return false;
+        }
+    }
+
+    inline bool ensure(int size)
+    {
+        if (get_capacity() >= size)
+        {
+            return true;
+        }
+        else
+        {
+            int new_size = get_capacity();
+            new_size = new_size * 2 + (new_size <= 0) * 8; // no if statement or '?' operator (ternary operator)
+            while (new_size < size) new_size *= 2;
+            return grow(new_size);
+        }
+    }
+
+    inline bool ensure(int size) const
+    {
+        return (get_capacity() >= size);
+    }
+
+    inline bool push(const TItem& value)
+    {
+        if (!ensure(get_length() + 1))
+        {
+            return false;
+        }
+
+        buffer->items[buffer->length++] = value;
+        return true;   
+    }
+
+    inline const TItem& pop(void)
+    {
+        return buffer->items[--buffer->length];
+    }
+
+    inline TItem shift(void)
+    {
+        TItem result = buffer->items[0];
+
+        buffer->length--;
+        memory::move(buffer->items, buffer->items + 1, buffer->length * sizeof(TItem));
+
+        return result;
+    }
+
+    inline bool unshift(const TItem& value)
+    {
+        if (!ensure(get_length() + 1))
+        {
+            return false;
+        }
+
+        memory::move(buffer->items + 1, buffer->items, get_length() * sizeof(TItem));
+        buffer->length++;
+        buffer->items[0] = value;
+        return true;
+    }
+
+    inline int index_of(const TItem& value) const
+    {
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (buffer->items[i] == value)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    inline int last_index_of(const TItem& value) const
+    {
+        int index = -1;
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (buffer->items[i] == value)
+            {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    inline bool concat(const Array<TItem>& src)
+    {
+        int dst_len = get_length();
+        int src_len = src.get_length();
+        if (src_len)
+        {
+            int new_len = dst_len + src_len;
+            if (!ensure(new_len))
+            {
+                return false;
+            }
+
+            memcpy(buffer->items + get_length(), src.buffer->items, src_len * sizeof(TItem));
+            buffer->length = new_len;
+        }
+
+        return true;
+    }
+
+    inline Array<TItem> clone()
+    {
+        Array<TItem> res;
+
+        int len = get_length();
+        int cap = get_capacity();
+        if (len > 0 && cap > 0)
+        {
+            if (res.grow(cap))
+            {
+                res.buffer->length = len;
+                memcpy(res.buffer->items, buffer->items, len * sizeof(TItem));
+            }
+        }
+
+        return make_rvalue(res);
+    }
+
+    inline int erase(int index)
+    {
+        if (index > -1 && index < get_length())
+        {
+            memory::move(buffer->items + index, buffer->items + index + 1, get_length() - index - 2);
+            buffer->length--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    inline int remove(const TItem& value)
+    {
+        return erase(index_of(value));
+    }
 };
 
 // TempoArray: POD temporary continuos-sequence container, unknown size at compile-time
@@ -223,35 +361,7 @@ public: // Properties
     }
 };
 
-// SmartArray: Fast and safe, reuse memory Array
-// @note: Donot use pointer of this type
-template <typename TItem>
-struct SmartArray
-{
-public:
-    Array<TItem> items;
-    Array<int>   free_items;
-
-public:
-    PROPERTY_READONLY(int, length, get_length);
-
-    inline int get_length(void) const
-    {
-        return items.get_length() - free_items.get_length();
-    }
-
-public:
-    inline TItem& operator[](int index)
-    {
-        return items[index];
-    }
-
-    inline const TItem& operator[](int index) const
-    {
-        return items[index];
-    }
-};
-
+#if 0 && DECISING_TO_REMOVE
 namespace array 
 {
     template <typename TItem>
@@ -259,6 +369,15 @@ namespace array
     {
         array.~Array();
         array.buffer = NULL;
+    }
+
+    template <typename TItem>
+    inline void clear(Array<TItem>& array)
+    {
+        if (array.buffer)
+        {
+            array.buffer->length = 0;
+        }
     }
 
     template <typename TItem>
@@ -400,15 +519,6 @@ namespace array
         }
         return true;
     }
-    
-    template <typename TItem>
-    inline void clear(Array<TItem>& array)
-    {
-        if (array.buffer) 
-        {
-            array.buffer->length = 0;
-        }
-    }
 
     template <typename TItem>
     inline Array<TItem> clone(const Array<TItem>& array)
@@ -449,38 +559,5 @@ namespace array
     {
         return array::erase(array, array::index_of(array, value));
     }
-
-    template <typename TItem>
-    inline int new_item(SmartArray<TItem>& array)
-    {
-        int index;
-        if (array.free_items.get_length() > 0)
-        {
-            index = array::pop(array.free_items);
-        }
-        else
-        {
-            if (!ensure(array.items, array.items.get_length() + 1))
-            {
-                return -1;
-            }
-
-            index = array.items.buffer->length++;
-        }
-
-        return index;
-    }
-
-    template <typename TItem>
-    inline bool remove_at(SmartArray<TItem>& array, int index)
-    {
-        if (index > -1 && index < array.items.get_length())
-        {
-            return array.free_items.push(index);
-        }
-        else
-        {
-            return false;
-        }
-    }
 }
+#endif
