@@ -97,23 +97,23 @@ namespace os
     #endif
     }
 
-    __rikuapi usize freemem(void);
-    __rikuapi usize totalmem(void);
+    RIKU_API usize freemem(void);
+    RIKU_API usize totalmem(void);
 
-    __rikuapi const char*   tmpdir(void);
-    __rikuapi const char*   homedir(void);
-    __rikuapi const char*   tmpdir(char* buffer, usize length);
-    __rikuapi const char*   homedir(char* buffer, usize length);
+    RIKU_API const char*   tmpdir(void);
+    RIKU_API const char*   homedir(void);
+    RIKU_API const char*   tmpdir(char* buffer, usize length);
+    RIKU_API const char*   homedir(char* buffer, usize length);
 
-    __rikuapi const char*   hostname(void);
-    __rikuapi const char*   hostname(char* buffer, usize length);
+    RIKU_API const char*   hostname(void);
+    RIKU_API const char*   hostname(char* buffer, usize length);
 
-    __rikuapi void          loadavg(float avgs[3]);
-    __rikuapi void          loadavg(double avgs[3]);
+    RIKU_API void          loadavg(float avgs[3]);
+    RIKU_API void          loadavg(double avgs[3]);
 
-    __rikuapi const char*   version(void);
-    __rikuapi const char*   version(char* buffer, usize length);
+    RIKU_API const char*   version(void);
+    RIKU_API const char*   version(char* buffer, usize length);
 
-    __rikuapi biguint       uptime(void);
-    __rikuapi usize         cpus(CPU* buffer, usize length);
+    RIKU_API biguint       uptime(void);
+    RIKU_API usize         cpus(CPU* buffer, usize length);
 }

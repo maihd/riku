@@ -70,28 +70,28 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <OutDir>..\..\windows_x32_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x32_vs2017\obj\x32\debug\riku.unit_tests\</IntDir>
-    <TargetName>riku.unit_testsdebug</TargetName>
+    <TargetName>riku.unit_tests.debug</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\..\windows_x64_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x64_vs2017\obj\x64\debug\riku.unit_tests\</IntDir>
-    <TargetName>riku.unit_testsdebug</TargetName>
+    <TargetName>riku.unit_tests.debug</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <OutDir>..\..\windows_x32_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x32_vs2017\obj\x32\release\riku.unit_tests\</IntDir>
-    <TargetName>riku.unit_testsrelease</TargetName>
+    <TargetName>riku.unit_tests</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\..\windows_x64_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x64_vs2017\obj\x64\release\riku.unit_tests\</IntDir>
-    <TargetName>riku.unit_testsrelease</TargetName>
+    <TargetName>riku.unit_tests</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -113,7 +113,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(IntDir)riku.unit_testsdebug.compile.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)riku.unit_tests.debug.compile.pdb</ProgramDataBaseFileName>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
@@ -123,9 +123,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)riku.unit_testsdebug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)riku.unit_tests.debug.pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\lib\windows_x32_vs2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)riku.unit_testsdebug.exe</OutputFile>
+      <OutputFile>$(OutDir)riku.unit_tests.debug.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
@@ -148,7 +148,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(IntDir)riku.unit_testsdebug.compile.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)riku.unit_tests.debug.compile.pdb</ProgramDataBaseFileName>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
@@ -158,9 +158,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)riku.unit_testsdebug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)riku.unit_tests.debug.pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\lib\windows_x64_vs2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)riku.unit_testsdebug.exe</OutputFile>
+      <OutputFile>$(OutDir)riku.unit_tests.debug.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
@@ -193,7 +193,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\lib\windows_x32_vs2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)riku.unit_testsrelease.exe</OutputFile>
+      <OutputFile>$(OutDir)riku.unit_tests.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
@@ -225,7 +225,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\lib\windows_x64_vs2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)riku.unit_testsrelease.exe</OutputFile>
+      <OutputFile>$(OutDir)riku.unit_tests.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>

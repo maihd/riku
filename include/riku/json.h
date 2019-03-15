@@ -51,11 +51,11 @@ namespace json
         void  (*dealloc)(void* data, void* pointer);
     };
 
-    __rikuapi const Value& parse(const char* text, State** state = (State**)0);
-    __rikuapi const Value& parse(const char* text, const Settings* settings, State** state = (State**)0);
-    __rikuapi void         release(State* state);
-    __rikuapi Error        get_errno(const State* state);
-    __rikuapi const char*  get_error(const State* state);
+    RIKU_API const Value& parse(const char* text, State** state = (State**)0);
+    RIKU_API const Value& parse(const char* text, const Settings* settings, State** state = (State**)0);
+    RIKU_API void         release(State* state);
+    RIKU_API Error        get_errno(const State* state);
+    RIKU_API const char*  get_error(const State* state);
 
     /**
      * JSON value
@@ -81,7 +81,7 @@ namespace json
         };
 
     public: // @region: Constants
-        __rikuapi static const Value NONE;
+        RIKU_API static const Value NONE;
 
     public: // @region: Constructors
         inline Value()
@@ -116,8 +116,8 @@ namespace json
         }
         
     public: // @region: Util methods
-        __rikuapi static bool  equals(const Value& a, const Value& b);
-        __rikuapi const Value& find(const char* name) const;
+        RIKU_API static bool  equals(const Value& a, const Value& b);
+        RIKU_API const Value& find(const char* name) const;
 
     public: // @region: Indexor
         inline const Value& operator[] (int index) const

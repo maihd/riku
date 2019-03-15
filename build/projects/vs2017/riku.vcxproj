@@ -70,25 +70,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <OutDir>..\..\windows_x32_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x32_vs2017\obj\x32\debug\riku\</IntDir>
-    <TargetName>rikudebug</TargetName>
+    <TargetName>riku.debug</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\..\windows_x64_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x64_vs2017\obj\x64\debug\riku\</IntDir>
-    <TargetName>rikudebug</TargetName>
+    <TargetName>riku.debug</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <OutDir>..\..\windows_x32_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x32_vs2017\obj\x32\release\riku\</IntDir>
-    <TargetName>rikurelease</TargetName>
+    <TargetName>riku</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\..\windows_x64_vs2017\bin\</OutDir>
     <IntDir>d:\riku\build\projects\vs2017\..\..\windows_x64_vs2017\obj\x64\release\riku\</IntDir>
-    <TargetName>rikurelease</TargetName>
+    <TargetName>riku</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
@@ -100,9 +100,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <CompileAsWinRT>false</CompileAsWinRT>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader></PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
@@ -112,7 +110,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(OutDir)rikudebug.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)riku.debug.pdb</ProgramDataBaseFileName>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
@@ -120,14 +118,14 @@
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\zlib-1.2.11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   <Lib>
-    <OutputFile>$(OutDir)rikudebug.lib</OutputFile>
+    <OutputFile>$(OutDir)riku.debug.lib</OutputFile>
     <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
     <TargetMachine>MachineX86</TargetMachine>
   </Lib>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)rikudebug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)riku.debug.pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
@@ -139,9 +137,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <CompileAsWinRT>false</CompileAsWinRT>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader></PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
@@ -150,7 +146,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(OutDir)rikudebug.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)riku.debug.pdb</ProgramDataBaseFileName>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
@@ -158,14 +154,14 @@
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\zlib-1.2.11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   <Lib>
-    <OutputFile>$(OutDir)rikudebug.lib</OutputFile>
+    <OutputFile>$(OutDir)riku.debug.lib</OutputFile>
     <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
     <TargetMachine>MachineX64</TargetMachine>
   </Lib>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)rikudebug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)riku.debug.pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -177,24 +173,20 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <CompileAsWinRT>false</CompileAsWinRT>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader></PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <ExceptionHandling>false</ExceptionHandling>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <DebugInformationFormat></DebugInformationFormat>
-      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\zlib-1.2.11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   <Lib>
-    <OutputFile>$(OutDir)rikurelease.lib</OutputFile>
+    <OutputFile>$(OutDir)riku.lib</OutputFile>
     <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
     <TargetMachine>MachineX86</TargetMachine>
   </Lib>
@@ -214,23 +206,19 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <CompileAsWinRT>false</CompileAsWinRT>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader></PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <ExceptionHandling>false</ExceptionHandling>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat></DebugInformationFormat>
-      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\zlib-1.2.11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   <Lib>
-    <OutputFile>$(OutDir)rikurelease.lib</OutputFile>
+    <OutputFile>$(OutDir)riku.lib</OutputFile>
     <AdditionalOptions>/ignore:4221 %(AdditionalOptions)</AdditionalOptions>
     <TargetMachine>MachineX64</TargetMachine>
   </Lib>
@@ -259,6 +247,7 @@
     <ClInclude Include="..\..\..\include\riku\os.h" />
     <ClInclude Include="..\..\..\include\riku\path.h" />
     <ClInclude Include="..\..\..\include\riku\pointer.h" />
+    <ClInclude Include="..\..\..\include\riku\stream.h" />
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
@@ -275,27 +264,29 @@
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\zutil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\cluster.cc">
+    <ClCompile Include="..\..\..\src\riku_cluster.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\core.cc">
+    <ClCompile Include="..\..\..\src\riku_core.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\crypto.cc">
+    <ClCompile Include="..\..\..\src\riku_crypto.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\dylib.cc">
+    <ClCompile Include="..\..\..\src\riku_dylib.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\fs.cc">
+    <ClCompile Include="..\..\..\src\riku_fs.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\json.cc">
+    <ClCompile Include="..\..\..\src\riku_json.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\net.cc">
+    <ClCompile Include="..\..\..\src\riku_net.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\os.cc">
+    <ClCompile Include="..\..\..\src\riku_os.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\path.cc">
+    <ClCompile Include="..\..\..\src\riku_path.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\thread.cc">
+    <ClCompile Include="..\..\..\src\riku_stream.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\zlib.cc">
+    <ClCompile Include="..\..\..\src\riku_thread.cc">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_zlib.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\adler32.c">
     </ClCompile>

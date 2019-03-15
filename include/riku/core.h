@@ -124,11 +124,13 @@
  || defined(__powerpc64__) \
  || defined(__ppc64__)     \
  || defined(__LP64__)
-#define ARCH_64BIT 1
-#define ARCH_32BIT 0
+#define ARCH_64BIT   1
+#define ARCH_32BIT   0
+#define ARCH_BITNESS 64
 #else
-#define ARCH_64BIT 0
-#define ARCH_32BIT 1
+#define ARCH_64BIT   0
+#define ARCH_32BIT   1
+#define ARCH_BITNESS 32
 #endif
 
 // Dectect cpu endian
@@ -194,19 +196,19 @@
 #endif
 
 // Detect target library compile
-#ifndef __rikuapi
+#ifndef RIKU_API
 #   ifdef RIKU_SHARED
 #       if PLATFORM_WINDOWS
 #           ifdef RIKU_EXPORT
-#               define __rikuapi __declspec(dllexport)
+#               define RIKU_API __declspec(dllexport)
 #           else
-#               define __rikuapi __declspec(dllimport)
+#               define RIKU_API __declspec(dllimport)
 #           endif
 #       else
-#           define __rikuapi __attribute__((visible("default")))
+#           define RIKU_API __attribute__((visible("default")))
 #       endif
 #   else
-#       define __rikuapi
+#       define RIKU_API
 #   endif
 #endif
 
@@ -302,8 +304,8 @@ using ArgsList = va_list;
 #define argslist_copy(dst, src)             va_copy(dst, src)
 
 // Assertion helper
-//#include <assert.h> // Include 
-//#undef assert       // to remove std assert
+#include <assert.h> // Include 
+#undef  assert      // to remove std assert
 #define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
 #if !defined(NDEBUG) || !NDEBUG
 #   define assert(exp, fmt, ...)  always_assert(exp, fmt, ##__VA_ARGS__)
@@ -314,7 +316,7 @@ using ArgsList = va_list;
 #endif
 
 // Assertion functions
-__rikuapi void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
+RIKU_API void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
 
 //
 // Memory management
@@ -329,15 +331,15 @@ __rikuapi void __assert_abort(const char* exp, const char* func, const char* fil
 
 namespace memory
 {
-    __rikuapi void* alloc(usize size);
-    __rikuapi void  dealloc(void* ptr);
-    __rikuapi void* realloc(void* ptr, usize size);
+    RIKU_API void* alloc(usize size);
+    RIKU_API void  dealloc(void* ptr);
+    RIKU_API void* realloc(void* ptr, usize size);
 
-    __rikuapi void* init(void* dst, int val, usize size);
-    __rikuapi void* copy(void* dst, const void* src, usize size);
-    __rikuapi void* move(void* dst, const void* src, usize size);
+    RIKU_API void* init(void* dst, int val, usize size);
+    RIKU_API void* copy(void* dst, const void* src, usize size);
+    RIKU_API void* move(void* dst, const void* src, usize size);
 
-    __rikuapi int   compare(const void* a, const void* b, usize size);
+    RIKU_API int   compare(const void* a, const void* b, usize size);
 }
 
 #if 0 && EXPERIMENTAL
@@ -516,7 +518,7 @@ public:
     }
 
 public: // Factory functions
-    __rikuapi static Buffer alloc(usize length);
+    RIKU_API static Buffer alloc(usize length);
 };
 
 //
@@ -526,32 +528,32 @@ public: // Factory functions
 // C-string operator
 namespace string
 {
-    __rikuapi usize       length(const char* s);
+    RIKU_API usize       length(const char* s);
 
 #if 0 && PREVIEWING
-    __rikuapi const char* sub(const char* str, int start);
-    __rikuapi const char* sub(const char* str, int start, char* buffer, usize length);
+    RIKU_API const char* sub(const char* str, int start);
+    RIKU_API const char* sub(const char* str, int start, char* buffer, usize length);
 
-    __rikuapi const char* sub(const char* str, int start, int end);
-    __rikuapi const char* sub(const char* str, int start, int end, char* buffer, usize length);
+    RIKU_API const char* sub(const char* str, int start, int end);
+    RIKU_API const char* sub(const char* str, int start, int end, char* buffer, usize length);
 #endif
 
-    __rikuapi const char* copy(char* dst, const char* src);
-    __rikuapi const char* copy(char* dst, const char* src, usize length);
+    RIKU_API const char* copy(char* dst, const char* src);
+    RIKU_API const char* copy(char* dst, const char* src, usize length);
 
-    __rikuapi const char* concat(char* dst, const char* src);
-    __rikuapi const char* concat(char* dst, const char* src, usize length);
+    RIKU_API const char* concat(char* dst, const char* src);
+    RIKU_API const char* concat(char* dst, const char* src, usize length);
 
-    __rikuapi const char* format(const char* fmt, ...);
-    //__rikuapi const char* format(char* buffer, const char* fmt, ...);
-    __rikuapi const char* format(char* buffer, usize length, const char* fmt, ...);
+    RIKU_API const char* format(const char* fmt, ...);
+    //RIKU_API const char* format(char* buffer, const char* fmt, ...);
+    RIKU_API const char* format(char* buffer, usize length, const char* fmt, ...);
 
-    __rikuapi const char* format_args(const char* fmt, ArgsList args_list);
-    //__rikuapi const char* format_args(char* buffer, const char* fmt, ArgsList args_list);
-    __rikuapi const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list);
+    RIKU_API const char* format_args(const char* fmt, ArgsList args_list);
+    //RIKU_API const char* format_args(char* buffer, const char* fmt, ArgsList args_list);
+    RIKU_API const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list);
 
-    __rikuapi int         compare(const char* dst, const char* src);
-    __rikuapi int         compare(const char* dst, const char* src, usize length);
+    RIKU_API int         compare(const char* dst, const char* src);
+    RIKU_API int         compare(const char* dst, const char* src, usize length);
 }
 
 // String: high-level string type
@@ -686,25 +688,25 @@ public:
 // Console
 namespace console
 {
-    __rikuapi void log(const char* fmt, ...);
-    __rikuapi void info(const char* fmt, ...);
-    __rikuapi void warn(const char* fmt, ...);
-    __rikuapi void error(const char* fmt, ...);
+    RIKU_API void log(const char* fmt, ...);
+    RIKU_API void info(const char* fmt, ...);
+    RIKU_API void warn(const char* fmt, ...);
+    RIKU_API void error(const char* fmt, ...);
 
-    __rikuapi void log_args(const char* fmt, ArgsList args_list);
-    __rikuapi void info_args(const char* fmt, ArgsList args_list);
-    __rikuapi void warn_args(const char* fmt, ArgsList args_list);
-    __rikuapi void error_args(const char* fmt, ArgsList args_list);
+    RIKU_API void log_args(const char* fmt, ArgsList args_list);
+    RIKU_API void info_args(const char* fmt, ArgsList args_list);
+    RIKU_API void warn_args(const char* fmt, ArgsList args_list);
+    RIKU_API void error_args(const char* fmt, ArgsList args_list);
 }
 
 // Current process
 namespace process
 {
     // Get environment variable
-    __rikuapi const char* getenv(const char* name);
+    RIKU_API const char* getenv(const char* name);
 
     // Set environment variable
-    __rikuapi bool setenv(const char* name, const char* value);
+    RIKU_API bool setenv(const char* name, const char* value);
     
     // Environment container, read-only
     static struct
@@ -715,14 +717,14 @@ namespace process
         };
     } env;
 
-    __rikuapi const char* cwd(void);
-    __rikuapi const char* cwd(char* buffer, usize length);
-    __rikuapi bool        chdir(const char* directory);
+    RIKU_API const char* cwd(void);
+    RIKU_API const char* cwd(char* buffer, usize length);
+    RIKU_API bool        chdir(const char* directory);
 
-    __rikuapi void        exit(int code);
-    __rikuapi void        abort(void);
+    RIKU_API void        exit(int code);
+    RIKU_API void        abort(void);
 
-    __rikuapi int         getpid(void);
+    RIKU_API int         getpid(void);
 }
 
 //
@@ -731,14 +733,14 @@ namespace process
 
 namespace performance
 {
-    __rikuapi long now(void);
-    __rikuapi long frequency(void);
+    RIKU_API long now(void);
+    RIKU_API long frequency(void);
 
-    __rikuapi bool sleep(long milliseconds);
-    __rikuapi bool usleep(long microseconds);
-    __rikuapi bool nsleep(long nanoseconds);
+    RIKU_API bool sleep(long milliseconds);
+    RIKU_API bool usleep(long microseconds);
+    RIKU_API bool nsleep(long nanoseconds);
 
-    __rikuapi bool has_monotonic(void);
+    RIKU_API bool has_monotonic(void);
 }
 
 // Date and time
@@ -780,29 +782,29 @@ public: // UTC properties
     PROPERTY(get_utc_seconds     , set_utc_seconds       ) int utc_seconds;
     PROPERTY(get_utc_milliseconds, set_utc_milliseconds  ) int utc_milliseconds;
 
-    __rikuapi int  get_utc_day(void) const;
-    __rikuapi void set_utc_day(int day);
+    RIKU_API int  get_utc_day(void) const;
+    RIKU_API void set_utc_day(int day);
     
-    __rikuapi int  get_utc_month(void) const;
-    __rikuapi void set_utc_month(int month);
+    RIKU_API int  get_utc_month(void) const;
+    RIKU_API void set_utc_month(int month);
     
-    __rikuapi int  get_utc_year(void) const;
-    __rikuapi void set_utc_year(int year);
+    RIKU_API int  get_utc_year(void) const;
+    RIKU_API void set_utc_year(int year);
     
-    __rikuapi int  get_utc_weekday(void) const;
-    __rikuapi void set_utc_weekday(int weekday);
+    RIKU_API int  get_utc_weekday(void) const;
+    RIKU_API void set_utc_weekday(int weekday);
     
-    __rikuapi int  get_utc_yearday(void) const;
-    __rikuapi void set_utc_yearday(int yearday);
+    RIKU_API int  get_utc_yearday(void) const;
+    RIKU_API void set_utc_yearday(int yearday);
     
-    __rikuapi int  get_utc_hours(void) const;
-    __rikuapi void set_utc_hours(int hours);
+    RIKU_API int  get_utc_hours(void) const;
+    RIKU_API void set_utc_hours(int hours);
     
-    __rikuapi int  get_utc_minutes(void) const;
-    __rikuapi void set_utc_minutes(int minutes);
+    RIKU_API int  get_utc_minutes(void) const;
+    RIKU_API void set_utc_minutes(int minutes);
     
-    __rikuapi int  get_utc_seconds(void) const;
-    __rikuapi void set_utc_seconds(int seconds);
+    RIKU_API int  get_utc_seconds(void) const;
+    RIKU_API void set_utc_seconds(int seconds);
 #endif
 
 public:
@@ -820,7 +822,7 @@ public:
     inline ~Date(void) {}
 
 public:
-    Date(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0)
+    inline Date(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0)
         : day(day)
         , month(month)
         , year(year - 1900)
@@ -833,7 +835,7 @@ public:
         
     }
 
-    Date(int year, int month, int day, int weekday, int yearday, int hours = 0, int minutes = 0, int seconds = 0)
+    inline Date(int year, int month, int day, int weekday, int yearday, int hours = 0, int minutes = 0, int seconds = 0)
         : day(day)
         , month(month)
         , year(year - 1900)
@@ -846,15 +848,15 @@ public:
     }
     
 public: // Conversation
-    __rikuapi const char* to_string(void) const;
+    RIKU_API const char* to_string(void) const;
 
 public:
-    __rikuapi static Date now(void);
-    __rikuapi static Date parse(const char* date_string);
+    RIKU_API static Date now(void);
+    RIKU_API static Date parse(const char* date_string);
 
-    __rikuapi static Date utc(void);
-    __rikuapi static Date utc(const Date& date);
-    __rikuapi static Date utc(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0);
+    RIKU_API static Date utc(void);
+    RIKU_API static Date utc(const Date& date);
+    RIKU_API static Date utc(int year, int month = 0, int day = 1, int hours = 0, int minutes = 0, int seconds = 0);
 
 public: // Utils
     // Compute the day of week at given year, month, day
@@ -877,7 +879,7 @@ public: // Utils
 };
 
 // Common hash function
-__rikuapi ulong calc_hash(const void* buffer, usize length);
+RIKU_API ulong calc_hash(const void* buffer, usize length);
 
 template <typename T>
 inline ulong calc_hash(const T& x)
