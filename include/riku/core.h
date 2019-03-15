@@ -528,7 +528,9 @@ public: // Factory functions
 // C-string operator
 namespace string
 {
-    RIKU_API usize       length(const char* s);
+    inline bool is_empty(const char* str) { return !str || str[0] <= 0; }
+
+    RIKU_API usize       length(const char* str);
 
 #if 0 && PREVIEWING
     RIKU_API const char* sub(const char* str, int start);
@@ -671,6 +673,11 @@ public:
     inline int get_capacity(void) const
     {
         return buffer ? buffer->capacity : 0;
+    }
+
+    inline bool is_empty(void) const
+    {
+        return !buffer || buffer[0] <= 0;
     }
 
 public:
