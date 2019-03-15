@@ -76,6 +76,20 @@
 #   endif
 #endif
 
+// Dectect mobile or desktop platform
+#if PLATFORM_WINDOWS || PLATFORM_LINUX || PLATFORM_OSX
+#   define PLATFORM_MOBILE  0
+#   define PLATFORM_DESKTOP 1
+#elif PLATFORM_ANDROID || PLATFORM_IOS
+#   define PLATFORM_MOBILE  1
+#   define PLATFORM_DESKTOP 0
+#elif PLATFORM_WEB
+#   define PLATFORM_MOBILE  0
+#   define PLATFORM_DESKTOP 0
+#else
+#   error  "Unknown current platform"
+#endif
+
 // Detect target cpu
 // http://sourceforge.net/apps/mediawiki/predef/index.php?title=Architectures
 #if defined(__arm__)     \
