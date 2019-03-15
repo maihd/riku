@@ -1,4 +1,12 @@
+// Copyright (c) 2019, MaiHD. All right reversed.
+// License: Unlicensed
+
 #pragma once
+
+//
+// Dynamic string is not commonly using by core module
+// Show we move it outside from core for better compile speed
+//
 
 #include "./core.h"
 
