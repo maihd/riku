@@ -248,6 +248,7 @@
     <ClInclude Include="..\..\..\include\riku\path.h" />
     <ClInclude Include="..\..\..\include\riku\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\stream.h" />
+    <ClInclude Include="..\..\..\include\riku\string.h" />
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />

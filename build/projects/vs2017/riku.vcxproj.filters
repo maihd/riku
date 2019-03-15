@@ -72,6 +72,9 @@
     <ClInclude Include="..\..\..\include\riku\stream.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\string.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\table.h">
       <Filter>include\riku</Filter>
     </ClInclude>

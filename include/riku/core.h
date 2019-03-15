@@ -272,9 +272,12 @@ using bigint    = long long int;
 using biguint   = unsigned long long int;
 using bigfloat  = long double;
 
-using cstr      = const char*;
 using byte      = unsigned char;
 using sbyte     = char;
+
+using cstr      = const char*;
+using wchar     = short;
+using uchar     = int;
 
 // Memory address and size
 
@@ -354,6 +357,10 @@ namespace memory
     RIKU_API void* move(void* dst, const void* src, usize size);
 
     RIKU_API int   compare(const void* a, const void* b, usize size);
+
+    inline   void* zero(void* dst, usize size)              { init(dst, 0, size);           }
+    inline   bool  equal(const void* a, const void* b, usize size)      { return compare(a, b, size) == 0;    }
+    inline   bool  not_equal(const void* a, const void* b, usize size)  { return compare(a, b, size) != 0;    }
 }
 
 #if 0 && EXPERIMENTAL
@@ -535,15 +542,9 @@ public: // Factory functions
     RIKU_API static Buffer alloc(usize length);
 };
 
-//
-// String types
-//
-
-// C-string operator
+// String operator
 namespace string
 {
-    inline bool is_empty(const char* str) { return !str || str[0] <= 0; }
-
     RIKU_API usize       length(const char* str);
 
 #if 0 && PREVIEWING
@@ -570,141 +571,12 @@ namespace string
 
     RIKU_API int         compare(const char* dst, const char* src);
     RIKU_API int         compare(const char* dst, const char* src, usize length);
+
+    inline bool is_empty(const char* str)               { return !str || str[0] == 0;   }
+    inline bool is_valid(const char* str)               { return  str && str[0] != 0;   }
+    inline bool equal(const char* a, const char* b)     { return compare(a, b) == 0;    }
+    inline bool not_equal(const char* a, const char* b) { return compare(a, b) != 0;    }
 }
-
-// String: high-level string type
-struct String 
-{
-public: // Members
-    struct Buffer
-    {
-        int  length;
-        int  capacity;
-        char characters[1];
-    };
-    Buffer* buffer;
-
-public:
-    inline String() 
-        : buffer(NULL) {}
-
-    inline ~String() 
-    { 
-        if (buffer)
-        {
-            memory::dealloc(buffer); 
-        }
-    }
-
-public:
-    inline String(const char* buffer)
-        : String(buffer, string::length(buffer))
-    {
-    }
-
-    inline String(const char* buffer, int length)
-    {
-        if (buffer)
-        {
-            this->buffer = (Buffer*)memory::alloc(sizeof(Buffer) + length);
-            this->buffer->length   = length;
-            this->buffer->capacity = length;
-
-            memory::copy(this->buffer->characters, buffer, length + 1);
-        }
-        else
-        {
-            this->buffer = NULL;
-        }
-    }
-
-public: // RAII
-    inline String(String&& other)
-        : buffer(other.buffer)
-    {
-        other.buffer = NULL;
-    }
-
-    inline String& operator=(String&& other)
-    {
-        memory::dealloc(buffer ? buffer - sizeof(int) : NULL);
-        buffer = other.buffer;
-        other.buffer = NULL;
-        return *this;
-    }
-
-
-public: // Copy
-    inline String(const String& other)
-    {
-        if (other.buffer)
-        {
-            int len = other.get_length();
-
-            buffer = (Buffer*)memory::alloc(sizeof(Buffer) + len);
-            buffer->length   = len;
-            buffer->capacity = len;
-
-            memory::copy(buffer->characters, other.buffer->characters, len + 1);
-        }
-        else
-        {
-            buffer = NULL;
-        }
-    }
-
-    inline String& operator=(const String& other)
-    {
-        if (other.buffer)
-        {
-            int len = other.get_length();
-            if (buffer->capacity < len)
-            {
-                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + len);
-                buffer->capacity = len;
-            }
-
-            buffer->length = len;
-            memory::copy(buffer->characters, other.buffer->characters, len + 1);
-        }
-        else if (buffer)
-        {
-            buffer->length        = 0;
-            buffer->characters[0] = 0;
-        }
-        return *this;
-    }
-
-public:
-    PROPERTY_READONLY(int, length, get_length);
-    PROPERTY_READONLY(int, capacity, get_capacity);
-
-    inline int get_length(void) const
-    {
-        return buffer ? buffer->length : 0;
-    }
-
-    inline int get_capacity(void) const
-    {
-        return buffer ? buffer->capacity : 0;
-    }
-
-    inline bool is_empty(void) const
-    {
-        return !buffer || buffer->characters[0] <= 0;
-    }
-
-public:
-    inline operator char*(void)
-    {
-        return buffer ? buffer->characters : NULL;
-    }
-
-    inline operator const char*(void) const
-    {
-        return buffer ? buffer->characters : NULL;
-    } 
-};
 
 // Console
 namespace console
@@ -853,7 +725,6 @@ public:
         , minutes(minutes)
         , seconds(seconds)
     {
-        
     }
 
     inline Date(int year, int month, int day, int weekday, int yearday, int hours = 0, int minutes = 0, int seconds = 0)
@@ -902,18 +773,21 @@ public: // Utils
 // Common hash function
 RIKU_API ulong calc_hash(const void* buffer, usize length);
 
+// Common hash function
 template <typename T>
 inline ulong calc_hash(const T& x)
 {
     return calc_hash(&x, sizeof(x));
 }
 
+// Common hash function, for c-string
 template <>
 inline ulong calc_hash<cstr>(const cstr& x)
 {
     return calc_hash(x, string::length(x));
 }
 
+// Common hash function, compute at compile time
 template <ulong length>
 constexpr ulong calc_hash(const char (&buffer)[length])
 {

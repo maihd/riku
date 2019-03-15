@@ -1,6 +1,7 @@
 // Copyright (c) 2019, MaiHD. All right reversed.
 // License: Unlicensed
 
+#include <riku/string.h>
 #include "./unit_test.h"
 
 TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
