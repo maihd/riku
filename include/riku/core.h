@@ -677,7 +677,7 @@ public:
 
     inline bool is_empty(void) const
     {
-        return !buffer || buffer[0] <= 0;
+        return !buffer || buffer->characters[0] <= 0;
     }
 
 public:

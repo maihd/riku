@@ -32,8 +32,21 @@ using FuncDictionary = Dictionary<int, Func<void(const char*)>>;
 TEST_CASE("Testing Func<...>", "[Func<>]")
 {
     Func<void(const char*)> print  = simple_print;
+    Func<void(const char*)> print1 = simple_print;
     Func<void(const char*)> print2 = [](const char* s) { console::log(s); };
     Func<void(const char*)> print3 = make_func(new Printer(), &Printer::print);
+
+    REQUIRE(print);
+    REQUIRE(print1);
+    REQUIRE(print2);
+    REQUIRE(print3);
+    REQUIRE(print  == print1);
+    REQUIRE(print1 != print2);
+    REQUIRE(print2 != print3);
+    REQUIRE(print  != NullPtr());
+    REQUIRE(print1 != NullPtr());
+    REQUIRE(print2 != NullPtr());
+    REQUIRE(print3 != NullPtr());
 
     print("Hello world");
     print2("Hello world 2");

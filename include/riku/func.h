@@ -118,7 +118,7 @@ public:
     {
         INIT(stub) RefCount();
 
-        stub->size   = sizeof(Stub);
+        stub->size   = sizeof(Stub) + sizeof(functor);
         stub->func   = &Stub::template call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
@@ -188,7 +188,7 @@ public:
         stub = (Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor)));
         INIT(stub) RefCount();
 
-        stub->size = sizeof(Stub);
+        stub->size = sizeof(Stub) + sizeof(functor);
         stub->func = &Stub::template call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
@@ -247,7 +247,83 @@ public: // Invoking
     {
         return this->invoke(args...);
     }
+
+public: // Operators 
+    inline operator bool() const
+    {
+        return stub != NULL;
+    } 
 };
+
+template <typename R, typename ...Args>
+inline bool operator==(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
+{
+    if (a.stub == b.stub)
+    {
+        return true;
+    }
+
+    if (!a.stub || !b.stub)
+    {
+        return false;
+    }
+
+    if (a.stub->size != b.stub->size)
+    {
+        return false;
+    }
+    else
+    {
+        return memory::compare(a.stub, b.stub, a.stub->size) == 0;
+    }
+}
+
+template <typename R, typename ...Args>
+inline bool operator!=(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
+{
+    if (a.stub == b.stub)
+    {
+        return false;
+    }
+
+    if (!a.stub || !b.stub)
+    {
+        return true;
+    }
+
+    if (a.stub->size != b.stub->size)
+    {
+        return true;
+    }
+    else
+    {
+        return memory::compare(a.stub, b.stub, a.stub->size) != 0;
+    }
+}
+
+template <typename R, typename ...Args>
+inline bool operator==(const Func<R(Args...)>& a, NullPtr)
+{
+    return !((bool)a);
+}
+
+template <typename R, typename ...Args>
+inline bool operator==(NullPtr, const Func<R(Args...)>& b)
+{
+    return !((bool)b);
+}
+
+template <typename R, typename ...Args>
+inline bool operator!=(const Func<R(Args...)>& a, NullPtr)
+{
+    return ((bool)a);
+}
+
+template <typename R, typename ...Args>
+inline bool operator!=(NullPtr, const Func<R(Args...)>& b)
+{
+    return ((bool)b);
+}
 
 template <typename T, typename R, typename ... Args>
 inline Func<R(Args...)> make_func(T* object, R(T::*method)(Args...))
