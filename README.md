@@ -1,4 +1,4 @@
-# Riku [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
+# Riku [![Build Status](https://www.travis-ci.org/maihd/riku.svg?branch=master)](https://www.travis-ci.org/maihd/riku) [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 Standard runtime and library for C++.
 
 ## Build
