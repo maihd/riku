@@ -3,6 +3,7 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      env: CXX=g++-7 CC=gcc-7
       script:
         - cd ./build/projects/gmake-linux
         - make config=debug64
@@ -15,16 +16,8 @@ matrix:
         - make config=debug64
         - make config=release64
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-8
-      - g++-8
-      - gcc-multilib 
-      - g++-multilib
-      - clang
+  allow_failures:
+    - os: osx
 
 
 
