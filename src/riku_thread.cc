@@ -274,9 +274,30 @@ void Condition::broadcast(void)
 #endif
 }
 
+#if PLATFORM_UNIX
+#define USE_CUSTOM_SEMAPHORE 1
+#else
+#define USE_CUSTOM_SEMAPHORE 0
+#endif
+
+#if USE_CUSTOM_SEMAPHORE
+struct SemaphoreContext
+{
+    int       count;
+    Mutex     mutex;
+    Condition condition;
+
+    SemaphoreContext(int count)
+        : count(count)
+        {}
+};
+#endif
+
 Semaphore::Semaphore(int count)
 {
-#if PLATFORM_WINDOWS
+#if USE_CUSTOM_SEMAPHORE
+    handle = CREATE(SemaphoreContext) SemaphoreContext(count);
+#elif PLATFORM_WINDOWS
     handle = CreateSemaphoreA(NULL, count, 1 << (sizeof(int) * 8) - 1, NULL);
 #elif PLATFORM_OSX
     kern_return_t err = semaphore_create(mach_task_self(), (semaphore_t*)&handle, SYNC_POLICY_FIFO, count);
@@ -284,27 +305,36 @@ Semaphore::Semaphore(int count)
     {
         abort();
     }
-#elif PLATFORM_UNIX
-    pthread_mutex_unlock((pthread_mutex_t*)handle);
 #endif
 }
 
 Semaphore::~Semaphore(void)
 {
-#if PLATFORM_WINDOWS
+#if USE_CUSTOM_SEMAPHORE
+    DESTROY((SemaphoreContext*)handle);
+#elif PLATFORM_WINDOWS
     CloseHandle((HANDLE)handle);
 #elif PLATFORM_OSX
     if (semaphore_destroy(mach_task_self(), (semaphore_t)handle))
     {
         abort();
     }
-#elif PLATFORM_UNIX
 #endif
 }
 
 void Semaphore::wait(void)
 {
-#if PLATFORM_WINDOWS
+#if USE_CUSTOM_SEMAPHORE
+    SemaphoreContext* ctx = (SemaphoreContext*)handle;
+
+    ctx->mutex.lock();
+    while (ctx->count <= 0)
+    {
+        ctx->condition.wait(ctx->mutex);
+    }
+    ctx->count--;
+    ctx->mutex.unlock();
+#elif PLATFORM_WINDOWS
     if (WaitForSingleObject((HANDLE)handle, INFINITE) != WAIT_OBJECT_0)
     {
         abort();
@@ -319,13 +349,22 @@ void Semaphore::wait(void)
     {
         abort();
     }
-#elif PLATFORM_UNIX
 #endif
 }
 
 void Semaphore::post(void)
 {
-#if PLATFORM_WINDOWS
+#if USE_CUSTOM_SEMAPHORE
+    SemaphoreContext* ctx = (SemaphoreContext*)handle;
+
+    ctx->mutex.lock();
+    ctx->count++;
+    if (ctx->count == 1)
+    {
+        ctx->condition.signal();
+    }
+    ctx->mutex.unlock();
+#elif PLATFORM_WINDOWS
     if (!ReleaseSemaphore((HANDLE)handle, 1, NULL))
     {
         abort();
@@ -335,13 +374,30 @@ void Semaphore::post(void)
     {
         abort();
     }
-#elif PLATFORM_UNIX
 #endif
 }
 
 bool Semaphore::trywait(void)
 {
-#if PLATFORM_WINDOWS
+#if USE_CUSTOM_SEMAPHORE
+    SemaphoreContext* ctx = (SemaphoreContext*)handle;
+
+    if (!ctx->mutex.trylock())
+    {
+        return false;
+    }
+
+    if (ctx->count <= 0)
+    {
+        ctx->mutex.unlock();
+        return false;
+    }
+
+    ctx->count--;
+    ctx->mutex.unlock();
+
+    return 0;
+#elif PLATFORM_WINDOWS
     DWORD r = WaitForSingleObject((HANDLE)handle, 0);
 
     if (r == WAIT_OBJECT_0)
@@ -371,6 +427,5 @@ bool Semaphore::trywait(void)
 
     abort();
     return false; /* Satisfy the compiler. */
-#elif PLATFORM_UNIX
 #endif
 }
