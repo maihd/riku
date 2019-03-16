@@ -251,6 +251,7 @@
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
+    <ClInclude Include="..\..\..\include\riku\previewing\alloc.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h" />
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\crc32.h" />

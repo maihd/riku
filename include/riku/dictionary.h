@@ -80,11 +80,18 @@ public:
     {
         if (buffer && buffer->release() < 0)
         {
+            for (int i = 0, n = get_length(); i < n; i++)
+            {
+                buffer->keys[i].~TKey();
+                buffer->values[i].~TValue();
+            }
+
             memory::dealloc(buffer->nexts);
             memory::dealloc(buffer->keys);
             memory::dealloc(buffer->values);
 
             buffer->hashs.~Array();
+            memory::dealloc(buffer);
         }
     }
 
@@ -126,7 +133,42 @@ public: // RAII
         return *this;
     }
 
+public: // Operators
+    inline TValue& operator[](const TKey& key)
+    {
+        return get_or_new(key);
+    }
+
+    inline TValue  operator[](const TKey& key) const
+    {
+        TValue value;
+        return try_get(key, &value) ? value : TValue();
+    }
+
 public: // Methods
+    void clear(void)
+    {
+        if (buffer)
+        {
+            for (int i = 0, n = get_length(); i < n; i++)
+            {
+                buffer->keys[i].~TKey();
+                buffer->values[i].~TValue();
+            }
+            
+            buffer->length = 0;
+        }
+    }
+
+    void unref(bool cleanup = true)
+    {
+        if (cleanup)
+        {
+            this->~Table();
+        }
+        buffer = NULL;
+    }
+
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
         int hash = (int)((uint)calc_hash(key) % this->get_hash_count());
@@ -261,15 +303,42 @@ public: // Methods
         return true;
     }
 
-public: // Operator 
-    inline TValue& operator[](const TKey& key)
+    bool remove(const TKey& key)
     {
-        return get_or_new(key);
-    }
+        int prev;
+        int hash;
+        int curr = index_of(key, &hash, &prev);
+        if (curr > -1)
+        {
+            if (prev > -1)
+            {
+                nexts[prev] = -1;
+            }
+            else
+            {
+                nexts[hash] = -1;
+            }
 
-    inline TValue  operator[](const TKey& key) const
-    {
-        TValue value;
-        return try_get(key, &value) ? value : TValue();
+            buffer->keys[curr].TKey();
+            buffer->values[curr].TValue();
+            if (curr < get_length() - 1)
+            {
+                int last = get_length() - 1;
+                buffer->nexts[curr] = buffer->nexts[last];
+                INIT(&buffer->keys[curr]) TKey(make_rvalue(buffer->keys[last]));
+                INIT(&buffer->values[curr]) TValue(make_rvalue(buffer->values[last]));
+
+                index_of(buffer->keys[curr], &hash, &prev);
+                if (prev > -1)
+                {
+                    nexts[prev] = curr;
+                }
+                else
+                {
+                    nexts[hash] = curr;
+                }
+            }
+            buffer->length--;
+        }
     }
 };

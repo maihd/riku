@@ -85,6 +85,7 @@ public:
             memory::dealloc(buffer->values);
 
             buffer->hashs.~Array();
+            memory::dealloc(buffer);
         }
     }
 
@@ -127,6 +128,14 @@ public: // RAII
     }
 
 public: // Methods
+    void clear(void)
+    {
+        if (buffer)
+        {
+            buffer->length = 0;
+        }
+    }
+
     inline void unref(bool cleanup = true)
     {
         if (cleanup)
@@ -238,5 +247,42 @@ public: // Methods
 
         buffer->values[curr] = value;
         return true;
+    }
+
+    bool remove(ulong key)
+    {
+        int prev;
+        int hash;
+        int curr = index_of(key, &hash, &prev);
+        if (curr > -1)
+        {
+            if (prev > -1)
+            {
+                nexts[prev] = -1;
+            }
+            else
+            {
+                nexts[hash] = -1;
+            }
+
+            if (curr < get_length() - 1)
+            {
+                int last = get_length() - 1;
+                buffer->nexts[curr]  = buffer->nexts[last];
+                buffer->keys[curr]   = buffer->keys[last];
+                buffer->values[curr] = buffer->values[last];
+
+                index_of(buffer->keys[curr], &hash, &prev);
+                if (prev > -1)
+                {
+                    nexts[prev] = curr;
+                }
+                else
+                {
+                    nexts[hash] = curr;
+                }
+            }
+            buffer->length--;
+        }
     }
 };

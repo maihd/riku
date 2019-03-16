@@ -84,6 +84,9 @@
     <ClInclude Include="..\..\..\include\riku\zlib.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\previewing\alloc.h">
+      <Filter>include\riku\previewing</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h">
       <Filter>include\riku\previewing</Filter>
     </ClInclude>

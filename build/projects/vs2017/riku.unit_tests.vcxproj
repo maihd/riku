@@ -263,6 +263,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\string.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\table.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\tempo_array.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\thread.cc">

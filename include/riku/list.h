@@ -31,7 +31,12 @@ public:
     {
         if (buffer && buffer->release() <= 0)
         {
-            this->clear();
+            for (int i = 0, n = buffer->length; i < n; i++)
+            {
+                buffer->items[i].~TItem();
+            }
+
+            memory::dealloc(buffer);
         }
     }
 
@@ -125,16 +130,17 @@ public: // Buffer sizing
                 buffer->items[i].~TItem();
             }
 
-            if (buffer->release() <= 0)
-            {
-                memory::dealloc(buffer);
-            }
-            else
-            {
-                buffer->length = 0;
-            }
-            buffer = NULL;
+            buffer->length = 0;
         }
+    }
+
+    inline void unref(bool cleanup = true)
+    {
+        if (cleanup)
+        {
+            this->~List();
+        }
+        buffer = NULL;
     }
 
     inline bool grow(int new_size)
@@ -152,15 +158,6 @@ public: // Buffer sizing
                 // Initialize Buffer
                 new_buf->length = 0;
             }
-
-            /* NO
-            if (new_size > old_size)
-            {
-                for (int i = old_size; i < new_size; i++)
-                {
-                    INIT(&new_buf->items[i]) TItem();
-                }
-            }*/
 
             buffer           = new_buf;
             buffer->capacity = new_size;

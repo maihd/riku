@@ -53,6 +53,9 @@
     <ClCompile Include="..\..\..\unit_tests\string.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\table.cc">
+      <Filter>unit_tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\tempo_array.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
