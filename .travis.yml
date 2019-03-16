@@ -18,7 +18,6 @@ matrix:
       script:
         - cd ./build/projects/gmake-linux
         - make config=debug64
-        - make config=release64
       
     - os: osx
       compiler: clang
