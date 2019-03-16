@@ -11,61 +11,61 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\unit_tests\array.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_array.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\crypto.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_crypto.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\date.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_date.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\dictionary.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_dictionary.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\events.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_events.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\fs.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_fs.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\func.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_func.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\hash_table.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_hash_table.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\json.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_json.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\list.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_list.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\math.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_math.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\os.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_os.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\path.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_path.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\property.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_property.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\string.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_string.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\table.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_table.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\tempo_array.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_tempo_array.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\thread.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_thread.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\types.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_types.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\unit_test.cc">

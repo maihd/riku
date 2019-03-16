@@ -235,43 +235,43 @@
     <ClInclude Include="..\..\..\unit_tests\unit_test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\unit_tests\array.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_array.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\crypto.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_crypto.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\date.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_date.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\dictionary.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_dictionary.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\events.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_events.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\fs.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_fs.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\func.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_func.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\hash_table.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_hash_table.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\json.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_json.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\list.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_list.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\math.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_math.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\os.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_os.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\path.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_path.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\property.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_property.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\string.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_string.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\table.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_table.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\tempo_array.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_tempo_array.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\thread.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_thread.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\types.cc">
+    <ClCompile Include="..\..\..\unit_tests\test_types.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\unit_test.cc">
     </ClCompile>
