@@ -259,6 +259,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\os.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\path.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\property.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\string.cc">

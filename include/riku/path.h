@@ -8,34 +8,41 @@
 namespace path
 {
 #if PLATFORM_WINDOWS
-    const char* const delimiter = ";";
+    constexpr const usize max_size  = 1024;
+    constexpr const char* sep       = "\\";
+    constexpr const char* delimiter = ";";
 #else
-    const char* const delimiter = ":";
+    constexpr const usize max_size  = 1024;
+    constexpr const char* sep       = "/";
+    constexpr const char* delimiter = ":";
 #endif
 
-    const char* basename(const char* path);
-    const char* basename(const char* path, const char* ext);
-    const char* basename(const char* path, char* buffer, usize length);
-    const char* basename(const char* path, const char* ext, char* buffer, usize length);
-
-    const char* dirname(const char* path, char* buffer, usize length);
-    const char* dirname(const char* path);
-
-    const char* extname(const char* path, char* buffer, usize length);
-    const char* extname(const char* path);
-
-    bool        is_absolute(const char* path);
-    bool        is_relative(const char* path);
-
-    const char* absolute(const char* path);
-    const char* absolute(const char* path, char* buffer, usize length);
-
-    const char* relative(const char* from, const char* to);
-    const char* relative(const char* from, const char* to, char* buffer, usize length);
-
-    const char* relative(const char* path, ...);
-    const char* relative(char* buffer, usize length, const char* path, ...);
-
-    const char* join(const char* path, ...);
-    const char* join(char* buffer, usize length, const char* path, ...);
+    RIKU_API const char* basename(const char* path);
+    RIKU_API const char* basename(const char* path, const char* ext);
+    RIKU_API const char* basename(const char* path, char* buffer, usize length);
+    RIKU_API const char* basename(const char* path, const char* ext, char* buffer, usize length);
+    
+    RIKU_API const char* dirname(const char* path, char* buffer, usize length);
+    RIKU_API const char* dirname(const char* path);
+    
+    RIKU_API const char* extname(const char* path, char* buffer, usize length);
+    RIKU_API const char* extname(const char* path);
+    
+    RIKU_API bool        is_absolute(const char* path);
+    RIKU_API bool        is_relative(const char* path);
+    
+    RIKU_API const char* absolute(const char* path);
+    RIKU_API const char* absolute(const char* path, char* buffer, usize length);
+    
+    RIKU_API const char* relative(const char* from, const char* to);
+    RIKU_API const char* relative(const char* from, const char* to, char* buffer, usize length);
+    
+    //RIKU_API const char* relative(const char* path, ...);
+    //RIKU_API const char* relative(char* buffer, usize length, const char* path, ...);
+    
+    RIKU_API const char* join(const char* path, ...);
+    RIKU_API const char* join(char* buffer, usize length, const char* path, ...);
+    
+    RIKU_API const char* join_args(const char* path, ArgsList args_list);
+    RIKU_API const char* join_args(char* buffer, usize length, const char* path, ArgsList args_list);
 }

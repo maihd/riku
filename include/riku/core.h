@@ -317,16 +317,18 @@ using Flags64 = ulong;
 #include <stdarg.h>
 using ArgsList = va_list;
 #define argslist_begin(args_list, prev_arg) va_start(args_list, prev_arg)
-#define argslist_end(args_list)             va_end(args_list)
+#define argslist_next(args_list, Type)      va_arg(args_list, Type)
 #define argslist_copy(dst, src)             va_copy(dst, src)
+#define argslist_end(args_list)             va_end(args_list)
 
 // Assertion helper
 #include <assert.h> // Include 
 #undef  assert      // to remove std assert
 #define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
+#define always_false_assert(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #if !defined(NDEBUG) || !NDEBUG
 #   define assert(exp, fmt, ...)  always_assert(exp, fmt, ##__VA_ARGS__)
-#   define false_assert(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#   define false_assert(fmt, ...) always_false_assert(fmt, ##__VA_ARGS__)
 #else
 #   define assert(exp, fmt, ...)
 #   define false_assert(fmt, ...)

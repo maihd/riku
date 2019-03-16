@@ -47,6 +47,9 @@
     <ClCompile Include="..\..\..\unit_tests\os.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\path.cc">
+      <Filter>unit_tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\property.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
