@@ -281,6 +281,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_json.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_math.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_net.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_os.cc">

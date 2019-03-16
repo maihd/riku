@@ -998,13 +998,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float3& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "float3x3[]: Index out of range");
         return ((float3*)data)[index];
     }
 
     inline const float3& operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        assert(index > -1 && index < 3, "float3x3[]: Index out of range");
         return ((float3*)data)[index];
     }
 
@@ -1101,14 +1101,14 @@ public: // @region: Graphics functions
     static float4x4 rotation_y(float angle);
     static float4x4 rotation_z(float angle);
 
-    static void     decompose(const float4x4& m, float3* scalation, float4* quaternion, float3* translation);
-    static void     decompose(const float4x4& m, float3* scalation, float3* axis, float* angle, float3* translation);
-
     static float4x4 lookat(const float3& eye, const float3& target, const float3& up);
 
     static float4x4 ortho(float l, float r, float b, float t, float n, float f);
     static float4x4 frustum(float l, float r, float b, float t, float n, float f);
     static float4x4 perspective(float fov, float aspect, float znear, float zfar);
+
+    RIKU_API static void decompose(const float4x4& m, float3* scalation, float4* quaternion, float3* translation);
+    RIKU_API static void decompose(const float4x4& m, float3* scalation, float3* axis, float* angle, float3* translation);
     
 private: // @region: Internal fields
     struct
