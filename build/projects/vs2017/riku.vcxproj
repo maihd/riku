@@ -246,12 +246,13 @@
     <ClInclude Include="..\..\..\include\riku\net.h" />
     <ClInclude Include="..\..\..\include\riku\os.h" />
     <ClInclude Include="..\..\..\include\riku\path.h" />
-    <ClInclude Include="..\..\..\include\riku\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\stream.h" />
     <ClInclude Include="..\..\..\include\riku\string.h" />
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
+    <ClInclude Include="..\..\..\include\riku\previewing\pointer.h" />
+    <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h" />
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\crc32.h" />
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\deflate.h" />
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\gzguts.h" />

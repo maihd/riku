@@ -21,14 +21,14 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Core (many global modules of JS and NodeJS)
 * [x] JSON
 * [x] Crypto
-* [x] Thread
+* [x] Thread, Mutex, Condition, Semaphore
 * [x] High-level math
 * [x] Operator System functions
 * [ ] FileSystem
 * [ ] Path
 * [ ] Net: Socket, TcpSocket, UdpSocket, WebSocket
 * [ ] Http and Https
-* [ ] Dylib (low level)
+* [x] Dylib (low level)
 * [ ] Zlib
 * [ ] ArgsParse (parsing command line)
 * [ ] Stream: Readable, Writable, Transform, Duplex

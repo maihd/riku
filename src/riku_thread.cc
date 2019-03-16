@@ -9,6 +9,13 @@
 #include <pthread.h>
 #endif
 
+#if PLATFORM_OSX
+#   include <mach/mach.h>
+#   include <mach/task.h>
+#   include <mach/semaphore.h>
+#   include <TargetConditionals.h>
+#endif
+
 #if PLATFORM_WINDOWS
 static DWORD WINAPI thread_routine(void* params)
 #elif PLATFORM_UNIX
@@ -271,6 +278,12 @@ Semaphore::Semaphore(int count)
 {
 #if PLATFORM_WINDOWS
     handle = CreateSemaphoreA(NULL, count, 1 << (sizeof(int) * 8) - 1, NULL);
+#elif PLATFORM_OSX
+    kern_return_t err = semaphore_create(mach_task_self(), (semaphore_t*)&handle, SYNC_POLICY_FIFO, count);
+    if (err != KERN_SUCCESS)
+    {
+        abort();
+    }
 #elif PLATFORM_UNIX
     pthread_mutex_unlock((pthread_mutex_t*)handle);
 #endif
@@ -280,6 +293,11 @@ Semaphore::~Semaphore(void)
 {
 #if PLATFORM_WINDOWS
     CloseHandle((HANDLE)handle);
+#elif PLATFORM_OSX
+    if (semaphore_destroy(mach_task_self(), (semaphore_t)handle))
+    {
+        abort();
+    }
 #elif PLATFORM_UNIX
 #endif
 }
@@ -291,6 +309,16 @@ void Semaphore::wait(void)
     {
         abort();
     }
+#elif PLATFORM_OSX
+    int r;
+    do
+        r = semaphore_wait((semaphore_t)handle);
+    while (r == KERN_ABORTED);
+
+    if (r != KERN_SUCCESS)
+    {
+        abort();
+    }
 #elif PLATFORM_UNIX
 #endif
 }
@@ -299,6 +327,11 @@ void Semaphore::post(void)
 {
 #if PLATFORM_WINDOWS
     if (!ReleaseSemaphore((HANDLE)handle, 1, NULL))
+    {
+        abort();
+    }
+#elif PLATFORM_OSX
+    if (semaphore_signal((semaphore_t)handle))
     {
         abort();
     }
@@ -320,6 +353,21 @@ bool Semaphore::trywait(void)
     {
         return false;
     }
+
+    abort();
+    return false; /* Satisfy the compiler. */
+#elif PLATFORM_OSX
+    mach_timespec_t interval;
+    kern_return_t err;
+
+    interval.tv_sec = 0;
+    interval.tv_nsec = 0;
+
+    err = semaphore_timedwait((semaphore_t)handle, interval);
+    if (err == KERN_SUCCESS)
+        return true;
+    if (err == KERN_OPERATION_TIMED_OUT)
+        return false;
 
     abort();
     return false; /* Satisfy the compiler. */
