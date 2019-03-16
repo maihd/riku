@@ -18,29 +18,30 @@ Main purpose of this library for using as a standard library, replacement for C/
 9. VisualC's __declspec(property) for cross-platform, with -fdeclspec clang options
 
 ## Modules
-* [x] Core (many global modules of JS and NodeJS)
+* [x] Core: primitive types, `console`, `string`, `Date`, `memory`, ...
 * [x] JSON
-* [x] Crypto
+* [x] Dynamic string
+* [x] Crypto: NodeJS's `crypto`
 * [x] Thread, Mutex, Condition, Semaphore
 * [ ] Fiber, TaskSystem, Coroutine
 * [ ] Future and Promise/A+
 * [x] High-level math
 * [x] Operator System functions
-* [ ] FileSystem
-* [ ] Path
-* [ ] Net: Socket, TcpSocket, UdpSocket, WebSocket
-* [ ] Http and Https
+* [ ] FileSystem: NodeJS's `fs`
+* [ ] Path: NodeJS's `path`
+* [ ] Net: NodeJS's `net`
+* [ ] Http/Https: NodeJS's `http` and `https`
 * [x] Dylib (low level)
-* [ ] Zlib
+* [ ] Zlib: NodeJS's `zlib`
 * [ ] ArgsParse (parsing command line)
-* [ ] Stream: Readable, Writable, Transform, Duplex
-* [x] Func
-* [x] EventEmitter
-* [x] List (high level continous container)
-* [x] Array (POD continous container)
-* [ ] Table (POD table with generic key)
-* [x] HashTable (POD table with hashed key)
-* [x] Dictionary (high level table)
+* [ ] Stream: NodeJS's `stream`
+* [x] Func: fast delegate
+* [x] EventEmitter: NodeJS's `EventEmitter`
+* [x] List: high-level of Array
+* [x] Array: POD continous container
+* [ ] Table: POD table with generic key
+* [x] HashTable: POD table with hashed key
+* [x] Dictionary: high-level of Table
 
 ## License
 1. Author: MaiHD @ 2019
