@@ -456,6 +456,29 @@ public: // @region: Operators
         assert(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
+
+public:
+    /* Quaternion from axisangle
+     */
+    inline static float4 quat(const float3& axis, float angle);
+
+    /* Convert quaternion to axisangle
+     * @note: xyz is axis, w is angle
+     */
+    inline static float4 toaxis(const float4& quat);
+
+    /* Convert quaternion to axisangle
+     * @note: xyz is axis, w is angle
+     */
+    inline static void toaxis(const float4& quat, float3* axis, float* angle);
+
+    /* Quaternion from euler
+     */
+    inline static float4 euler(float x, float y, float z);
+
+    /* Quaternion from euler
+     */
+    inline static float4 euler(const float3& v);
 };
 
 union int2x2
@@ -1061,21 +1084,25 @@ public: // @region: Constants
     }
 
 public: // @region: Graphics functions
-    static float4x4 scale(float s);
-    static float4x4 scale(const float2& v);
-    static float4x4 scale(const float3& v);
-    static float4x4 scale(float x, float y, float z = 1.0f);
+    static float4x4 scalation(float s);
+    static float4x4 scalation(const float2& v);
+    static float4x4 scalation(const float3& v);
+    static float4x4 scalation(float x, float y, float z = 1.0f);
 
-    static float4x4 translate(const float2& v);
-    static float4x4 translate(const float3& v);
-    static float4x4 translate(float x, float y, float z = 0.0f);
+    static float4x4 translation(const float2& v);
+    static float4x4 translation(const float3& v);
+    static float4x4 translation(float x, float y, float z = 0.0f);
 
-    static float4x4 rotate(const float3& axis, float angle);
-    static float4x4 rotate(float x, float y, float z, float angle);
+    static float4x4 rotation(const float4& quaternion);
+    static float4x4 rotation(const float3& axis, float angle);
+    static float4x4 rotation(float x, float y, float z, float angle);
 
-    static float4x4 rotate_x(float angle);
-    static float4x4 rotate_y(float angle);
-    static float4x4 rotate_z(float angle);
+    static float4x4 rotation_x(float angle);
+    static float4x4 rotation_y(float angle);
+    static float4x4 rotation_z(float angle);
+
+    static void     decompose(const float4x4& m, float3* scalation, float4* quaternion, float3* translation);
+    static void     decompose(const float4x4& m, float3* scalation, float3* axis, float* angle, float3* translation);
 
     static float4x4 lookat(const float3& eye, const float3& target, const float3& up);
 
