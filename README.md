@@ -22,6 +22,8 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] JSON
 * [x] Crypto
 * [x] Thread, Mutex, Condition, Semaphore
+* [ ] Fiber, TaskSystem, Coroutine
+* [ ] Future and Promise/A+
 * [x] High-level math
 * [x] Operator System functions
 * [ ] FileSystem
