@@ -10,6 +10,9 @@
     <Filter Include="include\riku">
       <UniqueIdentifier>{A0EB0F6D-8C4E-9F11-35D4-D7C721166B94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\riku\math">
+      <UniqueIdentifier>{466FB296-B285-B02C-FBFC-3B4E675281B4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="include\riku\previewing">
       <UniqueIdentifier>{DCBC8103-48F4-C99A-51FE-2DBEBDB4F093}</UniqueIdentifier>
     </Filter>
@@ -83,6 +86,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\riku\zlib.h">
       <Filter>include\riku</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\math\operators.h">
+      <Filter>include\riku\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\math\types.h">
+      <Filter>include\riku\math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\riku\previewing\alloc.h">
       <Filter>include\riku\previewing</Filter>

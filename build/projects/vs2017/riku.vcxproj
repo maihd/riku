@@ -251,6 +251,8 @@
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
+    <ClInclude Include="..\..\..\include\riku\math\operators.h" />
+    <ClInclude Include="..\..\..\include\riku\math\types.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\alloc.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h" />
