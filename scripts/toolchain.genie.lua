@@ -715,7 +715,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		}
 		buildoptions { "-m64" }
 
-	configuration { "linux*" }
+	configuration { "linux or linux-afl" }
 	do
 		buildoptions {
 			"-msse2",
@@ -740,7 +740,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		}
 	end
 
-	configuration { "linux*", "x32" }
+	configuration { "linux or linux-afl", "x32" }
 		targetdir (path.join(BUILD_DIR, "linux_x32/bin"))
 		objdir (path.join(BUILD_DIR, "linux_x32/obj"))
 		libdirs { path.join(LIB_DIR, "lib/linux_x32") }
@@ -748,7 +748,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-m32",
 		}
 
-	configuration { "linux*", "x64" }
+	configuration { "linux or linux-afl", "x64" }
 		targetdir (path.join(BUILD_DIR, "linux_x64/bin"))
 		objdir (path.join(BUILD_DIR, "linux_x64/obj"))
 		libdirs { path.join(LIB_DIR, "lib/linux_x64") }

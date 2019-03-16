@@ -45,7 +45,7 @@ MAKEFILE = riku.unit_tests.make
 ifeq ($(config),debug32)
   OBJDIR              = ../../linux_x32/obj/x32/debug/riku.unit_tests
   TARGETDIR           = ../../linux_x32/bin
-  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -56,30 +56,32 @@ ifeq ($(config),debug32)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -msse2 -Wunused-value -Wundef -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -L"../../linux_x32/bin" -m32 -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../linux_x32/bin/librikudebug.a
-  LDDEPS             += ../../linux_x32/bin/librikudebug.a
+  LIBDEPS            += ../../linux_x32/bin/libriku.debug.a
+  LDDEPS             += ../../linux_x32/bin/libriku.debug.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -94,7 +96,7 @@ endif
 ifeq ($(config),release32)
   OBJDIR              = ../../linux_x32/obj/x32/release/riku.unit_tests
   TARGETDIR           = ../../linux_x32/bin
-  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -105,30 +107,32 @@ ifeq ($(config),release32)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -L"../../linux_x32/bin" -s -m32 -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../linux_x32/bin/librikurelease.a
-  LDDEPS             += ../../linux_x32/bin/librikurelease.a
+  LIBDEPS            += ../../linux_x32/bin/libriku.a
+  LDDEPS             += ../../linux_x32/bin/libriku.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -143,7 +147,7 @@ endif
 ifeq ($(config),debug64)
   OBJDIR              = ../../linux_x64/obj/x64/debug/riku.unit_tests
   TARGETDIR           = ../../linux_x64/bin
-  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -154,30 +158,32 @@ ifeq ($(config),debug64)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -msse2 -Wunused-value -Wundef -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -L"../../linux_x64/bin" -m64 -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../linux_x64/bin/librikudebug.a
-  LDDEPS             += ../../linux_x64/bin/librikudebug.a
+  LIBDEPS            += ../../linux_x64/bin/libriku.debug.a
+  LDDEPS             += ../../linux_x64/bin/libriku.debug.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -192,7 +198,7 @@ endif
 ifeq ($(config),release64)
   OBJDIR              = ../../linux_x64/obj/x64/release/riku.unit_tests
   TARGETDIR           = ../../linux_x64/bin
-  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -203,30 +209,32 @@ ifeq ($(config),release64)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -L"../../linux_x64/bin" -s -m64 -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../linux_x64/bin/librikurelease.a
-  LDDEPS             += ../../linux_x64/bin/librikurelease.a
+  LIBDEPS            += ../../linux_x64/bin/libriku.a
+  LDDEPS             += ../../linux_x64/bin/libriku.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -241,7 +249,7 @@ endif
 ifeq ($(config),debug)
   OBJDIR              = obj/debug/riku.unit_tests
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/riku.unit_testsdebug.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.debug.exe
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -252,30 +260,32 @@ ifeq ($(config),debug)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -msse2 -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"." -L"../../../scripts" -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../../scripts/librikudebug.a
-  LDDEPS             += ../../../scripts/librikudebug.a
+  LIBDEPS            += ../../../scripts/libriku.debug.a
+  LDDEPS             += ../../../scripts/libriku.debug.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -290,7 +300,7 @@ endif
 ifeq ($(config),release)
   OBJDIR              = obj/release/riku.unit_tests
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/riku.unit_testsrelease.exe
+  TARGET              = $(TARGETDIR)/riku.unit_tests.exe
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -301,30 +311,32 @@ ifeq ($(config),release)
   ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS        += $(LDFLAGS) -L"." -L"../../../scripts" -s -Wl,--gc-sections -Wl,--as-needed
-  LIBDEPS            += ../../../scripts/librikurelease.a
-  LDDEPS             += ../../../scripts/librikurelease.a
+  LIBDEPS            += ../../../scripts/libriku.a
+  LDDEPS             += ../../../scripts/libriku.a
   LIBS               += $(LDDEPS) -lm -lrt -ldl -lpthread
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -386,71 +398,79 @@ $(GCH_OBJC): $(PCH) $(MAKEFILE) | $(OBJDIR)
 	$(SILENT) $(CXX) $(ALL_OBJCPPFLAGS) -x objective-c++-header $(DEFINES) $(INCLUDES) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/unit_tests/array.o: ../../../unit_tests/array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_array.o: ../../../unit_tests/test_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/crypto.o: ../../../unit_tests/crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_crypto.o: ../../../unit_tests/test_crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/date.o: ../../../unit_tests/date.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_date.o: ../../../unit_tests/test_date.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/dictionary.o: ../../../unit_tests/dictionary.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_dictionary.o: ../../../unit_tests/test_dictionary.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/events.o: ../../../unit_tests/events.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_events.o: ../../../unit_tests/test_events.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/fs.o: ../../../unit_tests/fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_fs.o: ../../../unit_tests/test_fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/func.o: ../../../unit_tests/func.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_func.o: ../../../unit_tests/test_func.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/hash_table.o: ../../../unit_tests/hash_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_hash_table.o: ../../../unit_tests/test_hash_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/json.o: ../../../unit_tests/json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_json.o: ../../../unit_tests/test_json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/list.o: ../../../unit_tests/list.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_list.o: ../../../unit_tests/test_list.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/math.o: ../../../unit_tests/math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_math.o: ../../../unit_tests/test_math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/os.o: ../../../unit_tests/os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_os.o: ../../../unit_tests/test_os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/property.o: ../../../unit_tests/property.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_path.o: ../../../unit_tests/test_path.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/string.o: ../../../unit_tests/string.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_property.o: ../../../unit_tests/test_property.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/tempo_array.o: ../../../unit_tests/tempo_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_string.o: ../../../unit_tests/test_string.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/thread.o: ../../../unit_tests/thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_table.o: ../../../unit_tests/test_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/types.o: ../../../unit_tests/types.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_tempo_array.o: ../../../unit_tests/test_tempo_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_thread.o: ../../../unit_tests/test_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_types.o: ../../../unit_tests/test_types.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

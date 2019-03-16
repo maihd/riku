@@ -45,7 +45,7 @@ MAKEFILE = riku.make
 ifeq ($(config),debug32)
   OBJDIR              = ../../linux_x32/obj/x32/debug/riku
   TARGETDIR           = ../../linux_x32/bin
-  TARGET              = $(TARGETDIR)/librikudebug.a
+  TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -78,18 +78,19 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -102,7 +103,7 @@ endif
 ifeq ($(config),release32)
   OBJDIR              = ../../linux_x32/obj/x32/release/riku
   TARGETDIR           = ../../linux_x32/bin
-  TARGET              = $(TARGETDIR)/librikurelease.a
+  TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -135,18 +136,19 @@ ifeq ($(config),release32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -159,7 +161,7 @@ endif
 ifeq ($(config),debug64)
   OBJDIR              = ../../linux_x64/obj/x64/debug/riku
   TARGETDIR           = ../../linux_x64/bin
-  TARGET              = $(TARGETDIR)/librikudebug.a
+  TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -192,18 +194,19 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -216,7 +219,7 @@ endif
 ifeq ($(config),release64)
   OBJDIR              = ../../linux_x64/obj/x64/release/riku
   TARGETDIR           = ../../linux_x64/bin
-  TARGET              = $(TARGETDIR)/librikurelease.a
+  TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -249,18 +252,19 @@ ifeq ($(config),release64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -273,7 +277,7 @@ endif
 ifeq ($(config),debug)
   OBJDIR              = obj/debug/riku
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/librikudebug.a
+  TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -306,18 +310,19 @@ ifeq ($(config),debug)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -330,7 +335,7 @@ endif
 ifeq ($(config),release)
   OBJDIR              = obj/release/riku
   TARGETDIR           = ../../../scripts
-  TARGET              = $(TARGETDIR)/librikurelease.a
+  TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
   INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
@@ -363,18 +368,19 @@ ifeq ($(config),release)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/cluster.o \
-	$(OBJDIR)/src/core.o \
-	$(OBJDIR)/src/crypto.o \
-	$(OBJDIR)/src/dylib.o \
-	$(OBJDIR)/src/fs.o \
-	$(OBJDIR)/src/json.o \
-	$(OBJDIR)/src/net.o \
-	$(OBJDIR)/src/os.o \
-	$(OBJDIR)/src/path.o \
-	$(OBJDIR)/src/stream.o \
-	$(OBJDIR)/src/thread.o \
-	$(OBJDIR)/src/zlib.o \
+	$(OBJDIR)/src/riku_cluster.o \
+	$(OBJDIR)/src/riku_core.o \
+	$(OBJDIR)/src/riku_crypto.o \
+	$(OBJDIR)/src/riku_dylib.o \
+	$(OBJDIR)/src/riku_fs.o \
+	$(OBJDIR)/src/riku_json.o \
+	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_net.o \
+	$(OBJDIR)/src/riku_os.o \
+	$(OBJDIR)/src/riku_path.o \
+	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_thread.o \
+	$(OBJDIR)/src/riku_zlib.o \
 
   define PREBUILDCMDS
   endef
@@ -500,51 +506,55 @@ $(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o: ../../../3rdparty/zlib-1.2.11/zutil.c $(
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/cluster.o: ../../../src/cluster.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_cluster.o: ../../../src/riku_cluster.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/core.o: ../../../src/core.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_core.o: ../../../src/riku_core.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/crypto.o: ../../../src/crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_crypto.o: ../../../src/riku_crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/dylib.o: ../../../src/dylib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_dylib.o: ../../../src/riku_dylib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/fs.o: ../../../src/fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_fs.o: ../../../src/riku_fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/json.o: ../../../src/json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_json.o: ../../../src/riku_json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/net.o: ../../../src/net.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_math.o: ../../../src/riku_math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/os.o: ../../../src/os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_net.o: ../../../src/riku_net.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/path.o: ../../../src/path.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_os.o: ../../../src/riku_os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/stream.o: ../../../src/stream.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_path.o: ../../../src/riku_path.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/thread.o: ../../../src/thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_stream.o: ../../../src/riku_stream.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/zlib.o: ../../../src/zlib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+$(OBJDIR)/src/riku_thread.o: ../../../src/riku_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/riku_zlib.o: ../../../src/riku_zlib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

@@ -63,23 +63,25 @@ ifeq ($(config),debug32)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -112,23 +114,25 @@ ifeq ($(config),release32)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -161,23 +165,25 @@ ifeq ($(config),debug64)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -210,23 +216,25 @@ ifeq ($(config),release64)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -259,23 +267,25 @@ ifeq ($(config),debug)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -308,23 +318,25 @@ ifeq ($(config),release)
   LINKOBJS            = $(OBJECTS)
   LINKCMD             = $(CXX) -o $(TARGET) $(LINKOBJS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   OBJECTS := \
-	$(OBJDIR)/unit_tests/array.o \
-	$(OBJDIR)/unit_tests/crypto.o \
-	$(OBJDIR)/unit_tests/date.o \
-	$(OBJDIR)/unit_tests/dictionary.o \
-	$(OBJDIR)/unit_tests/events.o \
-	$(OBJDIR)/unit_tests/fs.o \
-	$(OBJDIR)/unit_tests/func.o \
-	$(OBJDIR)/unit_tests/hash_table.o \
-	$(OBJDIR)/unit_tests/json.o \
-	$(OBJDIR)/unit_tests/list.o \
-	$(OBJDIR)/unit_tests/math.o \
-	$(OBJDIR)/unit_tests/os.o \
-	$(OBJDIR)/unit_tests/property.o \
-	$(OBJDIR)/unit_tests/string.o \
-	$(OBJDIR)/unit_tests/tempo_array.o \
-	$(OBJDIR)/unit_tests/thread.o \
-	$(OBJDIR)/unit_tests/types.o \
+	$(OBJDIR)/unit_tests/test_array.o \
+	$(OBJDIR)/unit_tests/test_crypto.o \
+	$(OBJDIR)/unit_tests/test_date.o \
+	$(OBJDIR)/unit_tests/test_dictionary.o \
+	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fs.o \
+	$(OBJDIR)/unit_tests/test_func.o \
+	$(OBJDIR)/unit_tests/test_hash_table.o \
+	$(OBJDIR)/unit_tests/test_json.o \
+	$(OBJDIR)/unit_tests/test_list.o \
+	$(OBJDIR)/unit_tests/test_math.o \
+	$(OBJDIR)/unit_tests/test_os.o \
+	$(OBJDIR)/unit_tests/test_path.o \
+	$(OBJDIR)/unit_tests/test_property.o \
+	$(OBJDIR)/unit_tests/test_string.o \
+	$(OBJDIR)/unit_tests/test_table.o \
+	$(OBJDIR)/unit_tests/test_tempo_array.o \
+	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
 
@@ -386,71 +398,79 @@ $(GCH_OBJC): $(PCH) $(MAKEFILE) | $(OBJDIR)
 	$(SILENT) $(CXX) $(ALL_OBJCPPFLAGS) -x objective-c++-header $(DEFINES) $(INCLUDES) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/unit_tests/array.o: ../../../unit_tests/array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_array.o: ../../../unit_tests/test_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/crypto.o: ../../../unit_tests/crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_crypto.o: ../../../unit_tests/test_crypto.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/date.o: ../../../unit_tests/date.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_date.o: ../../../unit_tests/test_date.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/dictionary.o: ../../../unit_tests/dictionary.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_dictionary.o: ../../../unit_tests/test_dictionary.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/events.o: ../../../unit_tests/events.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_events.o: ../../../unit_tests/test_events.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/fs.o: ../../../unit_tests/fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_fs.o: ../../../unit_tests/test_fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/func.o: ../../../unit_tests/func.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_func.o: ../../../unit_tests/test_func.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/hash_table.o: ../../../unit_tests/hash_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_hash_table.o: ../../../unit_tests/test_hash_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/json.o: ../../../unit_tests/json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_json.o: ../../../unit_tests/test_json.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/list.o: ../../../unit_tests/list.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_list.o: ../../../unit_tests/test_list.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/math.o: ../../../unit_tests/math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_math.o: ../../../unit_tests/test_math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/os.o: ../../../unit_tests/os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_os.o: ../../../unit_tests/test_os.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/property.o: ../../../unit_tests/property.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_path.o: ../../../unit_tests/test_path.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/string.o: ../../../unit_tests/string.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_property.o: ../../../unit_tests/test_property.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/tempo_array.o: ../../../unit_tests/tempo_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_string.o: ../../../unit_tests/test_string.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/thread.o: ../../../unit_tests/thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_table.o: ../../../unit_tests/test_table.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/unit_tests/types.o: ../../../unit_tests/types.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+$(OBJDIR)/unit_tests/test_tempo_array.o: ../../../unit_tests/test_tempo_array.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_thread.o: ../../../unit_tests/test_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_types.o: ../../../unit_tests/test_types.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
