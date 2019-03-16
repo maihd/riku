@@ -11,17 +11,6 @@
 #undef min // When Windows.h is included, min is an macro
 #undef max // When Windows.h is included, max is an macro
 
-#if defined(__ARM_NEON)
-#if CPU_ARM && !ARCH_64BIT && !PLATFORM_ANDROID        
-#define MATH_ENABLE_NEON 0
-#else
-#include <arm_neon.h>     
-#define MATH_ENABLE_NEON 1
-#endif         
-#else
-#define MATH_ENABLE_NEON 0
-#endif
-
 #if PLATFORM_ANDROID // Android support for log2 and log2f
 extern "C"
 {
@@ -5044,7 +5033,7 @@ inline float4 float4::quat(const float3& axis, float angle)
         return float4(0, 0, 0, 1);
     }
 
-    float4 r = float4(normalize(axis) * sin(angle * 0.5f), cosf(angle * 0.5f));
+    float4 r = float4(normalize(axis) * math::sin(angle * 0.5f), math::cos(angle * 0.5f));
     return r;
 }
 
@@ -5059,7 +5048,7 @@ inline float4 float4::toaxis(const float4& quat)
     }
 
     float3 axis;
-    const float den = sqrtf(1.0f - c.w * c.w);
+    const float den = math::sqrt(1.0f - c.w * c.w);
     if (den > 0.0001f)
     {
         axis = float3(c.x, c.y, c.z) / den;
@@ -5069,7 +5058,7 @@ inline float4 float4::toaxis(const float4& quat)
         axis = float3(1, 0, 0);
     }
 
-    float angle = 2.0f * cosf(c.w);
+    float angle = 2.0f * math::cos(c.w);
     return float4(axis, angle);
 }
 
@@ -5093,12 +5082,12 @@ inline float4 float4::euler(float x, float y, float z)
     p = x * 0.5f;
     y = y * 0.5f; // Now y mean yaw
 
-    const float c1 = cos(y);
-    const float c2 = cos(p);
-    const float c3 = cos(r);
-    const float s1 = sin(y);
-    const float s2 = sin(p);
-    const float s3 = sin(r);
+    const float c1 = math::cos(y);
+    const float c2 = math::cos(p);
+    const float c3 = math::cos(r);
+    const float s1 = math::sin(y);
+    const float s2 = math::sin(p);
+    const float s3 = math::sin(r);
 
     return float4(
         s1 * s2 * c3 + c1 * c2 * s3,
@@ -5305,8 +5294,8 @@ inline float4x4 float4x4::rotation(float x, float y, float z, float angle)
 {
     using namespace math;
 
-    const float c = cos(-angle);
-    const float s = sin(-angle);
+    const float c = math::cos(-angle);
+    const float s = math::sin(-angle);
     const float t = 1.0f - c;
 
     float4x4 result;
@@ -5340,8 +5329,8 @@ inline float4x4 float4x4::rotation_x(float angle)
 {
     using namespace math;
 
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
         1, 0, 0, 0,
@@ -5355,8 +5344,8 @@ inline float4x4 float4x4::rotation_y(float angle)
 {
     using namespace math;
 
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
         c, 0, s, 0,
@@ -5370,8 +5359,8 @@ inline float4x4 float4x4::rotation_z(float angle)
 {
     using namespace math;
 
-    const float s = sin(angle);
-    const float c = cos(angle);
+    const float s = math::sin(angle);
+    const float c = math::cos(angle);
 
     return float4x4(
         c, s, 0, 0,

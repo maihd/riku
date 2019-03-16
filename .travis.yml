@@ -3,9 +3,17 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      script:
+        - cd ./build/projects/gmake-linux
+        - make config=debug64
+        - make config=release64
       
     - os: osx
       compiler: clang
+      script:
+        - cd ./build/projects/gmake-osx;
+        - make config=debug64
+        - make config=release64
 
 addons:
   apt:
@@ -18,14 +26,7 @@ addons:
       - g++-multilib
       - clang
 
-script:
-  - echo "Build done!"
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ./build/projects/gmake-linux; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then cd ./build/projects/gmake-osx; fi
-  - make config=debug32
-  - make config=debug64
-  - make config=release32
-  - make config=release64
+
 
 branches:
   only:

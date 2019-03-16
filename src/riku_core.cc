@@ -330,7 +330,7 @@ namespace process
     #if PLATFORM_WINDOWS
         GetCurrentDirectoryA(length, buffer);
         return buffer;
-    #elif PLATFORM_ANDROID
+    #elif PLATFORM_UNIX
         return ::getcwd(buffer, length);
     #endif
     }

@@ -83,7 +83,7 @@ void float4x4::decompose(const float4x4& m, float3* scalation, float4* quaternio
 
     if (trace > 0.0001f)
     {
-        float s = 0.5f / sqrt(trace);
+        float s = 0.5f / math::sqrt(trace);
         quaternion->w = 0.25f / s;
         quaternion->x = (yaxis.z - zaxis.y) * s;
         quaternion->y = (zaxis.x - xaxis.z) * s;
@@ -95,7 +95,7 @@ void float4x4::decompose(const float4x4& m, float3* scalation, float4* quaternio
         // we will never divide by zero in the code below.
         if (xaxis.x > yaxis.y && xaxis.x > zaxis.z)
         {
-            float s = 0.5f / sqrt(1.0f + xaxis.x - yaxis.y - zaxis.z);
+            float s = 0.5f / math::sqrt(1.0f + xaxis.x - yaxis.y - zaxis.z);
             quaternion->w = (yaxis.z - zaxis.y) * s;
             quaternion->x = 0.25f / s;
             quaternion->y = (yaxis.x + xaxis.y) * s;
@@ -103,7 +103,7 @@ void float4x4::decompose(const float4x4& m, float3* scalation, float4* quaternio
         }
         else if (yaxis.y > zaxis.z)
         {
-            float s = 0.5f / sqrt(1.0f + yaxis.y - xaxis.x - zaxis.z);
+            float s = 0.5f / math::sqrt(1.0f + yaxis.y - xaxis.x - zaxis.z);
             quaternion->w = (zaxis.x - xaxis.z) * s;
             quaternion->x = (yaxis.x + xaxis.y) * s;
             quaternion->y = 0.25f / s;
@@ -111,7 +111,7 @@ void float4x4::decompose(const float4x4& m, float3* scalation, float4* quaternio
         }
         else
         {
-            float s = 0.5f / sqrt(1.0f + zaxis.z - xaxis.x - yaxis.y);
+            float s = 0.5f / math::sqrt(1.0f + zaxis.z - xaxis.x - yaxis.y);
             quaternion->w = (xaxis.y - yaxis.x) * s;
             quaternion->x = (zaxis.x + xaxis.z) * s;
             quaternion->y = (zaxis.y + yaxis.z) * s;

@@ -360,7 +360,7 @@ namespace memory
 
     RIKU_API int   compare(const void* a, const void* b, usize size);
 
-    inline   void* zero(void* dst, usize size)              { init(dst, 0, size);           }
+    inline   void* zero(void* dst, usize size)                          { return init(dst, 0, size);          }
     inline   bool  equal(const void* a, const void* b, usize size)      { return compare(a, b, size) == 0;    }
     inline   bool  not_equal(const void* a, const void* b, usize size)  { return compare(a, b, size) != 0;    }
 }
@@ -385,8 +385,14 @@ inline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
+#if PLATFORM_APPLE
+#include <stdint.h>
+inline void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
+inline void  operator delete(void*,  NewDummy, void*)     {             }
+#else
 inline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
 inline void  operator delete(void*, NewDummy, void*)     {             }
+#endif
 
 #define INIT(ptr)    new (NewDummy(), ptr)
 #define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
@@ -610,7 +616,11 @@ namespace process
         {
             return getenv(name);
         };
-    } env;
+    } env
+#if __GNUC__ || __clang__
+    __attribute__((unused))
+#endif
+    ;
 
     RIKU_API const char* cwd(void);
     RIKU_API const char* cwd(char* buffer, usize length);

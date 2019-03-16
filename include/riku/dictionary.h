@@ -312,11 +312,11 @@ public: // Methods
         {
             if (prev > -1)
             {
-                nexts[prev] = -1;
+                buffer->nexts[prev] = -1;
             }
             else
             {
-                nexts[hash] = -1;
+                buffer->hashs[hash] = -1;
             }
 
             buffer->keys[curr].TKey();
@@ -331,14 +331,20 @@ public: // Methods
                 index_of(buffer->keys[curr], &hash, &prev);
                 if (prev > -1)
                 {
-                    nexts[prev] = curr;
+                    buffer->nexts[prev] = curr;
                 }
                 else
                 {
-                    nexts[hash] = curr;
+                    buffer->hashs[hash] = curr;
                 }
             }
             buffer->length--;
+
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 };

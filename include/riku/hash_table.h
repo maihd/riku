@@ -51,7 +51,7 @@ public: // Properties
 
     inline int get_hash_count(void) const
     {
-        return buffer ? buffer->hashs.length : 0;
+        return buffer ? buffer->hashs.get_length() : 0;
     }
 
 public:
@@ -187,13 +187,11 @@ public: // Methods
         return buffer->values[curr];
     }
 
-    template <typename TValue>
     bool has(ulong key) const
     {
         return index_of(key) > -1;
     }
 
-    template <typename TValue>
     bool try_get(ulong key, TValue* out_value) const
     {
         int curr = index_of(key);
@@ -208,7 +206,6 @@ public: // Methods
         }
     }
 
-    template <typename TValue>
     bool set(ulong key, const TValue& value)
     {
         int hash, prev;
@@ -258,11 +255,11 @@ public: // Methods
         {
             if (prev > -1)
             {
-                nexts[prev] = -1;
+                buffer->nexts[prev] = -1;
             }
             else
             {
-                nexts[hash] = -1;
+                buffer->hashs[hash] = -1;
             }
 
             if (curr < get_length() - 1)
@@ -275,14 +272,19 @@ public: // Methods
                 index_of(buffer->keys[curr], &hash, &prev);
                 if (prev > -1)
                 {
-                    nexts[prev] = curr;
+                    buffer->nexts[prev] = curr;
                 }
                 else
                 {
-                    nexts[hash] = curr;
+                    buffer->hashs[hash] = curr;
                 }
             }
             buffer->length--;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 };
