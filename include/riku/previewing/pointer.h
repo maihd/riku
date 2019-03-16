@@ -6,7 +6,7 @@
 #include "./core.h"
 
 //
-// Ptr types
+// Many implementation of smart pointers
 //
 
 template <typename T>

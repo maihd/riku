@@ -20,6 +20,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 ## Modules
 * [x] Core: primitive types, `console`, `string`, `Date`, `memory`, ...
 * [x] JSON
+* [ ] Allocator
 * [x] Dynamic string
 * [x] Crypto: NodeJS's `crypto`
 * [x] Thread, Mutex, Condition, Semaphore
