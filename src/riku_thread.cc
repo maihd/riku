@@ -311,7 +311,7 @@ Semaphore::Semaphore(int count)
 #if USE_CUSTOM_SEMAPHORE
     handle = CREATE(SemaphoreContext) SemaphoreContext(count);
 #elif PLATFORM_WINDOWS
-    handle = CreateSemaphoreA(NULL, count, (1 << (sizeof(int) * 8 - 1)) - 1, NULL);
+    handle = CreateSemaphoreA(NULL, count, INT32_MAX, NULL);
 #elif PLATFORM_OSX
     kern_return_t err = semaphore_create(mach_task_self(), (semaphore_t*)&handle, SYNC_POLICY_FIFO, count);
     if (err != KERN_SUCCESS)

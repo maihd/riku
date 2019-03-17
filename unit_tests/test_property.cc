@@ -5,7 +5,7 @@
 
 #include "./unit_test.h"
 
-#if (defined(_MSC_VER) || (defined(__has_declspec_attriute) && __has_declspec_attribute(property)))
+#if defined(EXTENION_PROPERTY) && (defined(_MSC_VER) || (defined(__has_declspec_attriute) && __has_declspec_attribute(property)))
 #define test_assert(a, b) console::log(#a " = %d - " #b " = %d", a, b)
 
 struct Type

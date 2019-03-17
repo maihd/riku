@@ -234,14 +234,16 @@
 #define __has_declspec_attribute(x) 0  // Compatibility with non-clang compilers.
 #endif
 
-#if defined(_MSC_VER)
-#   define PROPERTY(Type, name, getter, setter)   __declspec(property(get=getter, put=setter)) Type name
-#   define PROPERTY_READONLY(Type, name, getter)  __declspec(property(get=getter)) Type name
-#   define PROPERTY_WRITEONLY(Type, name, setter) __declspec(property(put=setter)) Type name
-#elif (defined(__has_declspec_attribute) && __has_declspec_attribute(property))
-#   define PROPERTY(Type, name, getter, setter)   __declspec(property(get=getter, put=setter)) Type name
-#   define PROPERTY_READONLY(Type, name, getter)  __declspec(property(get=getter)) Type name
-#   define PROPERTY_WRITEONLY(Type, name, setter) __declspec(property(put=setter)) Type name
+#if defined(EXTENSION_PROPERTY)
+#   if defined(_MSC_VER) || ((defined(__has_declspec_attribute) && __has_declspec_attribute(property)))
+#      define PROPERTY(Type, name, getter, setter)   __declspec(property(get=getter, put=setter)) Type name
+#      define PROPERTY_READONLY(Type, name, getter)  __declspec(property(get=getter)) Type name
+#      define PROPERTY_WRITEONLY(Type, name, setter) __declspec(property(put=setter)) Type name
+#   else
+#      define PROPERTY(Type, name, getter, setter)   
+#      define PROPERTY_READONLY(Type, name, getter)  
+#      define PROPERTY_WRITEONLY(Type, name, setter) 
+#   endif
 #else
 #   define PROPERTY(Type, name, getter, setter)   
 #   define PROPERTY_READONLY(Type, name, getter)  
@@ -390,8 +392,9 @@ inline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
-inline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
-inline void  operator delete(void*, NewDummy, void*)      {             }
+#include <stdint.h>
+inline void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
+inline void  operator delete(void*,  NewDummy, void*)     {             }
 
 #define INIT(ptr)    new (NewDummy(), ptr)
 #define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
