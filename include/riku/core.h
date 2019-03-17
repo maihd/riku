@@ -262,17 +262,14 @@ using uint      = unsigned int;
 using ulong     = unsigned long int;
 using ushort    = unsigned short int;
 
-using byte      = unsigned char;
-using sbyte     = char;
-
 using cstr      = const char*;
 using wchar     = short;
 using uchar     = int;
 
 // Fixed size types
 
-using i8        = sbyte;
-using u8        = byte;
+using i8        = char;
+using u8        = unsigned char;
 using i16       = short;
 using u16       = unsigned short;
 using i32       = int;
@@ -288,6 +285,11 @@ static_assert(sizeof(u32) == 4, "u32 must be 4-bytes size.");
 static_assert(sizeof(i64) == 8, "i64 must be 8-bytes size.");
 static_assert(sizeof(u64) == 8, "u64 must be 8-bytes size.");
 
+using byte      = u8;
+using sbyte     = i8;
+static_assert(sizeof(byte)  == 1, "byte must be 1-bytes size.");
+static_assert(sizeof(sbyte) == 1, "sbyte must be 1-bytes size.");
+
 // Memory address and size types
 
 #if ARCH_64BIT
@@ -301,11 +303,11 @@ using isize  = i32;
 using iptr = isize;
 using uptr = usize;
 
-// Flags
-using Flags = uint;
+static_assert(sizeof(usize) == sizeof(0), "usize must be same size with sizeof(0).");
+static_assert(sizeof(isize) == sizeof(0), "isize must be same size with sizeof(0).");
 
-// Flags64
-using Flags64 = ulong;
+using Flags   = u32;
+using Flags64 = u64;
 
 // ArgsList: alias of va_list
 #include <stdarg.h>
