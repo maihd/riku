@@ -164,7 +164,7 @@ public: // Methods
     {
         if (cleanup)
         {
-            this->~Table();
+            this->~Dictionary();
         }
         buffer = NULL;
     }
@@ -319,8 +319,8 @@ public: // Methods
                 buffer->hashs[hash] = -1;
             }
 
-            buffer->keys[curr].TKey();
-            buffer->values[curr].TValue();
+            buffer->keys[curr].~TKey();
+            buffer->values[curr].~TValue();
             if (curr < get_length() - 1)
             {
                 int last = get_length() - 1;
