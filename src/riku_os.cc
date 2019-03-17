@@ -226,13 +226,13 @@ namespace os
     #endif
     }
 
-    biguint uptime(void)
+    u64 uptime(void)
     {
     #if PLATFORM_WINDOWS
-        return (biguint)(GetTickCount64() / 1000);
+        return (u64)(GetTickCount64() / 1000);
     #elif PLATFORM_UNIX
         struct sysinfo info;
-        return sysinfo(&info) == 0 ? (biguint)info.uptime : 0;
+        return sysinfo(&info) == 0 ? (u64)info.uptime : 0;
     #endif
     }
 

@@ -18,6 +18,8 @@ matrix:
       script:
         - cd ./build/projects/gmake-linux
         - make config=debug64
+        - cd ../../linux_x64/bin
+        - ./riku.unit_tests.debug.exe
       
     - os: osx
       compiler: clang

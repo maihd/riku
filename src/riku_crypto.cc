@@ -18,7 +18,7 @@ namespace crypto
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
 
-    static const ulong CRC_TABLE[256] = {
+    static const u64 CRC_TABLE[256] = {
         0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
         0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
         0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -233,7 +233,7 @@ namespace crypto
         memory::copy(&context->buffer[index], &input[i], length - i);
     }
 
-    ulong md5(MD5& ctx, const void* buffer, usize length)
+    u64 md5(MD5& ctx, const void* buffer, usize length)
     {
         // init
         ctx.state[0] = 0x67452301;
@@ -250,7 +250,7 @@ namespace crypto
         // final
         byte  digest[16];
         byte  bits[8];
-        ulong index, pad_len;
+        u64   index, pad_len;
 
         // Save number of bits
         md5_encode(bits, ctx.count, 8);
@@ -266,7 +266,7 @@ namespace crypto
 	    // Store state in digest
         md5_encode(digest, ctx.state, 16);
 
-        ulong val = 
+        u64 val = 
             (digest[ 3] << 24 | digest[ 2] << 16 | digest[ 1] << 8 | digest[ 0]) ^ 
 			(digest[ 7] << 24 | digest[ 6] << 16 | digest[ 5] << 8 | digest[ 4]) ^
 			(digest[11] << 24 | digest[10] << 16 | digest[ 9] << 8 | digest[ 8]) ^
@@ -275,9 +275,9 @@ namespace crypto
         return val;
     }
 
-    ulong crc32(const void* buffer, usize length)
+    u64 crc32(const void* buffer, usize length)
     {
-        ulong res = 0xffffffffL;
+        u64 res = 0xffffffffL;
 
         const byte* data = (const byte*)buffer;
 
@@ -290,25 +290,25 @@ namespace crypto
         return res;
     }
 
-    ulong murmur(const void* buffer, usize length) 
+    u64 murmur(const void* buffer, usize length) 
     {
         return murmur(buffer, length, 0);
     }
 
     // Compute hash value of buffer with Murmur algorithm
-    ulong murmur(const void* buffer, usize length, ulong seed)
+    u64 murmur(const void* buffer, usize length, u64 seed)
     {
-        ulong h = seed;
-        const byte* key = (const byte*)buffer;
+        u32 h = (u32)seed;
+        const u8* key = (const u8*)buffer;
 
         if (length > 3) 
         {
-            const uint* key_x4 = (const uint*)key;
+            const u32* key_x4 = (const u32*)key;
             usize i = length >> 2;
 
             do 
             {
-                uint k = *key_x4++;
+                u32 k = *key_x4++;
                 k *= 0xcc9e2d51;
                 k  = (k << 15) | (k >> 17);
                 k *= 0x1b873593;
@@ -323,7 +323,7 @@ namespace crypto
         if (length & 3)
         {
             usize i = length & 3;
-            uint k = 0;
+            u32 k = 0;
             key = &key[i - 1];
 
             do {

@@ -15,14 +15,14 @@ namespace crypto
     };
 
     // Hashing buffer with MD5 algorithm, and return checksum
-    RIKU_API ulong md5(MD5& ctx, const void* buffer, usize length);
+    RIKU_API u64 md5(MD5& ctx, const void* buffer, usize length);
 
     // Compute check sum of buffer with CRC32 algorithm
-    RIKU_API ulong crc32(const void* buffer, usize length);
+    RIKU_API u64 crc32(const void* buffer, usize length);
 
     // Compute hash value of buffer with Murmur algorithm
-    RIKU_API ulong murmur(const void* buffer, usize length);
+    RIKU_API u64 murmur(const void* buffer, usize length);
     
     // Compute hash value of buffer with Murmur algorithm
-    RIKU_API ulong murmur(const void* buffer, usize length, ulong seed);
+    RIKU_API u64 murmur(const void* buffer, usize length, u64 seed);
 }

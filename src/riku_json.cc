@@ -1212,7 +1212,7 @@ namespace json
                 }
 
                 /* When code reach here, new_values should not invalid */
-                assert(new_values != NULL && "An error occurred but is not handled");
+                ASSERT(new_values != NULL, "An error occurred but is not handled");
 
                 /* Well done */
                 *((void**)&root->object) = (int*)new_values + 1;

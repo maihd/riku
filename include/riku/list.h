@@ -203,7 +203,7 @@ public: // Buffer modifying
     
     inline TItem pop(void)
     {
-        assert(this->get_length() > 0, "Attempt to pop the List<>, which is empty.");
+        ASSERT(this->get_length() > 0, "Attempt to pop the List<>, which is empty.");
 
         TItem item = buffer->items[--buffer->length];
         buffer->items[buffer->length].~TItem();
@@ -212,7 +212,7 @@ public: // Buffer modifying
 
     inline TItem shift(void)
     {
-        assert(this->get_length() > 0, "Attempt to shift the List<>, which is empty.");
+        ASSERT(this->get_length() > 0, "Attempt to shift the List<>, which is empty.");
 
         TItem result = buffer->items[0];
         buffer->items[0].~TItem();

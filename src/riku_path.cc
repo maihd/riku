@@ -24,13 +24,13 @@ namespace path
 
     const char* basename(const char* path, const char* ext, char* buffer, usize length)
     {
-        always_false_assert("path::basename is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::basename is not implemented!");
         return "";
     }
 
     const char* dirname(const char* path, char* buffer, usize length)
     {
-        always_false_assert("path::dirname is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::dirname is not implemented!");
         return "";
     }
 
@@ -42,25 +42,25 @@ namespace path
 
     const char* extname(const char* path, char* buffer, usize length)
     {
-        always_false_assert("path::extname is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::extname is not implemented!");
         return "";
     }
 
     const char* extname(const char* path)
     {
-        always_false_assert("path::extname is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::extname is not implemented!");
         return "";
     }
 
     bool is_absolute(const char* path)
     {
-        always_false_assert("path::is_absolute is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::is_absolute is not implemented!");
         return "";
     }
 
     bool is_relative(const char* path)
     {
-        always_false_assert("path::is_relative is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::is_relative is not implemented!");
         return "";
     }
 
@@ -72,7 +72,7 @@ namespace path
 
     const char* absolute(const char* path, char* buffer, usize length)
     {
-        always_false_assert("path::absolute is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::absolute is not implemented!");
         return "";
     }
 
@@ -84,7 +84,7 @@ namespace path
 
     const char* relative(const char* from, const char* to, char* buffer, usize length)
     {
-        always_false_assert("path::relative is not implemented!");
+        ALWAYS_FALSE_ASSERT("path::relative is not implemented!");
         return "";
     }
 

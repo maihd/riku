@@ -58,7 +58,7 @@ public:
     inline HashTable(int hash_count = 64)
         : buffer((Buffer*)memory::alloc(sizeof(Buffer)))
     {
-        assert(buffer, "Out of memory");
+        ASSERT(buffer, "Out of memory");
 
         buffer->length   = 0;
         buffer->capacity = 0;
@@ -181,7 +181,7 @@ public: // Methods
 
         if (curr < 0)
         {
-            always_assert(this->set(key, TValue()), "Out of memory");
+            ALWAYS_ASSERT(this->set(key, TValue()), "Out of memory");
         }
 
         return buffer->values[curr];

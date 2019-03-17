@@ -58,7 +58,7 @@ public:
     inline Table(int hash_count = 64)
         : buffer((Buffer*)memory::alloc(sizeof(Buffer)))
     {
-        assert(buffer, "Out of memory");
+        ASSERT(buffer, "Out of memory");
 
         buffer->length   = 0;
         buffer->capacity = 0;
@@ -190,7 +190,7 @@ public: // Methods
                 buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
-                always_assert(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
+                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
             }
 
             curr = buffer->length++;
@@ -242,7 +242,7 @@ public: // Methods
                 buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
-                always_assert(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
+                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
             }
 
             curr = buffer->length++;

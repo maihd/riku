@@ -38,13 +38,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline int& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((int*)this)[index];
     }
 
     inline int  operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -73,13 +73,13 @@ public: // @region: Constructors
 public: // @region: Fields
     inline int& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((int*)this)[index];
     }
 
     inline int  operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -110,13 +110,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline int& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((int*)this)[index];
     }
 
     inline int  operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((int*)this)[index];
     }
 };
@@ -145,13 +145,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline uint& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((uint*)this)[index];
     }
 
     inline uint  operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -180,13 +180,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline uint& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((uint*)this)[index];
     }
 
     inline uint  operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -217,13 +217,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline uint& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((uint*)this)[index];
     }
 
     inline uint  operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((uint*)this)[index];
     }
 };
@@ -250,13 +250,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline bool& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((bool*)this)[index];
     }
 
     inline int  operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -285,13 +285,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline bool& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((bool*)this)[index];
     }
 
     inline bool  operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -322,13 +322,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline bool& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((bool*)this)[index];
     }
 
     inline bool  operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((bool*)this)[index];
     }
 };
@@ -355,13 +355,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((float*)this)[index];
     }
 
     inline float  operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((float*)this)[index];
     }
 
@@ -415,13 +415,13 @@ public: // @region: float2 -> float3
 public: // @region: Operators
     inline float& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((float*)this)[index];
     }
 
     inline float  operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((float*)this)[index];
     }
 };
@@ -458,13 +458,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
 
     inline float  operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
 
@@ -518,13 +518,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline int2& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((int2*)data)[index];
     }
 
     inline const int2& operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((int2*)data)[index];
     }
     
@@ -566,13 +566,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline int3& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((int3*)data)[index];
     }
 
     inline const int3& operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((int3*)data)[index];
     }
     
@@ -618,13 +618,13 @@ public: // @region: Constructors
 public: // Constructors
     inline int4& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((int4*)data)[index];
     }
 
     inline const int4& operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((int4*)data)[index];
     }
     
@@ -661,13 +661,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline uint2& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((uint2*)data)[index];
     }
 
     inline const uint2& operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((uint2*)data)[index];
     }
     
@@ -709,13 +709,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline uint3& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((uint3*)data)[index];
     }
 
     inline const uint3& operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((uint3*)data)[index];
     }
     
@@ -761,13 +761,13 @@ public: // @region: Constructors
 public: // Constructors
     inline uint4& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((uint4*)data)[index];
     }
 
     inline const uint4& operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((uint4*)data)[index];
     }
     
@@ -804,13 +804,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline bool2& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((bool2*)data)[index];
     }
 
     inline const bool2& operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((bool2*)data)[index];
     }
     
@@ -853,13 +853,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline bool3& operator[](int index)
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((bool3*)data)[index];
     }
 
     inline const bool3& operator[](int index) const
     {
-        assert(index > -1 && index < 3, "Index out of range");
+        ASSERT(index > -1 && index < 3, "Index out of range");
         return ((bool3*)data)[index];
     }
     
@@ -905,13 +905,13 @@ public: // @region: Constructors
 public: // Constructors
     inline bool4& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((bool4*)data)[index];
     }
 
     inline const bool4& operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((bool4*)data)[index];
     }
     
@@ -949,13 +949,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float2& operator[](int index)
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((float2*)data)[index];
     }
 
     inline const float2& operator[](int index) const
     {
-        assert(index > -1 && index < 2, "Index out of range");
+        ASSERT(index > -1 && index < 2, "Index out of range");
         return ((float2*)data)[index];
     }
    
@@ -1009,13 +1009,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float3& operator[](int index)
     {
-        assert(index > -1 && index < 3, "float3x3[]: Index out of range");
+        ASSERT(index > -1 && index < 3, "float3x3[]: Index out of range");
         return ((float3*)data)[index];
     }
 
     inline const float3& operator[](int index) const
     {
-        assert(index > -1 && index < 3, "float3x3[]: Index out of range");
+        ASSERT(index > -1 && index < 3, "float3x3[]: Index out of range");
         return ((float3*)data)[index];
     }
 
@@ -1078,13 +1078,13 @@ public: // @region: Constructors
 public: // @region: Operators
     inline float4& operator[](int index)
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((float4*)data)[index];
     }
 
     inline const float4& operator[](int index) const
     {
-        assert(index > -1 && index < 4, "Index out of range");
+        ASSERT(index > -1 && index < 4, "Index out of range");
         return ((float4*)data)[index];
     }
 

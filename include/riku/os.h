@@ -114,6 +114,6 @@ namespace os
     RIKU_API const char*   version(void);
     RIKU_API const char*   version(char* buffer, usize length);
 
-    RIKU_API biguint       uptime(void);
+    RIKU_API u64           uptime(void);
     RIKU_API usize         cpus(CPU* buffer, usize length);
 }

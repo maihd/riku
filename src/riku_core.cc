@@ -607,7 +607,7 @@ Date Date::utc(int year, int month, int day, int hours, int minutes, int seconds
         (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
 }
 
-ulong calc_hash(const void* buffer, usize length)
+u64 calc_hash(const void* buffer, usize length)
 {
     return crypto::murmur(buffer, length);
 }

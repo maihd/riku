@@ -39,14 +39,12 @@
 #   undef  PLATFORM_UNIX
 #   define PLATFORM_UNIX 1
 #
-#   if defined(__linux__)
-#       undef  PLATFORM_LINUX
-#       define PLATFORM_LINUX 1
-#   endif
-#
 #   if defined(__ANDROID__)
 #       undef  PLATFORM_ANDROID
 #       define PLATFORM_ANDROID 1
+#   elif defined(__linux__)
+#       undef  PLATFORM_LINUX
+#       define PLATFORM_LINUX 1
 #   endif
 #endif
 
@@ -258,19 +256,9 @@
 
 // Primitive types
 
-#if 0
-#define int   int32_t
-#define long  int64_t
-#define short int16_t
-#endif
-
 using uint      = unsigned int;
 using ulong     = unsigned long int;
 using ushort    = unsigned short int;
-
-using bigint    = long long int;
-using biguint   = unsigned long long int;
-using bigfloat  = long double;
 
 using byte      = unsigned char;
 using sbyte     = char;
@@ -279,14 +267,33 @@ using cstr      = const char*;
 using wchar     = short;
 using uchar     = int;
 
-// Memory address and size
+// Fixed size types
+
+using i8        = sbyte;
+using u8        = byte;
+using i16       = short;
+using u16       = unsigned short;
+using i32       = int;
+using u32       = unsigned int;
+using i64       = long long;
+using u64       = unsigned long long;
+static_assert(sizeof(i8)  == 1, "i8 must be 1-bytes size.");
+static_assert(sizeof(u8)  == 1, "u8 must be 1-bytes size.");
+static_assert(sizeof(i16) == 2, "i16 must be 2-bytes size.");
+static_assert(sizeof(u16) == 2, "u16 must be 2-bytes size.");
+static_assert(sizeof(i32) == 4, "i32 must be 4-bytes size.");
+static_assert(sizeof(u32) == 4, "u32 must be 4-bytes size.");
+static_assert(sizeof(i64) == 8, "i64 must be 8-bytes size.");
+static_assert(sizeof(u64) == 8, "u64 must be 8-bytes size.");
+
+// Memory address and size types
 
 #if ARCH_64BIT
-using usize  = ulong;
-using isize  = long;
+using usize  = u64;
+using isize  = i64;
 #else 
-using usize  = uint;
-using isize  = int;
+using usize  = u32;
+using isize  = i32;
 #endif
 
 using iptr = isize;
@@ -322,16 +329,14 @@ using ArgsList = va_list;
 #define argslist_end(args_list)             va_end(args_list)
 
 // Assertion helper
-#include <assert.h> // Include 
-#undef  assert      // to remove std assert
-#define always_assert(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
-#define always_false_assert(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define ALWAYS_ASSERT(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
+#define ALWAYS_FALSE_ASSERT(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #if !defined(NDEBUG) || !NDEBUG
-#   define assert(exp, fmt, ...)  always_assert(exp, fmt, ##__VA_ARGS__)
-#   define false_assert(fmt, ...) always_false_assert(fmt, ##__VA_ARGS__)
+#   define ASSERT(exp, fmt, ...)  ALWAYS_ASSERT(exp, fmt, ##__VA_ARGS__)
+#   define FALSE_ASSERT(fmt, ...) ALWAYS_FALSE_ASSERT(fmt, ##__VA_ARGS__)
 #else
-#   define assert(exp, fmt, ...)
-#   define false_assert(fmt, ...)
+#   define ASSERT(exp, fmt, ...)
+#   define FALSE_ASSERT(fmt, ...)
 #endif
 
 // Assertion functions
@@ -385,14 +390,8 @@ inline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
-#if PLATFORM_APPLE
-#include <stdint.h>
 inline void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
-inline void  operator delete(void*,  NewDummy, void*)     {             }
-#else
-inline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
-inline void  operator delete(void*, NewDummy, void*)     {             }
-#endif
+inline void  operator delete(void*, NewDummy, void*)      {             }
 
 #define INIT(ptr)    new (NewDummy(), ptr)
 #define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
@@ -783,43 +782,43 @@ public: // Utils
 };
 
 // Common hash function
-RIKU_API ulong calc_hash(const void* buffer, usize length);
+RIKU_API u64 calc_hash(const void* buffer, usize length);
 
 // Common hash function
 template <typename T>
-inline ulong calc_hash(const T& x)
+inline u64 calc_hash(const T& x)
 {
     return calc_hash(&x, sizeof(x));
 }
 
 // Common hash function, for c-string
 template <>
-inline ulong calc_hash<cstr>(const cstr& x)
+inline u64 calc_hash<cstr>(const cstr& x)
 {
     return calc_hash(x, string::length(x));
 }
 
 // Common hash function, compute at compile time
-template <ulong length>
-constexpr ulong calc_hash(const char (&buffer)[length])
+template <u32 length>
+constexpr u64 calc_hash(const char (&buffer)[length])
 {
-    ulong h = 0;
+    u32 h = 0;
 
-    const ulong c1  = 0xcc9e2d51;
-    const ulong c2  = 0x1b873593;
-    const ulong len = length - 1;
+    const u32 c1  = 0xcc9e2d51;
+    const u32 c2  = 0x1b873593;
+    const u32 len = length - 1;
 
-    for (ulong i = 0, n = len >> 2; i < n; i++)
+    for (u32 i = 0, n = len >> 2; i < n; i++)
     {
-        ulong idx = i * 4;
-        ulong b0  = buffer[idx + 0];
-        ulong b1  = buffer[idx + 1];
-        ulong b2  = buffer[idx + 2];
-        ulong b3  = buffer[idx + 3];
+        u32 idx = i * 4;
+        u32 b0  = buffer[idx + 0];
+        u32 b1  = buffer[idx + 1];
+        u32 b2  = buffer[idx + 2];
+        u32 b3  = buffer[idx + 3];
 #if CPU_LITTLE_ENDIAN
-        ulong k   = (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
+        u32 k   = (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
 #else
-        ulong k   = (b3 << 0) | (b2 << 8) | (b1 << 16) | (b0 << 24);
+        u64 k   = (b3 << 0) | (b2 << 8) | (b1 << 16) | (b0 << 24);
 #endif
 
         k *= c1;
@@ -831,22 +830,22 @@ constexpr ulong calc_hash(const char (&buffer)[length])
         h  = (h * 5) + 0xe6546b64;
     }
 
-    ulong k = 0;
+    u32 k = 0;
     switch (len & 3) 
     {
     case 3:
-        k ^= (byte)buffer[len - 1] << 16;
-        k ^= (byte)buffer[len - 2] <<  8;
-        k ^= (byte)buffer[len - 3] <<  0;
+        k ^= (u8)buffer[len - 1] << 16;
+        k ^= (u8)buffer[len - 2] <<  8;
+        k ^= (u8)buffer[len - 3] <<  0;
         break;
 
     case 2:
-        k ^= (byte)buffer[len - 1] <<  8;
-        k ^= (byte)buffer[len - 2] <<  0;
+        k ^= (u8)buffer[len - 1] <<  8;
+        k ^= (u8)buffer[len - 2] <<  0;
         break;
 
     case 1:
-        k ^= (byte)buffer[len - 1] <<  0;
+        k ^= (u8)buffer[len - 1] <<  0;
         break;
     };
 
