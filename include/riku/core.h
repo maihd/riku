@@ -301,21 +301,6 @@ using isize  = i32;
 using iptr = isize;
 using uptr = usize;
 
-// NULL
-#if !defined(NULL)
-#   define NULL 0
-#endif
-
-// Type of null pointer
-struct NullPtr
-{
-    template <typename T>
-    constexpr operator T* () const
-    {
-        return (T*)0;
-    }
-};
-
 // Flags
 using Flags = uint;
 
@@ -372,8 +357,32 @@ namespace memory
     inline   bool  not_equal(const void* a, const void* b, usize size)  { return compare(a, b, size) != 0;    }
 }
 
-#if 0 && EXPERIMENTAL
-inline void* operator new(usize size) 
+// NULL
+#if !defined(NULL)
+#   define NULL 0
+#endif
+
+// Type of null pointer
+using NullPtr = decltype(nullptr);
+#if 0
+{
+    template <typename T>
+    constexpr operator T* () const
+    {
+        return (T*)0;
+    }
+};
+#endif
+
+struct NewDummy {};
+inline void* operator new   (decltype(sizeof(0)), NewDummy, void* ptr) { return ptr; }
+inline void  operator delete(void*,  NewDummy, void*)     {             }
+
+#define INIT(ptr)    new (NewDummy(), ptr)
+#define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
+#define DESTROY(ptr) __DO_DESTROY(ptr)
+
+inline void* operator new(decltype(sizeof(0)) size) 
 {
 	return ::memory::alloc(size);
 }
@@ -381,7 +390,7 @@ inline void operator delete(void* ptr)
 {
 	::memory::dealloc(ptr);
 }
-inline void *operator new[](size_t size) 
+inline void *operator new[](decltype(sizeof(0)) size) 
 {
 	return ::memory::alloc(size);
 }
@@ -389,16 +398,6 @@ inline void operator delete[](void* ptr)
 {
 	::memory::dealloc(ptr);
 }
-#endif
-
-struct NewDummy {};
-#include <stdint.h>
-inline void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
-inline void  operator delete(void*,  NewDummy, void*)     {             }
-
-#define INIT(ptr)    new (NewDummy(), ptr)
-#define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
-#define DESTROY(ptr) __DO_DESTROY(ptr)
 
 template <typename T>
 inline bool __DO_DESTROY(T* ptr)
