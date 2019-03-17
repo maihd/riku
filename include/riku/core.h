@@ -303,9 +303,6 @@ using isize  = i32;
 using iptr = isize;
 using uptr = usize;
 
-static_assert(sizeof(usize) == sizeof(0), "usize must be same size with sizeof(0).");
-static_assert(sizeof(isize) == sizeof(0), "isize must be same size with sizeof(0).");
-
 using Flags   = u32;
 using Flags64 = u64;
 
