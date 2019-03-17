@@ -364,15 +364,6 @@ namespace memory
 
 // Type of null pointer
 using NullPtr = decltype(nullptr);
-#if 0
-{
-    template <typename T>
-    constexpr operator T* () const
-    {
-        return (T*)0;
-    }
-};
-#endif
 
 struct NewDummy {};
 inline void* operator new   (decltype(sizeof(0)), NewDummy, void* ptr) { return ptr; }
@@ -381,23 +372,6 @@ inline void  operator delete(void*,  NewDummy, void*)     {             }
 #define INIT(ptr)    new (NewDummy(), ptr)
 #define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
 #define DESTROY(ptr) __DO_DESTROY(ptr)
-
-inline void* operator new(decltype(sizeof(0)) size) 
-{
-	return ::memory::alloc(size);
-}
-inline void operator delete(void* ptr) 
-{
-	::memory::dealloc(ptr);
-}
-inline void *operator new[](decltype(sizeof(0)) size) 
-{
-	return ::memory::alloc(size);
-}
-inline void operator delete[](void* ptr) 
-{
-	::memory::dealloc(ptr);
-}
 
 template <typename T>
 inline bool __DO_DESTROY(T* ptr)
