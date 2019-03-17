@@ -390,7 +390,7 @@ inline void operator delete[](void* ptr)
 #endif
 
 struct NewDummy {};
-inline void* operator new   (size_t, NewDummy, void* ptr) { return ptr; }
+inline void* operator new   (usize, NewDummy, void* ptr) { return ptr; }
 inline void  operator delete(void*, NewDummy, void*)      {             }
 
 #define INIT(ptr)    new (NewDummy(), ptr)

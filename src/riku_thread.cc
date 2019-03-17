@@ -1,3 +1,4 @@
+#include <riku/core.h>
 #include <riku/thread.h>
 
 #include <errno.h>
@@ -146,28 +147,38 @@ Condition::~Condition(void)
     int err;
 
     if (pthread_mutex_init(&mutex, NULL))
-        abort();
+    {
+        process::abort();
+    }
 
     if (pthread_mutex_lock(&mutex))
-        abort();
+    {
+        process::abort();
+    }
 
     ts.tv_sec = 0;
     ts.tv_nsec = 1;
 
     err = pthread_cond_timedwait_relative_np((CONDITION_VARIABLE*)handle, &mutex, &ts);
     if (err != 0 && err != ETIMEDOUT)
-        abort();
+    {
+        process::abort();
+    }
 
     if (pthread_mutex_unlock(&mutex))
-        abort();
+    {
+        process::abort();
+    }
 
     if (pthread_mutex_destroy(&mutex))
-        abort();
+    {
+        process::abort();
+    }
 #endif /* defined(__APPLE__) && defined(__MACH__) */
 
     if (pthread_cond_destroy((pthread_cond_t*)handle) != 0)
     {
-        abort();
+        process::abort();
     }
 
     memory::dealloc(handle);
@@ -179,12 +190,12 @@ void Condition::wait(const Mutex& mutex)
 #if PLATFORM_WINDOWS
     if (SleepConditionVariableCS((CONDITION_VARIABLE*)handle, (CRITICAL_SECTION*)mutex.handle, INFINITE))
     {
-        abort();
+        process::abort();
     }
 #elif PLATFORM_UNIX
     if (pthread_cond_wait((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle))
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -198,7 +209,7 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
     }
     else if (GetLastError() != ERROR_TIMEOUT)
     {
-        abort();
+        process::abort();
     }
     return true;
 #elif PLATFORM_UNIX
@@ -215,7 +226,9 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 #else
 #if defined(__MVS__)
     if (gettimeofday(&tv, NULL))
-        abort();
+    {
+        process::abort();
+    }
     timeout += tv.tv_sec * NANOSEC + tv.tv_usec * 1e3;
 #else
     //timeout += uv__hrtime(UV_CLOCK_PRECISE);
@@ -245,7 +258,7 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
         return false;
     }
 
-    abort();
+    process::abort();
     return false; /* Satisfy the compiler. */
 #endif
 }
@@ -257,7 +270,7 @@ void Condition::signal(void)
 #elif PLATFORM_UNIX
     if (pthread_cond_signal((pthread_cond_t*)handle) != 0)
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -269,7 +282,7 @@ void Condition::broadcast(void)
 #elif PLATFORM_UNIX
     if (pthread_cond_broadcast((pthread_cond_t*)handle) != 0)
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -303,7 +316,7 @@ Semaphore::Semaphore(int count)
     kern_return_t err = semaphore_create(mach_task_self(), (semaphore_t*)&handle, SYNC_POLICY_FIFO, count);
     if (err != KERN_SUCCESS)
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -317,7 +330,7 @@ Semaphore::~Semaphore(void)
 #elif PLATFORM_OSX
     if (semaphore_destroy(mach_task_self(), (semaphore_t)handle))
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -337,7 +350,7 @@ void Semaphore::wait(void)
 #elif PLATFORM_WINDOWS
     if (WaitForSingleObject((HANDLE)handle, INFINITE) != WAIT_OBJECT_0)
     {
-        abort();
+        process::abort();
     }
 #elif PLATFORM_OSX
     int r;
@@ -347,7 +360,7 @@ void Semaphore::wait(void)
 
     if (r != KERN_SUCCESS)
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -367,12 +380,12 @@ void Semaphore::post(void)
 #elif PLATFORM_WINDOWS
     if (!ReleaseSemaphore((HANDLE)handle, 1, NULL))
     {
-        abort();
+        process::abort();
     }
 #elif PLATFORM_OSX
     if (semaphore_signal((semaphore_t)handle))
     {
-        abort();
+        process::abort();
     }
 #endif
 }
@@ -425,7 +438,7 @@ bool Semaphore::trywait(void)
     if (err == KERN_OPERATION_TIMED_OUT)
         return false;
 
-    abort();
+    process::abort();
     return false; /* Satisfy the compiler. */
 #endif
 }
