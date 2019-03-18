@@ -38,7 +38,7 @@ public:
         }
     }
 
-public: // Copy
+public:
     inline Array(const Array<TItem>& other)
         : buffer(other.buffer)
     {
@@ -63,7 +63,7 @@ public: // Copy
         return *this;
     }
     
-public: // RAII
+public:
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
     {
@@ -82,7 +82,7 @@ public: // RAII
         return *this;
     }
 
-public: // Properties
+public:
     PROPERTY_READONLY(TItem*, items, get_items);
     PROPERTY_READONLY(int, length, get_length);
     PROPERTY_READONLY(int, capacity, get_capacity);
@@ -107,7 +107,7 @@ public: // Properties
         return buffer ? buffer->capacity : 0;
     }
 
-public: // Indexor
+public:
     inline TItem& operator[](int index)
     {
         return buffer->items[index];
@@ -118,19 +118,31 @@ public: // Indexor
         return buffer->items[index];
     }
 
-public: // Methods
+public:
+    // Checking array is empty or not
+    inline bool is_empty(void) const
+    {
+        return !buffer || buffer->length <= 0;
+    }
+
+    // Checking array is valid or not
+    inline bool is_valid(void) const
+    {
+        return buffer && buffer->length > 0;
+    }
 
     // Leave buffer ownership free
     inline void unref(bool cleanup = true)
     {
         if (cleanup)
         {
-            ~Array();
+            this->~Array();
         }
 
         buffer = NULL;
     }
 
+    // Remove all items
     inline void clear(void)
     {
         if (buffer)
@@ -139,32 +151,41 @@ public: // Methods
         }
     }
 
+    // Grow the array's buffer that contains enough space with given size
     inline bool grow(int new_size)
     {
-        auto old_buf = buffer;
-        auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+        ASSERT(new_size > 0, "Array::grow: new size must non-zero positive value.");
 
-        if (new_buf)
+        if (new_size > get_capacity())
         {
-            if (!old_buf)
+            auto old_buf = buffer;
+            auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+
+            if (new_buf)
             {
-                // Initialize RefCount
-                INIT(new_buf) RefCount();
+                if (!old_buf)
+                {
+                    // Initialize RefCount
+                    INIT(new_buf) RefCount();
 
-                // Initialize Buffer
-                new_buf->length = 0;
+                    // Initialize Buffer
+                    new_buf->length = 0;
+                }
+
+                buffer = new_buf;
+                buffer->capacity = new_size;
+                return true;
             }
+            else
+            {
+                return false;
+            }
+        }
 
-            buffer           = new_buf;
-            buffer->capacity = new_size;
-            return true; 
-        }
-        else 
-        {
-            return false;
-        }
+        return true;
     }
 
+    // Ensure array is big enough, and grow if can
     inline bool ensure(int size)
     {
         if (get_capacity() >= size)
@@ -180,11 +201,13 @@ public: // Methods
         }
     }
 
+    // Ensure array is big enough
     inline bool ensure(int size) const
     {
         return (get_capacity() >= size);
     }
 
+    // Add new item to last position
     inline bool push(const TItem& value)
     {
         if (!ensure(get_length() + 1))
@@ -196,13 +219,17 @@ public: // Methods
         return true;   
     }
 
+    // Remove an item from last position
     inline const TItem& pop(void)
     {
+        ASSERT(is_valid(), "Array::pop: array must be has one or more items to pop.");
         return buffer->items[--buffer->length];
     }
 
+    // Remove an item from first position
     inline TItem shift(void)
     {
+        ASSERT(is_valid(), "Array::shift: array must be has one or more items to shift.");
         TItem result = buffer->items[0];
 
         buffer->length--;
@@ -211,6 +238,7 @@ public: // Methods
         return result;
     }
 
+    // Add new item to first position
     inline bool unshift(const TItem& value)
     {
         if (!ensure(get_length() + 1))
@@ -224,6 +252,7 @@ public: // Methods
         return true;
     }
 
+    // Get index of given item
     inline int index_of(const TItem& value) const
     {
         for (int i = 0, n = get_length(); i < n; i++)
@@ -237,6 +266,7 @@ public: // Methods
         return -1;
     }
 
+    // Get index of given item, with backward iteration
     inline int last_index_of(const TItem& value) const
     {
         int index = -1;
@@ -251,6 +281,7 @@ public: // Methods
         return index;
     }
 
+    // Add other array items to this array, from the last position
     inline bool concat(const Array<TItem>& src)
     {
         int dst_len = get_length();
@@ -270,7 +301,8 @@ public: // Methods
         return true;
     }
 
-    inline Array<TItem> clone()
+    // Create new array, which is the copy version of this
+    inline Array<TItem> clone(void) const
     {
         Array<TItem> res;
 
@@ -288,6 +320,7 @@ public: // Methods
         return make_rvalue(res);
     }
 
+    // Remove an item with given index
     inline int erase(int index)
     {
         if (index > -1 && index < get_length())
@@ -302,6 +335,7 @@ public: // Methods
         }
     }
 
+    // Remove an item with given value
     inline int remove(const TItem& value)
     {
         return erase(index_of(value));
@@ -360,204 +394,3 @@ public: // Properties
         return capacity;
     }
 };
-
-#if 0 && DECISING_TO_REMOVE
-namespace array 
-{
-    template <typename TItem>
-    inline void unref(Array<TItem>& array)
-    {
-        array.~Array();
-        array.buffer = NULL;
-    }
-
-    template <typename TItem>
-    inline void clear(Array<TItem>& array)
-    {
-        if (array.buffer)
-        {
-            array.buffer->length = 0;
-        }
-    }
-
-    template <typename TItem>
-    inline bool grow(Array<TItem>& array, int new_size)
-    {
-        auto old_buf = array.buffer;
-        auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
-
-        if (new_buf)
-        {
-            if (!old_buf)
-            {
-                // Initialize RefCount
-                INIT(new_buf) RefCount();
-
-                // Initialize Buffer
-                new_buf->length = 0;
-            }
-
-            array.buffer           = new_buf;
-            array.buffer->capacity = new_size;
-            return true; 
-        }
-        else 
-        {
-            return false;
-        }
-    }
-
-    template <typename TItem>
-    inline bool ensure(Array<TItem>& array, int size)
-    {
-        if (array.get_capacity() >= size)
-        {
-            return true;
-        }
-        else
-        {
-            int new_size = array.get_capacity();
-            new_size = new_size * 2 + (new_size <= 0) * 8; // no if statement or '?' operator (ternary operator)
-            while (new_size < size) new_size *= 2;
-            return grow(array, new_size);
-        }
-    }
-
-    template <typename TItem>
-    inline bool ensure(const Array<TItem>& array, int size)
-    {
-        return (array.get_capacity() >= size);
-    }
-
-    template <typename TItem>
-    inline bool push(Array<TItem>& array, const TItem& value)
-    {
-        if (!ensure(array, array.get_length() + 1))
-        {
-            return false;
-        }
-
-        array.buffer->items[array.buffer->length++] = value;
-        return true;   
-    }
-
-    template <typename TItem>
-    inline const TItem& pop(Array<TItem>& array)
-    {
-        return array.buffer->items[--array.buffer->length];
-    }
-
-    template <typename TItem>
-    inline TItem shift(Array<TItem>& array)
-    {
-        TItem result = array.buffer->items[0];
-
-        array.buffer->length--;
-        memory::move(array.buffer->items, array.buffer->items + 1, array.buffer->length * sizeof(TItem));
-
-        return result;
-    }
-
-    template <typename TItem>
-    inline bool unshift(Array<TItem>& array, const TItem& value)
-    {
-        if (!ensure(array, array.get_length() + 1))
-        {
-            return false;
-        }
-
-        memory::move(array.buffer->items + 1, array.buffer->items, array.get_length() * sizeof(TItem));
-        array.buffer->length++;
-        array.buffer->items[0] = value;
-        return true;
-    }
-
-    template <typename TItem>
-    inline int index_of(const Array<TItem>& array, const TItem& value)
-    {
-        for (int i = 0, n = array.get_length(); i < n; i++)
-        {
-            if (array.buffer->items[i] == value)
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    template <typename TItem>
-    inline int last_index_of(const Array<TItem>& array, const TItem& value)
-    {
-        int index = -1;
-        for (int i = 0, n = array.get_length(); i < n; i++)
-        {
-            if (array.buffer->items[i] == value)
-            {
-                index = i;
-            }
-        }
-
-        return index;
-    }
-
-    template <typename TItem>
-    inline bool concat(Array<TItem>& dst, const Array<TItem>& src)
-    {
-        int dst_len = dst.get_length();
-        int src_len = src.get_length();
-        if (src_len)
-        {
-            int new_len = dst_len + src_len;
-            if (!ensure(dst, new_len))
-            {
-                return false;
-            }
-
-            memcpy(dst.buffer->items + dst.get_length(), src.buffer->items, src_len * sizeof(TItem));
-            dst.buffer->length = new_len;
-        }
-        return true;
-    }
-
-    template <typename TItem>
-    inline Array<TItem> clone(const Array<TItem>& array)
-    {
-        Array<TItem> res;
-
-        int len = array.get_length();
-        int cap = array.get_capacity();
-        if (len > 0 && cap > 0)
-        {
-            if (grow(res, cap))
-            {
-                res.buffer->length = len;
-                memcpy(res.buffer->items, array.buffer->items, len * sizeof(TItem));
-            }
-        }
-
-        return make_rvalue(res);
-    }
-
-    template <typename TItem>
-    inline int erase(const Array<TItem>& array, int index)
-    {
-        if (index > -1 && index < array.get_length())
-        {
-            memory::move(array.buffer->items + index, array.buffer->items + index + 1, array.get_length() - index - 2);
-            array.buffer->length--;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    template <typename TItem>
-    inline int remove(const Array<TItem>& array, const TItem& value)
-    {
-        return array::erase(array, array::index_of(array, value));
-    }
-}
-#endif
