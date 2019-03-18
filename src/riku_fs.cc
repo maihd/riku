@@ -42,19 +42,19 @@ namespace fs
         return make_rvalue(Buffer());
     }
     
-    bool read_file(const char* path, Buffer& buffer)
+    usize read_file(const char* path, Buffer& buffer)
     {
         return read_file(path, buffer.data, buffer.get_length());
     }
 
-    bool read_file(const char* path, void* buffer, int length)
+    usize read_file(const char* path, void* buffer, usize length)
     {
         FILE* file = fopen(path, "r");
         if (file)
         {
-            fread(buffer, 1, length, file);
+            usize ret = fread(buffer, 1, length, file);
             fclose(file);
-            return true;
+            return ret;
         }
         else
         {
@@ -62,23 +62,23 @@ namespace fs
         }
     }
     
-    bool write_file(const char* path, const Buffer& buffer)
+    usize write_file(const char* path, const Buffer& buffer)
     {
         return write_file(path, buffer.data, buffer.get_length());
     }
 
-    bool write_file(const char* path, const void* buffer, int length)
+    usize write_file(const char* path, const void* buffer, usize length)
     {
         FILE* file = fopen(path, "w+");
         if (file)
         {
-            fwrite(buffer, 1, length, file);
+            usize ret = fwrite(buffer, 1, length, file);
             fclose(file);
-            return true;
+            return ret;
         }
         else
         {
-            return false;
+            return 0;
         }
     }
 }
