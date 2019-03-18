@@ -17,4 +17,6 @@ TEST_CASE("crypto module testing", "[crypto]")
    
     TEST_CRC32("hello world", 0x0D4A1185);
     TEST_CRC32("Hello World", 0x4A17B156);
+
+    //REQUIRE(crypto::murmur64("hello world", 11) == calc_hash64("hello world"));
 }

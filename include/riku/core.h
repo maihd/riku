@@ -884,64 +884,51 @@ constexpr u32 calc_hash32(const char (&buffer)[length])
 template <u32 length>
 constexpr u64 calc_hash64(const char(&buffer)[length])
 {
-    u32 h = 0;
+    u64 h = 0;
 
-    const u32 c1 = 0xcc9e2d51;
-    const u32 c2 = 0x1b873593;
+    const u64 m   = 0xc6a4a7935bd1e995ULL;
+    const u64 r   = 47;
     const u32 len = length - 1;
 
-    for (u32 i = 0, n = len >> 2; i < n; i++)
+    for (u32 i = 0; i < len; i += 8)
     {
-        u32 idx = i * 4;
-        u32 b0 = buffer[idx + 0];
-        u32 b1 = buffer[idx + 1];
-        u32 b2 = buffer[idx + 2];
-        u32 b3 = buffer[idx + 3];
+        u64 b0 = buffer[i + 0];
+        u64 b1 = buffer[i + 1];
+        u64 b2 = buffer[i + 2];
+        u64 b3 = buffer[i + 3];
+        u64 b4 = buffer[i + 4];
+        u64 b5 = buffer[i + 5];
+        u64 b6 = buffer[i + 6];
+        u64 b7 = buffer[i + 7];
 #if CPU_LITTLE_ENDIAN
-        u32 k = (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
+        u64 k = (b7 << 56) | (b6 << 48) | (b5 << 40) | (b4 << 32) | (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
 #else
-        u64 k = (b3 << 0) | (b2 << 8) | (b1 << 16) | (b0 << 24);
+        u64 k = (b7 << 0) | (b6 << 8) | (b5 << 16) | (b4 << 24) | (b3 << 32) | (b2 << 40) | (b1 << 48) | (b0 << 56);
 #endif
 
-        k *= c1;
-        k = (k << 15) | (k >> 17);
-        k *= c2;
+        k *= m;
+        k ^= k >> r;
+        k *= m;
 
         h ^= k;
-        h = (h << 13) | (h >> 19);
-        h = (h * 5) + 0xe6546b64;
+        h *= m;
     }
 
-    u32 k = 0;
-    switch (len & 3)
+    u32 n = (len >> 3) << 3;
+    switch (len & 7)
     {
-    case 3:
-        k ^= (u8)buffer[len - 1] << 16;
-        k ^= (u8)buffer[len - 2] << 8;
-        k ^= (u8)buffer[len - 3] << 0;
-        break;
-
-    case 2:
-        k ^= (u8)buffer[len - 1] << 8;
-        k ^= (u8)buffer[len - 2] << 0;
-        break;
-
-    case 1:
-        k ^= (u8)buffer[len - 1] << 0;
-        break;
+    case 7: h ^= u64((buffer + n)[6]) << 48;
+    case 6: h ^= u64((buffer + n)[5]) << 40;
+    case 5: h ^= u64((buffer + n)[4]) << 32;
+    case 4: h ^= u64((buffer + n)[3]) << 24;
+    case 3: h ^= u64((buffer + n)[2]) << 16;
+    case 2: h ^= u64((buffer + n)[1]) <<  8;
+    case 1: h ^= u64((buffer + n)[0]) <<  0; h *= m;
     };
 
-    k *= c1;
-    k = (k << 15) | (k >> 17);
-    k *= c2;
-    h ^= k;
-
-    h ^= len;
-    h ^= h >> 16;
-    h *= 0x85ebca6b;
-    h ^= h >> 13;
-    h *= 0xc2b2ae35;
-    h ^= h >> 16;
+    h ^= h >> r;
+    h *= m;
+    h ^= h >> r;
 
     return h;
 }

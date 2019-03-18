@@ -358,7 +358,7 @@ namespace crypto
         const u64 m = 0xc6a4a7935bd1e995ULL;
         const u32 r = 47;
 
-        u64 h = seed ^ (length * m);
+        u64 h = seed;
 
         const u64 * data = (const u64*)buffer;
         const u64 * end = data + (length / 8);
