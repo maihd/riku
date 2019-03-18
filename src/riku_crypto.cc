@@ -1,6 +1,7 @@
 // Copyright (c) 2019, MaiHD. All right reversed.
 // License: Unlicensed
 
+#include <riku/core.h>
 #include <riku/crypto.h>
 
 #define MD5_F1(x, y, z) (z ^ (x & (y ^ z)))
@@ -233,7 +234,7 @@ namespace crypto
         memory::copy(&context->buffer[index], &input[i], length - i);
     }
 
-    u64 md5(MD5& ctx, const void* buffer, usize length)
+    u32 md5(MD5& ctx, const void* buffer, usize length)
     {
         // init
         ctx.state[0] = 0x67452301;
@@ -275,9 +276,9 @@ namespace crypto
         return val;
     }
 
-    u64 crc32(const void* buffer, usize length)
+    u32 crc32(const void* buffer, usize length)
     {
-        u64 res = 0xffffffffL;
+        u32 res = 0xffffffffL;
 
         const byte* data = (const byte*)buffer;
 
@@ -290,13 +291,18 @@ namespace crypto
         return res;
     }
 
-    u64 murmur(const void* buffer, usize length) 
+    u32 murmur32(const void* buffer, usize length)
     {
-        return murmur(buffer, length, 0);
+        return murmur32(buffer, length, 0);
+    }
+
+    u64 murmur64(const void* buffer, usize length)
+    {
+        return murmur64(buffer, length, 0);
     }
 
     // Compute hash value of buffer with Murmur algorithm
-    u64 murmur(const void* buffer, usize length, u64 seed)
+    u32 murmur32(const void* buffer, usize length, u32 seed)
     {
         u32 h = (u32)seed;
         const u8* key = (const u8*)buffer;
@@ -343,6 +349,58 @@ namespace crypto
         h ^= h >> 13;
         h *= 0xc2b2ae35;
         h ^= h >> 16;
+
+        return h;
+    }
+
+    u64 murmur64(const void* buffer, usize length, u64 seed)
+    {
+        const u64 m = 0xc6a4a7935bd1e995ULL;
+        const u32 r = 47;
+
+        u64 h = seed ^ (length * m);
+
+        const u64 * data = (const u64*)buffer;
+        const u64 * end = data + (length / 8);
+
+        while (data != end)
+        {
+#ifdef PLATFORM_BIG_ENDIAN
+            u64 k = *data++;
+            char *p = (char *)&k;
+            char c;
+            c = p[0]; p[0] = p[7]; p[7] = c;
+            c = p[1]; p[1] = p[6]; p[6] = c;
+            c = p[2]; p[2] = p[5]; p[5] = c;
+            c = p[3]; p[3] = p[4]; p[4] = c;
+#else
+            u64 k = *data++;
+#endif
+
+            k *= m;
+            k ^= k >> r;
+            k *= m;
+
+            h ^= k;
+            h *= m;
+        }
+
+        const unsigned char * data2 = (const unsigned char*)data;
+
+        switch (length & 7)
+        {
+        case 7: h ^= u64(data2[6]) << 48;
+        case 6: h ^= u64(data2[5]) << 40;
+        case 5: h ^= u64(data2[4]) << 32;
+        case 4: h ^= u64(data2[3]) << 24;
+        case 3: h ^= u64(data2[2]) << 16;
+        case 2: h ^= u64(data2[1]) <<  8;
+        case 1: h ^= u64(data2[0]) <<  0; h *= m;
+        };
+
+        h ^= h >> r;
+        h *= m;
+        h ^= h >> r;
 
         return h;
     }
