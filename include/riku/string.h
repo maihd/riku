@@ -13,7 +13,7 @@
 // String: high-level string type, use to store dynamic string
 struct String 
 {
-public: // Members
+public:
     struct Buffer
     {
         int  length;
@@ -21,6 +21,42 @@ public: // Members
         char characters[1];
     };
     Buffer* buffer;
+
+
+public:
+    PROPERTY_READONLY(int, length, get_length);
+    PROPERTY_READONLY(int, capacity, get_capacity);
+    PROPERTY_READONLY(char*, characters, get_characters);
+
+    inline int get_length(void) const
+    {
+        return buffer ? buffer->length : 0;
+    }
+
+    inline int get_capacity(void) const
+    {
+        return buffer ? buffer->capacity : 0;
+    }
+
+    inline char* get_characters(void)
+    {
+        return buffer ? buffer->characters : NULL;
+    }
+
+    inline const char* get_characters(void) const
+    {
+        return buffer ? buffer->characters : NULL;
+    }
+
+    inline bool is_empty(void) const
+    {
+        return get_length() <= 0;
+    }
+
+    inline bool is_valid(void) const
+    {
+        return get_length()  > 0;
+    }
 
 public:
     inline String() 
@@ -42,11 +78,21 @@ public:
 
     inline String(const char* buffer, int length)
     {
-        if (buffer)
+        if (buffer && length > 0)
         {
-            this->buffer = (Buffer*)memory::alloc(sizeof(Buffer) + length);
-            this->buffer->length   = length;
-            this->buffer->capacity = length;
+            int target_size;
+            int require_size = (sizeof(Buffer) + length);
+            target_size  = require_size - 1;
+            target_size |= target_size >> 1;
+            target_size |= target_size >> 2;
+            target_size |= target_size >> 4;
+            target_size |= target_size >> 8;
+            target_size |= target_size >> 16;
+            target_size++;
+
+            this->buffer = (Buffer*)memory::alloc(target_size);
+            this->buffer->length   = (int)length;
+            this->buffer->capacity = (int)(target_size - sizeof(Buffer));
 
             memory::copy(this->buffer->characters, buffer, length + 1);
         }
@@ -54,6 +100,38 @@ public:
         {
             this->buffer = NULL;
         }
+    }
+
+    inline String& operator=(const char* str)
+    {
+        int len = (int)string::length(str);
+        if (str && len > 0)
+        {
+            if (buffer->capacity < len)
+            {
+                int target_size;
+                int require_size = (sizeof(Buffer) + len);
+                target_size  = require_size - 1;
+                target_size |= target_size >> 1;
+                target_size |= target_size >> 2;
+                target_size |= target_size >> 4;
+                target_size |= target_size >> 8;
+                target_size |= target_size >> 16;
+                target_size++;
+
+                buffer = (Buffer*)memory::realloc(buffer, target_size);
+                buffer->capacity = target_size - sizeof(Buffer);
+            }
+            
+            this->buffer->length = len;
+            memory::copy(this->buffer->characters, buffer, len + 1);
+        }
+        else
+        {
+            buffer->length        = 0;
+            buffer->characters[0] = 0;
+        }
+        return *this;
     }
 
 public: // RAII
@@ -97,8 +175,8 @@ public: // Copy
             int len = other.get_length();
             if (buffer->capacity < len)
             {
-                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + len);
-                buffer->capacity = len;
+                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + other.get_capacity());
+                buffer->capacity = other.get_capacity();
             }
 
             buffer->length = len;
@@ -113,32 +191,103 @@ public: // Copy
     }
 
 public:
-    PROPERTY_READONLY(int, length, get_length);
-    PROPERTY_READONLY(int, capacity, get_capacity);
-
-    inline int get_length(void) const
-    {
-        return buffer ? buffer->length : 0;
-    }
-
-    inline int get_capacity(void) const
-    {
-        return buffer ? buffer->capacity : 0;
-    }
-
-    inline bool is_empty(void) const
-    {
-        return !buffer || buffer->characters[0] <= 0;
-    }
-
-public:
-    inline operator char*(void)
+    inline explicit operator char*(void)
     {
         return buffer ? buffer->characters : NULL;
     }
 
-    inline operator const char*(void) const
+    inline explicit operator const char*(void) const
     {
         return buffer ? buffer->characters : NULL;
     } 
 };
+
+inline bool operator==(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) == 0;
+}
+
+inline bool operator!=(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) != 0;
+}
+
+inline bool operator>(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) > 0;
+}
+
+inline bool operator<(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) < 0;
+}
+
+inline bool operator>=(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) >= 0;
+}
+
+inline bool operator<=(const String& a, const String& b)
+{
+    return string::compare(a.get_characters(), b.get_characters()) <= 0;
+}
+
+inline bool operator==(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) == 0;
+}
+
+inline bool operator!=(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) != 0;
+}
+
+inline bool operator>(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) > 0;
+}
+
+inline bool operator<(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) < 0;
+}
+
+inline bool operator>=(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) >= 0;
+}
+
+inline bool operator<=(const char* a, const String& b)
+{
+    return string::compare(a, b.get_characters()) <= 0;
+}
+
+inline bool operator==(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) == 0;
+}
+
+inline bool operator!=(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) != 0;
+}
+
+inline bool operator>(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) > 0;
+}
+
+inline bool operator<(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) < 0;
+}
+
+inline bool operator>=(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) >= 0;
+}
+
+inline bool operator<=(const String& a, const char* b)
+{
+    return string::compare(a.get_characters(), b) <= 0;
+}
