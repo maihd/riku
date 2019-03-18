@@ -494,7 +494,12 @@ Date Date::utc(int year, int month, int day, int hours, int minutes, int seconds
         (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
 }
 
-u64 calc_hash(const void* buffer, usize length)
+u32 calc_hash32(const void* buffer, usize length)
 {
     return crypto::murmur32(buffer, length);
+}
+
+u64 calc_hash64(const void* buffer, usize length)
+{
+    return crypto::murmur64(buffer, length);
 }

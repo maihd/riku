@@ -780,26 +780,43 @@ public: // Utils
     }
 };
 
-// Common hash function
-RIKU_API u64 calc_hash(const void* buffer, usize length);
+// Common 32-bit hash function
+RIKU_API u32 calc_hash32(const void* buffer, usize length);
 
-// Common hash function
+// Common 64-bit hash function
+RIKU_API u64 calc_hash64(const void* buffer, usize length);
+
+// Common 32-bit hash function
 template <typename T>
-inline u64 calc_hash(const T& x)
+inline u32 calc_hash32(const T& x)
 {
-    return calc_hash(&x, sizeof(x));
+    return calc_hash32(&x, sizeof(x));
 }
 
-// Common hash function, for c-string
+// Common 32-bit hash function, for c-string
 template <>
-inline u64 calc_hash<cstr>(const cstr& x)
+inline u32 calc_hash32<cstr>(const cstr& x)
 {
-    return calc_hash(x, string::length(x));
+    return calc_hash32(x, string::length(x));
+}
+
+// Common 64-bit hash function
+template <typename T>
+inline u64 calc_hash64(const T& x)
+{
+    return calc_hash64(&x, sizeof(x));
+}
+
+// Common 64-bit hash function, for c-string
+template <>
+inline u64 calc_hash64<cstr>(const cstr& x)
+{
+    return calc_hash64(x, string::length(x));
 }
 
 // Common hash function, compute at compile time
 template <u32 length>
-constexpr u64 calc_hash(const char (&buffer)[length])
+constexpr u32 calc_hash32(const char (&buffer)[length])
 {
     u32 h = 0;
 
@@ -850,6 +867,72 @@ constexpr u64 calc_hash(const char (&buffer)[length])
 
     k *= c1;
     k  = (k << 15) | (k >> 17);
+    k *= c2;
+    h ^= k;
+
+    h ^= len;
+    h ^= h >> 16;
+    h *= 0x85ebca6b;
+    h ^= h >> 13;
+    h *= 0xc2b2ae35;
+    h ^= h >> 16;
+
+    return h;
+}
+
+// Common 64-bit hash function, compute at compile time
+template <u32 length>
+constexpr u64 calc_hash64(const char(&buffer)[length])
+{
+    u32 h = 0;
+
+    const u32 c1 = 0xcc9e2d51;
+    const u32 c2 = 0x1b873593;
+    const u32 len = length - 1;
+
+    for (u32 i = 0, n = len >> 2; i < n; i++)
+    {
+        u32 idx = i * 4;
+        u32 b0 = buffer[idx + 0];
+        u32 b1 = buffer[idx + 1];
+        u32 b2 = buffer[idx + 2];
+        u32 b3 = buffer[idx + 3];
+#if CPU_LITTLE_ENDIAN
+        u32 k = (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
+#else
+        u64 k = (b3 << 0) | (b2 << 8) | (b1 << 16) | (b0 << 24);
+#endif
+
+        k *= c1;
+        k = (k << 15) | (k >> 17);
+        k *= c2;
+
+        h ^= k;
+        h = (h << 13) | (h >> 19);
+        h = (h * 5) + 0xe6546b64;
+    }
+
+    u32 k = 0;
+    switch (len & 3)
+    {
+    case 3:
+        k ^= (u8)buffer[len - 1] << 16;
+        k ^= (u8)buffer[len - 2] << 8;
+        k ^= (u8)buffer[len - 3] << 0;
+        break;
+
+    case 2:
+        k ^= (u8)buffer[len - 1] << 8;
+        k ^= (u8)buffer[len - 2] << 0;
+        break;
+
+    case 1:
+        k ^= (u8)buffer[len - 1] << 0;
+        break;
+    };
+
+    k *= c1;
+    k = (k << 15) | (k >> 17);
     k *= c2;
     h ^= k;
 

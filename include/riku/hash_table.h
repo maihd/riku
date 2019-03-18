@@ -16,7 +16,7 @@ public:
         int          capacity;
         Array<int>   hashs;
         int*         nexts;
-        ulong*       keys;
+        u64*         keys;
         TValue*      values;
     };
 
@@ -24,12 +24,12 @@ public:
     Buffer* buffer;
 
 public: // Properties
-    PROPERTY_READONLY(ulong*, keys, get_keys);
+    PROPERTY_READONLY(u64*, keys, get_keys);
     PROPERTY_READONLY(TValue*, values, get_values);
     PROPERTY_READONLY(int, length, get_length);
     PROPERTY_READONLY(int, hash_count, get_hash_count);
 
-    inline const ulong* get_keys(void) const
+    inline const u64* get_keys(void) const
     {
         return buffer ? buffer->keys : 0;
     }
@@ -146,9 +146,9 @@ public: // Methods
         buffer = NULL;
     }
 
-    int index_of(ulong key, int* out_hash = NULL, int* out_prev = NULL) const
+    int index_of(u64 key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)(ulong)(key % get_hash_count());
+        int hash = (int)(u64)(key % get_hash_count());
         int curr = buffer->hashs[hash];
         int prev = -1;
 
@@ -168,13 +168,13 @@ public: // Methods
         return curr;
     }
 
-    TValue get(ulong key, const TValue& def_value = TValue()) const
+    TValue get(u64 key, const TValue& def_value = TValue()) const
     {
         int curr = index_of(key);
         return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
-    TValue& get_or_new(ulong key)
+    TValue& get_or_new(u64 key)
     {
         int hash, prev;
         int curr = index_of(key, &hash, &prev);
@@ -187,12 +187,12 @@ public: // Methods
         return buffer->values[curr];
     }
 
-    bool has(ulong key) const
+    bool has(u64 key) const
     {
         return index_of(key) > -1;
     }
 
-    bool try_get(ulong key, TValue* out_value) const
+    bool try_get(u64 key, TValue* out_value) const
     {
         int curr = index_of(key);
         if (curr > -1)
@@ -206,7 +206,7 @@ public: // Methods
         }
     }
 
-    bool set(ulong key, const TValue& value)
+    bool set(u64 key, const TValue& value)
     {
         int hash, prev;
         int curr = index_of(key, &hash, &prev);
@@ -217,7 +217,7 @@ public: // Methods
             {
                 int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
                 buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys   = (ulong*)memory::realloc(buffer->keys, sizeof(ulong) * new_size);
+                buffer->keys   = (u64*)memory::realloc(buffer->keys, sizeof(u64) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
                 if (!buffer->nexts || !buffer->keys || !buffer->values)
@@ -246,7 +246,7 @@ public: // Methods
         return true;
     }
 
-    bool remove(ulong key)
+    bool remove(u64 key)
     {
         int prev;
         int hash;
