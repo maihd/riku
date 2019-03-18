@@ -272,7 +272,7 @@ public: // Operators
 template <typename R, typename ...Args>
 inline bool operator==(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
 {
-    using Type = Func<R(Args...)>::Type;
+    using Type = typename Func<R(Args...)>::Type;
 
     if (a.stub == b.stub)
     {
@@ -307,12 +307,14 @@ inline bool operator==(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
             return memory::compare(a.stub, b.stub, a.stub->size) == 0;
         }
     }
+
+    return false; // Satisfy the compiler
 }
 
 template <typename R, typename ...Args>
 inline bool operator!=(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
 {
-    using Type = Func<R(Args...)>::Type;
+    using Type = typename Func<R(Args...)>::Type;
 
     if (a.stub == b.stub)
     {
@@ -347,6 +349,8 @@ inline bool operator!=(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
             return memory::compare(a.stub, b.stub, a.stub->size) != 0;
         }
     }
+
+    return true; // Satisfy the compiler
 }
 
 template <typename R, typename ...Args>
