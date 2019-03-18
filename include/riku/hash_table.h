@@ -78,7 +78,7 @@ public:
 
     inline ~HashTable()
     {
-        if (buffer && buffer->_refdec() < 0)
+        if (buffer && buffer->_ref_dec() < 0)
         {
             memory::dealloc(buffer->nexts);
             memory::dealloc(buffer->keys);
@@ -95,7 +95,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->_refinc();
+            buffer->_ref_inc();
         }
     }
 
@@ -104,7 +104,7 @@ public: // Copy
         buffer = other.buffer;
         if (buffer)
         {
-            buffer->_refinc();
+            buffer->_ref_inc();
         }
 
         return *this;

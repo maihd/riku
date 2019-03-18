@@ -57,7 +57,7 @@ public:
 
     inline ~SharedPtr(void)
     {
-        if (ref->_refdec() <= 0)
+        if (ref->_ref_dec() <= 0)
         {
             memory::dealloc(raw);
             delete ref;
@@ -91,7 +91,7 @@ public:
         : raw(other.raw)
         , ref(other.ref) 
     {
-        ref->_refinc();
+        ref->_ref_inc();
     }
 
     inline SharedPtr<T>& operator=(const SharedPtr<T>& other)
@@ -102,7 +102,7 @@ public:
         // Assign new pointer
         raw = other.raw;
         ref = other.ref;
-        ref->_refinc();
+        ref->_ref_inc();
         return *this;
     }
 

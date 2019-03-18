@@ -19,18 +19,25 @@ public:
 
     enum struct Type
     {
-        
+        Method,
+        Functor,
+        Function,
     };
 
     struct Stub : RefCount
     {
-        usize    size;
+        Type     type;
         StubFunc func;
 
         union
         {
             FuncType free_func;
-            byte     functor[sizeof(FuncType)];
+
+            struct
+            {
+                usize size;
+                byte  functor[sizeof(FuncType)];
+            };
 
             struct
             {
@@ -80,7 +87,7 @@ public:
     
     inline ~Func(void)
     {
-        if (stub && stub->_refdec() <= 0)
+        if (stub && stub->_ref_dec() <= 0)
         {
             memory::dealloc(stub);
         }
@@ -92,7 +99,7 @@ public:
     {
         INIT(stub) RefCount();
 
-        stub->size      = sizeof(Stub);
+        stub->type      = Type::Function;
         stub->func      = &Stub::call_func;
         stub->free_func = func;
     }
@@ -111,7 +118,7 @@ public:
         } caster;
         caster.method = method;
 
-        stub->size   = sizeof(Stub);
+        stub->type   = Type::Method;
         stub->func   = &Stub::template call_object<T>;
         stub->object = object;
         stub->method = caster.pointer;
@@ -123,8 +130,9 @@ public:
     {
         INIT(stub) RefCount();
 
-        stub->size   = sizeof(Stub) + sizeof(functor);
-        stub->func   = &Stub::template call_functor<T>;
+        stub->type = Type::Functor;
+        stub->size = sizeof(Stub) + sizeof(functor);
+        stub->func = &Stub::template call_functor<T>;
 
         memory::copy(stub->functor, &functor, sizeof(functor));
     }
@@ -150,7 +158,7 @@ public:
         stub = (Stub*)memory::alloc(sizeof(Stub)); 
         INIT(stub) RefCount();
 
-        stub->size      = sizeof(Stub);
+        stub->type      = Type::Function;
         stub->func      = &Stub::call_func;
         stub->free_func = func;
 
@@ -175,7 +183,7 @@ public:
         } caster;
         caster.method = method;
 
-        stub->size   = sizeof(Stub);
+        stub->type   = Type::Method;
         stub->func   = &Stub::template call_object<T>;
         stub->object = object;
         stub->method = caster.pointer;
@@ -193,6 +201,7 @@ public:
         stub = (Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor)));
         INIT(stub) RefCount();
 
+        stub->type = Type::Functor;
         stub->size = sizeof(Stub) + sizeof(functor);
         stub->func = &Stub::template call_functor<T>;
 
@@ -224,7 +233,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->_refinc();
+            stub->_ref_inc();
         }
     }
 
@@ -236,7 +245,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->_refinc();
+            stub->_ref_inc();
         }
 
         return *this;
@@ -263,6 +272,8 @@ public: // Operators
 template <typename R, typename ...Args>
 inline bool operator==(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
 {
+    using Type = Func<R(Args...)>::Type;
+
     if (a.stub == b.stub)
     {
         return true;
@@ -273,19 +284,36 @@ inline bool operator==(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
         return false;
     }
 
-    if (a.stub->size != b.stub->size)
+    if (a.stub->type != b.stub->type)
     {
         return false;
     }
-    else
+
+    switch (a.stub->type)
     {
-        return memory::compare(a.stub, b.stub, a.stub->size) == 0;
+    case Type::Function:
+        return a.stub->free_func == b.stub->free_func;
+
+    case Type::Method:
+        return a.stub->object == b.stub->object && a.stub->method == b.stub->method;
+
+    case Type::Functor:
+        if (a.stub->size != b.stub->size)
+        {
+            return false;
+        }
+        else
+        {
+            return memory::compare(a.stub, b.stub, a.stub->size) == 0;
+        }
     }
 }
 
 template <typename R, typename ...Args>
 inline bool operator!=(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
 {
+    using Type = Func<R(Args...)>::Type;
+
     if (a.stub == b.stub)
     {
         return false;
@@ -296,13 +324,28 @@ inline bool operator!=(const Func<R(Args...)>& a, const Func<R(Args...)>& b)
         return true;
     }
 
-    if (a.stub->size != b.stub->size)
+    if (a.stub->type != b.stub->type)
     {
         return true;
     }
-    else
+
+    switch (a.stub->type)
     {
-        return memory::compare(a.stub, b.stub, a.stub->size) != 0;
+    case Type::Function:
+        return a.stub->free_func != b.stub->free_func;
+
+    case Type::Method:
+        return a.stub->object != b.stub->object || a.stub->method != b.stub->method;
+
+    case Type::Functor:
+        if (a.stub->size != b.stub->size)
+        {
+            return true;
+        }
+        else
+        {
+            return memory::compare(a.stub, b.stub, a.stub->size) != 0;
+        }
     }
 }
 

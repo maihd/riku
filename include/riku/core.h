@@ -469,8 +469,8 @@ public:
     constexpr RefCount(void) : _refcount(1) {}
 
 public:
-    inline int _refinc(void) { return ++_refcount; };
-    inline int _refdec(void) { return --_refcount; };
+    inline int _ref_inc(void) { return ++_refcount; };
+    inline int _ref_dec(void) { return --_refcount; };
 };
 
 // Simple memory buffer

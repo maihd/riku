@@ -1334,7 +1334,7 @@ namespace json
     }
 
     /* @funcdef: release */
-    void _refdec(State* state)
+    void _ref_dec(State* state)
     {
         if (state)
         {

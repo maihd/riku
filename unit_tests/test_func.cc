@@ -40,15 +40,13 @@ TEST_CASE("Testing Func<...>", "[Func<>]")
     REQUIRE(print1);
     REQUIRE(print2);
     REQUIRE(print3);
-#if !PLATFORM_LINUX
     REQUIRE(print  == print1);
     REQUIRE(print1 != print2);
     REQUIRE(print2 != print3);
-    REQUIRE(print  != NullPtr());
-    REQUIRE(print1 != NullPtr());
-    REQUIRE(print2 != NullPtr());
-    REQUIRE(print3 != NullPtr());
-#endif
+    REQUIRE(print  != nullptr);
+    REQUIRE(print1 != nullptr);
+    REQUIRE(print2 != nullptr);
+    REQUIRE(print3 != nullptr);
 
     print("Hello world");
     print2("Hello world 2");
