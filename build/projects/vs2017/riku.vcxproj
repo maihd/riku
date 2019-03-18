@@ -291,6 +291,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_stream.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_string.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_thread.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_zlib.cc">

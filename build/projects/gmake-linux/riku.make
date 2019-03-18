@@ -89,6 +89,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -147,6 +148,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -205,6 +207,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -263,6 +266,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -321,6 +325,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -379,6 +384,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
+	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
 
@@ -547,6 +553,10 @@ $(OBJDIR)/src/riku_path.o: ../../../src/riku_path.cc $(GCH) $(MAKEFILE) | $(OBJD
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/riku_stream.o: ../../../src/riku_stream.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/riku_string.o: ../../../src/riku_string.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

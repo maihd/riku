@@ -170,6 +170,9 @@
     <ClCompile Include="..\..\..\src\riku_stream.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_string.cc">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_thread.cc">
       <Filter>src</Filter>
     </ClCompile>
