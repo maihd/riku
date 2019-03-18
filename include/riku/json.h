@@ -53,7 +53,7 @@ namespace json
 
     RIKU_API const Value& parse(const char* text, State** state = (State**)0);
     RIKU_API const Value& parse(const char* text, const Settings* settings, State** state = (State**)0);
-    RIKU_API void         _ref_dec(State* state);
+    RIKU_API void         release(State* state);
     RIKU_API Error        get_errno(const State* state);
     RIKU_API const char*  get_error(const State* state);
 

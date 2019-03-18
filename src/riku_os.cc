@@ -222,7 +222,7 @@ namespace os
             return 0;
         }
 
-        return string::format(buffer, length, "%s.%s", buf.version, buf._ref_dec);
+        return string::format(buffer, length, "%s.%s", buf.version, buf.release);
     #endif
     }
 
