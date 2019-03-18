@@ -104,11 +104,16 @@ namespace memory
 }
 
 //
-// C-string
+// UTF8 string
 // 
 
 namespace string
 {
+    char* clone(const char* str)
+    {
+        return strdup(str);
+    }
+
     usize length(const char* str)
     {
         return strlen(str);
@@ -176,16 +181,6 @@ namespace string
         return result;
     }
 
-    //const char* format(char* buffer, const char* fmt, ...)
-    //{
-    //    ArgsList args_list;
-    //    argslist_begin(args_list, fmt);
-    //    const char* result = format_args(buffer, fmt, args_list);
-    //    argslist_end(args_list);
-    //
-    //    return result;
-    //}
-
     const char* format(char* buffer, usize length, const char* fmt, ...)
     {
         ArgsList args_list;
@@ -202,12 +197,6 @@ namespace string
         vsnprintf(buffer, sizeof(buffer), fmt, args_list);
         return buffer;
     }
-
-    //const char* format_args(char* buffer, const char* fmt, ArgsList args_list)
-    //{
-    //    vsprintf(buffer, fmt, args_list);
-    //    return buffer;
-    //}
 
     const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list)
     {

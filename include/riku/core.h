@@ -524,9 +524,13 @@ public: // Factory functions
     RIKU_API static Buffer alloc(usize length);
 };
 
-// String operator
+// UTF8 string operator
 namespace string
 {
+    // Make a copy of given string, with dynamic allocation
+    RIKU_API char*       clone(const char* str);
+
+    // Get length of string
     RIKU_API usize       length(const char* str);
 
 #if 0 && PREVIEWING
@@ -537,26 +541,46 @@ namespace string
     RIKU_API const char* sub(const char* str, int start, int end, char* buffer, usize length);
 #endif
 
+    // Copy content of src string to dst string
     RIKU_API const char* copy(char* dst, const char* src);
+
+    // Copy content of src string to dst string
     RIKU_API const char* copy(char* dst, const char* src, usize length);
 
+    // Add content of src string to end of dst string
     RIKU_API const char* concat(char* dst, const char* src);
+
+    // Add content of src string to end of dst string
     RIKU_API const char* concat(char* dst, const char* src, usize length);
 
+    // Make a string with specified format
     RIKU_API const char* format(const char* fmt, ...);
-    //RIKU_API const char* format(char* buffer, const char* fmt, ...);
+
+    // Make a string with specified format
     RIKU_API const char* format(char* buffer, usize length, const char* fmt, ...);
 
+    // Make a string with specified format
     RIKU_API const char* format_args(const char* fmt, ArgsList args_list);
-    //RIKU_API const char* format_args(char* buffer, const char* fmt, ArgsList args_list);
+
+    // Make a string with specified format
     RIKU_API const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list);
 
+    // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
     RIKU_API int         compare(const char* dst, const char* src);
+
+    // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
     RIKU_API int         compare(const char* dst, const char* src, usize length);
 
+    // Checking string is empty
     inline bool is_empty(const char* str)               { return !str || str[0] == 0;   }
+
+    // Checking string is valid
     inline bool is_valid(const char* str)               { return  str && str[0] != 0;   }
+
+    // Compare two strings are equal
     inline bool equal(const char* a, const char* b)     { return compare(a, b) == 0;    }
+
+    // Compare two strings are not equal
     inline bool not_equal(const char* a, const char* b) { return compare(a, b) != 0;    }
 }
 
