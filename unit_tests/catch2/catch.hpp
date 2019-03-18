@@ -1175,7 +1175,7 @@ id performOptionalSelector( id obj, SEL sel );
 
 #if !CATCH_ARC_ENABLED
 inline void arcSafeRelease( NSObject* obj ) {
-    [obj release];
+    [obj _refdec];
 }
 inline id performOptionalSelector( id obj, SEL sel ) {
     if( [obj respondsToSelector: sel] )
@@ -11064,7 +11064,7 @@ namespace Catch {
             }
         }
 
-        void release( std::size_t index ) {
+        void _refdec( std::size_t index ) {
             m_streams[index]->copyfmt( m_referenceStream ); // Restore initial flags and other state
             m_unused.push_back(index);
         }
@@ -11078,7 +11078,7 @@ namespace Catch {
     ReusableStringStream::~ReusableStringStream() {
         static_cast<std::ostringstream*>( m_oss )->str("");
         m_oss->clear();
-        Singleton<StringStreams>::getMutable().release( m_index );
+        Singleton<StringStreams>::getMutable()._refdec( m_index );
     }
 
     auto ReusableStringStream::str() const -> std::string {

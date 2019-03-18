@@ -463,14 +463,14 @@ public:
 struct RefCount
 {
 public:
-    int __refcount; // __ for avoid member collision.
+    int _refcount; // _ for avoid member collision.
 
 public:
-    constexpr RefCount(void) : __refcount(1) {}
+    constexpr RefCount(void) : _refcount(1) {}
 
 public:
-    inline int retain(void) { return ++__refcount; };
-    inline int release(void) { return --__refcount; };
+    inline int _refinc(void) { return ++_refcount; };
+    inline int _refdec(void) { return --_refcount; };
 };
 
 // Simple memory buffer

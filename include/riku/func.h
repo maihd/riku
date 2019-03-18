@@ -17,6 +17,11 @@ public:
     using FuncType = R(*)(Args...);
     using StubFunc = R(*)(Stub* stub, Args...);
 
+    enum struct Type
+    {
+        
+    };
+
     struct Stub : RefCount
     {
         usize    size;
@@ -75,7 +80,7 @@ public:
     
     inline ~Func(void)
     {
-        if (stub && stub->release() <= 0)
+        if (stub && stub->_refdec() <= 0)
         {
             memory::dealloc(stub);
         }
@@ -219,7 +224,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->retain();
+            stub->_refinc();
         }
     }
 
@@ -231,7 +236,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->retain();
+            stub->_refinc();
         }
 
         return *this;

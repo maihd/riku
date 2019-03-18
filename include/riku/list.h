@@ -29,7 +29,7 @@ public:
 
     inline ~List(void)
     {
-        if (buffer && buffer->release() <= 0)
+        if (buffer && buffer->_refdec() <= 0)
         {
             for (int i = 0, n = buffer->length; i < n; i++)
             {
@@ -46,7 +46,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->retain();
+            buffer->_refinc();
         }
     }
 
@@ -59,7 +59,7 @@ public: // Copy
         buffer = other.buffer;
         if (buffer)
         {
-            buffer->retain();
+            buffer->_refinc();
         }
 
         return *this;

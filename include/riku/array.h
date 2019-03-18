@@ -32,7 +32,7 @@ public:
 
     inline ~Array(void)
     {
-        if (buffer && buffer->release() <= 0)
+        if (buffer && buffer->_refdec() <= 0)
         {
             memory::dealloc(buffer);
         }
@@ -44,7 +44,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->retain();
+            buffer->_refinc();
         }
     }
 
@@ -57,7 +57,7 @@ public: // Copy
         buffer = other.buffer;
         if (buffer)
         {
-            buffer->retain();
+            buffer->_refinc();
         }
 
         return *this;
