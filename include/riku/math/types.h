@@ -25,7 +25,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline int2() {}
+    inline int2() : x(0), y(0) {}
 
     inline int2(int x, int y)
         : x(x)
@@ -58,7 +58,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline int3() {}
+    inline int3() : x(0), y(0), z(0) {}
 
     inline int3(int x, int y, int z)
         : x(x)
@@ -93,7 +93,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline int4() {}
+    inline int4() : x(0), y(0), z(0), w(0) {}
 
     inline int4(int x, int y, int z, int w)
         : x(x)
@@ -132,7 +132,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline uint2() {}
+    inline uint2() : x(0), y(0) {}
 
     inline uint2(uint x, uint y)
         : x(x)
@@ -165,7 +165,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline uint3() {}
+    inline uint3() : x(0), y(0), z(0) {}
 
     inline uint3(uint x, uint y, uint z)
         : x(x)
@@ -200,7 +200,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline uint4() {}
+    inline uint4() : x(0), y(0), z(0), w(0) {}
 
     inline uint4(uint x, uint y, uint z, uint w)
         : x(x)
@@ -237,7 +237,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline bool2() {}
+    constexpr bool2() : x(false), y(false) {}
 
     inline bool2(bool x, bool y)
         : x(x)
@@ -270,7 +270,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline bool3() {}
+    inline bool3() : x(false), y(false), z(false) {}
 
     inline bool3(bool x, bool y, bool z)
         : x(x)
@@ -305,7 +305,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline bool4() {}
+    constexpr bool4() : x(false), y(false), z(false), w(false) {}
 
 	inline bool4(bool x, bool y, bool z, bool w)
         : x(x)
@@ -342,7 +342,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline float2() {}
+    inline float2() : x(0.0f), y(0.0f) {}
 
     inline float2(float x, float y)
         : x(x)
@@ -389,7 +389,7 @@ public: // @region: Fielda
     };    
 
 public: // @region: Constructors
-    inline float3() {}
+    inline float3() : x(0.0f), y(0.0f), z(0.0f) {}
 
     inline float3(float x, float y, float z = 0.0f)
         : x(x)
@@ -435,7 +435,7 @@ public: // @region: Fields
     };
 
 public: // @region: Constructors
-    inline float4() {}
+    inline float4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 
     inline float4(const float3& xyz, float w = 0.0f)
         : x(xyz.x)
@@ -495,7 +495,11 @@ public:
 union int2x2
 {
 public: // @region: Constructors
-    inline int2x2() {}
+    inline int2x2(void)
+    {
+        (*this)[0] = int2(1, 0);
+        (*this)[1] = int2(0, 1);
+    }
 
     inline int2x2(const int2& m0, const int2& m1)
     {
@@ -538,7 +542,12 @@ private: // @region: Internal fields
 union int3x3
 {
 public: // @region: Constructors
-    inline int3x3() {}
+    inline int3x3(void)
+    {
+        (*this)[0] = int3(1, 0, 0);
+        (*this)[1] = int3(0, 1, 0);
+        (*this)[2] = int3(0, 0, 1);
+    }
 
     inline int3x3(const int3& m0, const int3& m1, const int3& m2)
     {
@@ -586,7 +595,13 @@ private: // @region: Internal fields
 union int4x4
 {
 public: // @region: Constructors
-    inline int4x4() {}
+    inline int4x4(void)
+    {
+        (*this)[0] = int4(1, 0, 0, 0);
+        (*this)[1] = int4(0, 1, 0, 0);
+        (*this)[2] = int4(0, 0, 1, 0);
+        (*this)[3] = int4(0, 0, 0, 1);
+    }
 
     inline int4x4(const int4& m0, const int4& m1, const int4& m2, const int4& m3)
     {
@@ -638,7 +653,11 @@ private: // @region: Internal fields
 union uint2x2
 {
 public: // @region: Constructors
-    inline uint2x2() {}
+    inline uint2x2(void)
+    {
+        (*this)[0] = uint2(1, 0);
+        (*this)[1] = uint2(0, 1);
+    }
 
     inline uint2x2(const uint2& m0, const uint2& m1)
     {
@@ -681,7 +700,12 @@ private: // @region: Internal fields
 union uint3x3
 {
 public: // @region: Constructors
-    inline uint3x3() {}
+    inline uint3x3(void)
+    {
+        (*this)[0] = uint3(1, 0, 0);
+        (*this)[1] = uint3(0, 1, 0);
+        (*this)[2] = uint3(0, 0, 1);
+    }
 
     inline uint3x3(const uint3& m0, const uint3& m1, const uint3& m2)
     {
@@ -729,7 +753,13 @@ private: // @region: Internal fields
 union uint4x4
 {
 public: // @region: Constructors
-    inline uint4x4() {}
+    inline uint4x4(void)
+    {
+        (*this)[0] = uint4(1, 0, 0, 0);
+        (*this)[1] = uint4(0, 1, 0, 0);
+        (*this)[2] = uint4(0, 0, 1, 0);
+        (*this)[3] = uint4(0, 0, 0, 1);
+    }
 
     inline uint4x4(const uint4& m0, const uint4& m1, const uint4& m2, const uint4& m3)
     {
@@ -781,7 +811,11 @@ private: // @region: Internal fields
 union bool2x2
 {
 public: // @region: Constructors
-    inline bool2x2() {}
+    inline bool2x2()
+    {
+        (*this)[0] = bool2(1, 0);
+        (*this)[1] = bool2(0, 1);
+    }
 
     inline bool2x2(const bool2& m0, const bool2& m1)
     {
@@ -824,7 +858,12 @@ private: // @region: Internal fields
 union bool3x3
 {
 public: // @region: Constructors
-    inline bool3x3() {}
+    inline bool3x3()
+    {
+        (*this)[0] = bool3(1, 0, 0);
+        (*this)[1] = bool3(0, 1, 0);
+        (*this)[2] = bool3(0, 0, 1);
+    }
 
     inline bool3x3(const bool3& m0, const bool3& m1, const bool3& m2)
     {
@@ -873,7 +912,13 @@ private: // @region: Internal fields
 union bool4x4
 {
 public: // @region: Constructors
-    inline bool4x4() {}
+    inline bool4x4(void) 
+    {
+        (*this)[0] = bool4(1, 0, 0, 0);
+        (*this)[1] = bool4(0, 1, 0, 0);
+        (*this)[2] = bool4(0, 0, 1, 0);
+        (*this)[3] = bool4(0, 0, 0, 1);
+    }
 
     inline bool4x4(const bool4& m0, const bool4& m1, const bool4& m2, const bool4& m3)
     {
@@ -925,7 +970,11 @@ private: // @region: Internal fields
 union float2x2
 {
 public: // @region: Constructors
-    inline float2x2() {}
+    inline float2x2(void)
+    {
+        (*this)[0] = float2(1, 0);
+        (*this)[1] = float2(0, 1);
+    }
 
 	inline float2x2(const float2& m0, const float2& m1)
 	{
@@ -981,7 +1030,12 @@ private: // @region: Internal fields
 union float3x3
 {
 public: // @region: Constructors
-    inline float3x3() {}
+    inline float3x3(void)
+    {
+        (*this)[0] = float3(1, 0, 0);
+        (*this)[1] = float3(0, 1, 0);
+        (*this)[2] = float3(0, 0, 1);
+    }
 
 	inline float3x3(const float3& m0, const float3& m1, const float3& m2)
 	{
@@ -1046,7 +1100,13 @@ private: // @region: Internal fields
 union float4x4
 {
 public: // @region: Constructors
-    inline float4x4() {}
+    inline float4x4(void)
+    {
+        (*this)[0] = float4(1, 0, 0, 0);
+        (*this)[1] = float4(0, 1, 0, 0);
+        (*this)[2] = float4(0, 0, 1, 0);
+        (*this)[3] = float4(0, 0, 0, 1);
+    }
 
 	inline float4x4(const float4& m0, const float4& m1, const float4& m2, const float4& m3)
 	{
