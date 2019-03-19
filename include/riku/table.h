@@ -150,7 +150,7 @@ public: // Methods
 
         while (curr > -1)
         {
-            if (buffer->keys[curr] == key)
+            if (CompareTrait<TKey>::equal(buffer->keys[curr], key))
             {
                 break;
             }
