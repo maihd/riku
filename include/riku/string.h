@@ -208,6 +208,12 @@ inline u64 hashof(const String& string)
     return hashof(string.get_characters(), string.get_length());
 }
 
+template <>
+inline u32 lengthof<String>(const String& string)
+{
+    return (u32)string.get_length();
+}
+
 inline bool operator==(const String& a, const String& b)
 {
     return string::compare(a.get_characters(), b.get_characters()) == 0;

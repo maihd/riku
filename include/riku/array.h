@@ -394,3 +394,15 @@ public: // Properties
         return capacity;
     }
 };
+
+template <typename T>
+inline u64 hashof(const Array<T>& array)
+{
+    return hashof(array.get_items(), array.get_length());
+}
+
+template <typename T>
+inline u32 lengthof(const Array<T>& array)
+{
+    return (u32)array.get_length();
+}

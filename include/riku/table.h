@@ -304,3 +304,15 @@ public: // Methods
         }
     }
 };
+
+template <typename TKey, typename TValue>
+inline u64 hashof(const Table<TKey, TValue>& table)
+{
+    return hashof(table.get_keys(), table.get_length()) ^ hashof(table.get_values(), table.get_length());
+}
+
+template <typename TKey, typename TValue>
+inline u32 lengthof(const Table<TKey, TValue>& table)
+{
+    return (u32)table.get_length();
+}

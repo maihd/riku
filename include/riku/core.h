@@ -941,7 +941,7 @@ inline u64 hashof(const T& x)
 
 // Compute hash of given data
 template <>
-inline u64 hashof<cstr>(const cstr& x)
+inline u64 hashof(const cstr& x)
 {
     return calc_hash64(x, string::length(x));
 }
@@ -951,12 +951,6 @@ template <u32 length>
 constexpr u64 hashof(const char(&buffer)[length])
 {
     return calc_hash64<length>(buffer);
-}
-
-// Get length of given buffer
-inline u32 lengthof(const Buffer& buffer)
-{
-    return (u32)buffer.get_length();
 }
 
 // Get length of given buffer
@@ -971,4 +965,25 @@ template <u32 length>
 constexpr u32 lengthof(const char(&array)[length])
 {
     return length - 1;
+}
+
+// Get length of given value
+template <typename T>
+constexpr u32 lengthof(const T& x)
+{
+    return 1;
+}
+
+// Get length of given string
+template <>
+inline u32 lengthof(const cstr& str)
+{
+    return string::length(str);
+}
+
+// Get length of given buffer
+template <>
+inline u32 lengthof(const Buffer& buffer)
+{
+    return (u32)buffer.get_length();
 }

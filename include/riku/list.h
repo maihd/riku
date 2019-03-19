@@ -284,3 +284,15 @@ public:
         return erase(index_of(value));
     }
 };
+
+template <typename T>
+inline u64 hashof(const List<T>& list)
+{
+    return hashof(list.get_items(), list.get_length());
+}
+
+template <typename T>
+inline u32 lengthof(const List<T>& list)
+{
+    return (u32)list.get_length();
+}

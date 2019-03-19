@@ -348,3 +348,15 @@ public: // Methods
         }
     }
 };
+
+template <typename TKey, typename TValue>
+inline u64 hashof(const Dictionary<TKey, TValue>& dictionary)
+{
+    return hashof(dictionary.get_keys(), dictionary.get_length()) ^ hashof(dictionary.get_values(), dictionary.get_length());
+}
+
+template <typename TKey, typename TValue>
+inline u32 lengthof(const Dictionary<TKey, TValue>& dictionary)
+{
+    return (u32)dictionary.get_length();
+}
