@@ -71,17 +71,17 @@ public:
     }
 
 public:
-    inline String(const char* buffer)
-        : String(buffer, (int)string::length(buffer))
+    inline String(const char* str)
+        : String(str, (int)string::length(str))
     {
     }
 
-    inline String(const char* buffer, int length)
+    inline String(const char* str, int len)
     {
-        if (buffer && length > 0)
+        if (str && len > 0)
         {
             int target_size;
-            int require_size = (sizeof(Buffer) + length);
+            int require_size = (sizeof(Buffer) + len);
             target_size  = require_size - 1;
             target_size |= target_size >> 1;
             target_size |= target_size >> 2;
@@ -91,10 +91,10 @@ public:
             target_size++;
 
             this->buffer = (Buffer*)memory::alloc(target_size);
-            this->buffer->length   = (int)length;
+            this->buffer->length   = (int)len;
             this->buffer->capacity = (int)(target_size - sizeof(Buffer));
 
-            memory::copy(this->buffer->characters, buffer, length + 1);
+            memory::copy(this->buffer->characters, str, len + 1);
         }
         else
         {
@@ -107,7 +107,7 @@ public:
         int len = (int)string::length(str);
         if (str && len > 0)
         {
-            if (buffer->capacity < len)
+            if (get_capacity() < len)
             {
                 int target_size;
                 int require_size = (sizeof(Buffer) + len);
@@ -124,7 +124,7 @@ public:
             }
             
             this->buffer->length = len;
-            memory::copy(this->buffer->characters, buffer, len + 1);
+            memory::copy(this->buffer->characters, str, len + 1);
         }
         else
         {
@@ -173,7 +173,7 @@ public: // Copy
         if (other.buffer)
         {
             int len = other.get_length();
-            if (buffer->capacity < len)
+            if (get_capacity() < len)
             {
                 buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + other.get_capacity());
                 buffer->capacity = other.get_capacity();
@@ -201,6 +201,12 @@ public:
         return buffer ? buffer->characters : NULL;
     } 
 };
+
+template <>
+inline u64 hashof(const String& string)
+{
+    return hashof(string.get_characters(), string.get_length());
+}
 
 inline bool operator==(const String& a, const String& b)
 {

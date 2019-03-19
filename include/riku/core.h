@@ -384,6 +384,19 @@ inline bool __DO_DESTROY(T* ptr)
 }
 
 //
+// Compare trait
+//
+
+template <typename TValue>
+struct CompareTrait
+{
+    static inline bool equal(const TValue& a, const TValue& b)
+    {
+        return a == b;
+    }
+};
+
+//
 // Right value trait
 //
 
@@ -579,6 +592,16 @@ namespace string
     // Compare two strings are not equal
     inline bool not_equal(const char* a, const char* b) { return compare(a, b) != 0;    }
 }
+
+// String type has its out comparer
+template <>
+struct CompareTrait<cstr>
+{
+    static inline bool equal(const cstr& a, const cstr& b)
+    {
+        return string::equal(a, b);
+    }
+};
 
 // Console
 namespace console

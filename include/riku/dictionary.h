@@ -171,13 +171,13 @@ public: // Methods
 
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)((uint)hashof(key) % this->get_hash_count());
-        int curr = buffer->hashs[hash];
+        int hash = (int)(((u32)hashof(key)) % this->get_hash_count());
+        int curr = buffer ? buffer->hashs[hash] : -1;
         int prev = -1;
 
         while (curr > -1)
         {
-            if (buffer->keys[curr] == key)
+            if (CompareTrait<TKey>::equal(buffer->keys[curr], key))
             {
                 break;
             }

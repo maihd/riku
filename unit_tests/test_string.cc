@@ -38,7 +38,7 @@ TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
     u64 tmp_hash1 = hashof("hello world");
     switch (tmp_hash1)
     {
-    case hashof("hello world"):
+    case calc_hash64("hello world"):
         REQUIRE(true);
         break;
 
