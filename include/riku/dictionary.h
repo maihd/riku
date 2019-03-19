@@ -177,7 +177,7 @@ public: // Methods
 
         while (curr > -1)
         {
-            if (CompareTrait<TKey>::equal(buffer->keys[curr], key))
+            if (traits::equals(buffer->keys[curr], key))
             {
                 break;
             }
@@ -324,11 +324,7 @@ public: // Methods
             if (curr < get_length() - 1)
             {
                 int last = get_length() - 1;
-                buffer->nexts[curr] = buffer->nexts[last];
-                INIT(&buffer->keys[curr]) TKey(make_rvalue(buffer->keys[last]));
-                INIT(&buffer->values[curr]) TValue(make_rvalue(buffer->values[last]));
-
-                index_of(buffer->keys[curr], &hash, &prev);
+                index_of(buffer->keys[last], &hash, &prev);
                 if (prev > -1)
                 {
                     buffer->nexts[prev] = curr;
@@ -337,6 +333,10 @@ public: // Methods
                 {
                     buffer->hashs[hash] = curr;
                 }
+
+                buffer->nexts[curr] = buffer->nexts[last];
+                INIT(&buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
+                INIT(&buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
             }
             buffer->length--;
 

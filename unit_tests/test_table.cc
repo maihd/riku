@@ -12,8 +12,8 @@ TEST_CASE("Table<const char*, ...> testing", "[Dictionary<const char*>]")
     table.set("greeting", "Hello world!");
     table.set("sentence", "The quick brown fox jumps over the lazy dog");
 
-    REQUIRE(string::equal(table.get("greeting"), "Hello world!"));
-    REQUIRE(string::equal(table.get("sentence"), "The quick brown fox jumps over the lazy dog"));
+    REQUIRE(string::equals(table.get("greeting"), "Hello world!"));
+    REQUIRE(string::equals(table.get("sentence"), "The quick brown fox jumps over the lazy dog"));
 
     const char* const * keys = table.get_keys();
     const char* const * values = table.get_values();

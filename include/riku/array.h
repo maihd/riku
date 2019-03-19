@@ -257,7 +257,7 @@ public:
     {
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (CompareTrait<TItem>::equal(buffer->items[i], value))
+            if (traits::equals(buffer->items[i], value))
             {
                 return i;
             }
@@ -272,7 +272,7 @@ public:
         int index = -1;
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (CompareTrait<TItem>::equal(buffer->items[i], value))
+            if (traits::equals(buffer->items[i], value))
             {
                 index = i;
             }
@@ -323,7 +323,7 @@ public:
             }
         }
 
-        return make_rvalue(res);
+        return traits::make_rvalue(res);
     }
 
     // Remove an item with given index

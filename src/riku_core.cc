@@ -58,7 +58,7 @@ Buffer Buffer::alloc(usize length)
         *(usize*)buf.data = length;
         buf.data += sizeof(usize);
     }
-    return make_rvalue(buf);
+    return traits::make_rvalue(buf);
 }
 
 //

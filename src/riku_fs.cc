@@ -36,10 +36,10 @@ namespace fs
 
             fclose(file);
 
-            return make_rvalue(buffer);
+            return traits::make_rvalue(buffer);
         }
 
-        return make_rvalue(Buffer());
+        return traits::make_rvalue(Buffer());
     }
     
     usize read_file(const char* path, Buffer& buffer)

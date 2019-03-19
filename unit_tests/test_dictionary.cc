@@ -32,8 +32,8 @@ TEST_CASE("Dictionary<const char*, ...> testing", "[Dictionary<const char*>]")
     dict["sentence"] = "The quick brown fox jumps over the lazy dog";
 
     const char* tmp = dict["greeting"];
-    REQUIRE(string::equal(dict["greeting"], "Hello world!"));
-    REQUIRE(string::equal(dict["sentence"], "The quick brown fox jumps over the lazy dog"));
+    REQUIRE(string::equals(dict["greeting"], "Hello world!"));
+    REQUIRE(string::equals(dict["sentence"], "The quick brown fox jumps over the lazy dog"));
     
     const char* const * keys   = dict.get_keys();
     const char* const * values = dict.get_values();

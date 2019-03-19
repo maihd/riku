@@ -242,7 +242,7 @@ public:
     {
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (CompareTrait<TItem>::equal(value, buffer->items[i]))
+            if (traits::equals(value, buffer->items[i]))
             {
                 return i;
             }
@@ -255,7 +255,7 @@ public:
     {
         for (int i = get_length() - 1; i > -1; i--)
         {
-            if (CompareTrait<TItem>::equal(value, buffer->items[i]))
+            if (traits::equals(value, buffer->items[i]))
             {
                 return i;
             }

@@ -384,47 +384,49 @@ inline bool __DO_DESTROY(T* ptr)
 }
 
 //
-// Compare trait
+// Common traits
 //
 
-template <typename TValue>
-struct CompareTrait
+namespace traits
 {
-    static inline bool equal(const TValue& a, const TValue& b)
+    // Detemine two values are equal or not
+    // @note: use for trait purpose only
+    template <typename TValue>
+    inline bool equals(const TValue& a, const TValue& b)
     {
         return a == b;
     }
-};
 
-//
-// Right value trait
-//
+    //
+    // Right value trait
+    //
 
-template <typename T>
-struct WithoutRefTrait
-{
-    using Type = T;
-};
+    template <typename T>
+    struct WithoutRefTrait
+    {
+        using Type = T;
+    };
 
-template <typename T>
-struct WithoutRefTrait<T&>
-{
-    using Type = T;
-};
+    template <typename T>
+    struct WithoutRefTrait<T&>
+    {
+        using Type = T;
+    };
 
-template <typename T>
-struct WithoutRefTrait<T&&>
-{
-    using Type = T;
-};
+    template <typename T>
+    struct WithoutRefTrait<T&&>
+    {
+        using Type = T;
+    };
 
-template <typename T>
-using WithoutRef = typename WithoutRefTrait<T>::Type;
+    template <typename T>
+    using WithoutRef = typename WithoutRefTrait<T>::Type;
 
-template <typename T>
-inline WithoutRef<T>&& make_rvalue(T&& value)
-{
-    return (static_cast<WithoutRef<T>&&>(value));
+    template <typename T>
+    inline traits::WithoutRef<T>&& make_rvalue(T&& value)
+    {
+        return (static_cast<WithoutRef<T>&&>(value));
+    }
 }
 
 // Option
@@ -581,27 +583,25 @@ namespace string
     RIKU_API int         compare(const char* dst, const char* src, usize length);
 
     // Checking string is empty
-    inline bool is_empty(const char* str)               { return !str || str[0] == 0;   }
+    inline bool is_empty(const char* str)                { return !str || str[0] == 0;   }
 
     // Checking string is valid
-    inline bool is_valid(const char* str)               { return  str && str[0] != 0;   }
+    inline bool is_valid(const char* str)                { return  str && str[0] != 0;   }
 
     // Compare two strings are equal
-    inline bool equal(const char* a, const char* b)     { return compare(a, b) == 0;    }
+    inline bool equals(const char* a, const char* b)     { return compare(a, b) == 0;    }
 
     // Compare two strings are not equal
-    inline bool not_equal(const char* a, const char* b) { return compare(a, b) != 0;    }
+    inline bool not_equals(const char* a, const char* b) { return compare(a, b) != 0;    }
 }
 
-// String type has its out comparer
+// Detemine two string are equal or not
+// @note: use for trait purpose only
 template <>
-struct CompareTrait<cstr>
+inline bool traits::equals<cstr>(const cstr& a, const cstr& b)
 {
-    static inline bool equal(const cstr& a, const cstr& b)
-    {
-        return string::equal(a, b);
-    }
-};
+    return string::equals(a, b);
+}
 
 // Console
 namespace console
@@ -946,6 +946,13 @@ inline u64 hashof(const cstr& x)
     return calc_hash64(x, string::length(x));
 }
 
+// Compute hash of given buffer
+template <>
+inline u64 hashof(const Buffer& buffer)
+{
+    return calc_hash64(buffer.data, buffer.get_length());
+}
+
 // Compute hash of given data
 template <u32 length>
 constexpr u64 hashof(const char(&buffer)[length])
@@ -978,7 +985,7 @@ constexpr u32 lengthof(const T& x)
 template <>
 inline u32 lengthof(const cstr& str)
 {
-    return string::length(str);
+    return (u32)string::length(str);
 }
 
 // Get length of given buffer
