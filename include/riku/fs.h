@@ -5,8 +5,36 @@
 
 #include "./core.h"
 
+namespace enums
+{
+    enum FileOpen
+    {
+        Sync,
+        Link,
+        NoLink,
+        Append,
+        Create,
+        Direct,
+        DataSync,
+        NonBlock,
+        Truncate,
+        ReadOnly,
+        WriteOnly,
+        ReadWrite,
+        Directory,
+        CreateOnly,
+    };
+};
+using FileOpen = enums::FileOpen;
+
 namespace fs
 {
+#if PLATFORM_WINDOWS
+    using Handle = void*;
+#else
+    using Handle = int;
+#endif
+
 #if 0 && PREVIEWING
     enum struct FileType
     {
@@ -23,6 +51,9 @@ namespace fs
     RIKU_API Stats stat(const char* path);
 #endif
     
+    RIKU_API Handle open(const char* path, FileOpen flags);
+    RIKU_API Handle open(const char* path, const char* flags);
+
     RIKU_API bool   exists(const char* path);
     
     RIKU_API Buffer read_file(const char* path);

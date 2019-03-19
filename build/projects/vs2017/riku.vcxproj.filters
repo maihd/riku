@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\windows">
+      <UniqueIdentifier>{1436CB59-80EB-434F-09E0-3D2675943A53}</UniqueIdentifier>
+    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
@@ -178,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_zlib.cc">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_fs_windows.cc">
+      <Filter>src\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\adler32.c">
       <Filter>3rdparty\zlib-1.2.11</Filter>

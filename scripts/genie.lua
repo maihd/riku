@@ -66,7 +66,6 @@ do
       path.join(RIKU_DIR, "unit_tests/*.h"),
       path.join(RIKU_DIR, "unit_tests/**/*.h"),
       path.join(RIKU_DIR, "unit_tests/*.cc"),
-      path.join(RIKU_DIR, "unit_tests/**/*.cc"),
    }
 
    configuration { "linux" }
