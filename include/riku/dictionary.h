@@ -356,7 +356,7 @@ inline u64 hashof(const Dictionary<TKey, TValue>& dictionary)
 }
 
 template <typename TKey, typename TValue>
-inline u32 lengthof(const Dictionary<TKey, TValue>& dictionary)
+inline int lengthof(const Dictionary<TKey, TValue>& dictionary)
 {
-    return (u32)dictionary.get_length();
+    return dictionary.get_length();
 }

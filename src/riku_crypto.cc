@@ -217,10 +217,9 @@ namespace crypto
         0x536fa08fdfd90e51ULL, 0x29b7d047efec8728ULL,
     };
 
-    static void md5_encode(byte* output, const uint* input, usize len)
+    static void md5_encode(byte* output, const u32* input, int len)
     {
-        usize i, j;
-        for (i = 0, j = 0; j < len; i++, j += 4)
+        for (int i = 0, j = 0; j < len; i++, j += 4)
         {
             output[j + 0] = (byte)((input[i] >>  0) & 0xff);
             output[j + 1] = (byte)((input[i] >>  8) & 0xff);
@@ -229,21 +228,20 @@ namespace crypto
         }
     }
 
-    static void md5_decode(uint* output, const byte* input, usize len)
+    static void md5_decode(u32* output, const byte* input, int len)
     {
-        usize i, j;
-        for (i = 0, j = 0; j < len; i++, j += 4)
+        for (int i = 0, j = 0; j < len; i++, j += 4)
         {
-            output[i]  = (uint)(input[j + 0] <<  0);
-            output[i] |= (uint)(input[j + 1] <<  8);
-            output[i] |= (uint)(input[j + 2] << 16);
-            output[i] |= (uint)(input[j + 3] << 24);
+            output[i]  = (u32)(input[j + 0] <<  0);
+            output[i] |= (u32)(input[j + 1] <<  8);
+            output[i] |= (u32)(input[j + 2] << 16);
+            output[i] |= (u32)(input[j + 3] << 24);
         }
     }
 
-    static void md5_transform(uint state[4], const byte block[64])
+    static void md5_transform(u32 state[4], const byte block[64])
     {
-        uint a, b, c, d, x[16];
+        u32 a, b, c, d, x[16];
 
         a = state[0];
         b = state[1];
@@ -326,20 +324,20 @@ namespace crypto
         state[3] += d;
     }
 
-    static void md5_update(MD5* context, const byte* input, usize length)
+    static void md5_update(MD5* context, const byte* input, int length)
     {
-        ulong i, index, part_len;
+        u32 i, index, part_len;
 
         // Compute number of bytes mod 64
-        index = (uint)((context->count[0] >> 3) & 0x3F);
+        index = (u32)((context->count[0] >> 3) & 0x3F);
 
         // Update number of bits
-        if ((context->count[0] += ((ulong)length << 3))< ((ulong)length << 3))
+        if ((context->count[0] += ((u32)length << 3))< ((u32)length << 3))
         {
             context->count[1]++;
         }
 
-        context->count[1] += ((ulong)length >> 29);
+        context->count[1] += ((u32)length >> 29);
 
         part_len = 64 - index;
 
@@ -365,7 +363,7 @@ namespace crypto
         memory::copy(&context->buffer[index], &input[i], length - i);
     }
 
-    u32 md5(MD5& ctx, const void* buffer, usize length)
+    u32 md5(MD5& ctx, const void* buffer, int length)
     {
         // init
         ctx.state[0] = 0x67452301;
@@ -407,13 +405,18 @@ namespace crypto
         return val;
     }
 
-    u32 crc32(const void* buffer, usize length)
+    u32 crc32(const void* buffer, int length)
     {
-        u32 res = 0xffffffffU;
+        return crc32(buffer, length, 0xffffffffU);
+    }
+
+    u32 crc32(const void* buffer, int length, u32 seed)
+    {
+        u32 res = seed;
 
         const byte* data = (const byte*)buffer;
 
-        while (length--) 
+        while (length-- > 0)
         {
             res = (res >> 8) ^ (CRC32_TABLE[(res ^ (*data++)) & 0xff]);
         }
@@ -422,13 +425,18 @@ namespace crypto
         return res;
     }
 
-    u64 crc64(const void* buffer, usize length)
+    u64 crc64(const void* buffer, int length)
     {
-        u64 res = 0xffffffffffffffffULL;
+        return crc32(buffer, length, 0xffffffffffffffffULL);
+    }
+
+    u64 crc64(const void* buffer, int length, u64 seed)
+    {
+        u64 res = seed;
 
         const byte* data = (const byte*)buffer;
 
-        while (length--)
+        while (length-- > 0)
         {
             res = (res >> 8) ^ (CRC32_TABLE[(res ^ (*data++)) & 0xff]);
         }
@@ -437,18 +445,18 @@ namespace crypto
         return res;
     }
 
-    u32 murmur32(const void* buffer, usize length)
+    u32 murmur32(const void* buffer, int length)
     {
         return murmur32(buffer, length, 0);
     }
 
-    u64 murmur64(const void* buffer, usize length)
+    u64 murmur64(const void* buffer, int length)
     {
         return murmur64(buffer, length, 0);
     }
 
     // Compute hash value of buffer with Murmur algorithm
-    u32 murmur32(const void* buffer, usize length, u32 seed)
+    u32 murmur32(const void* buffer, int length, u32 seed)
     {
         u32 h = (u32)seed;
         const u8* key = (const u8*)buffer;
@@ -499,7 +507,7 @@ namespace crypto
         return h;
     }
 
-    u64 murmur64(const void* buffer, usize length, u64 seed)
+    u64 murmur64(const void* buffer, int length, u64 seed)
     {
         const u64 m = 0xc6a4a7935bd1e995ULL;
         const u32 r = 47;
@@ -507,7 +515,7 @@ namespace crypto
         u64 h = seed;
 
         const u64* data = (const u64*)buffer;
-        const u64* end = data + (length >> 3);
+        const u64* end = data + (u64)(length >> 3);
 
         while (data != end)
         {

@@ -49,14 +49,14 @@ void __assert_abort(const char* exp, const char* func, const char* file, int lin
 // Buffer functions
 //
 
-Buffer Buffer::alloc(usize length)
+Buffer Buffer::alloc(int length)
 {
     Buffer buf;
     if (length)
     {
-        buf.data = (byte*)memory::alloc(sizeof(usize) + length);
-        *(usize*)buf.data = length;
-        buf.data += sizeof(usize);
+        buf.data = (byte*)memory::alloc(sizeof(int) + length);
+        *(int*)buf.data = length;
+        buf.data += sizeof(int);
     }
     return traits::make_rvalue(buf);
 }
@@ -67,9 +67,9 @@ Buffer Buffer::alloc(usize length)
 
 namespace memory
 {
-    void* alloc(usize size)
+    void* alloc(int size)
     {
-        return malloc(size);
+        return malloc((usize)size);
     }
 
     void dealloc(void* ptr)
@@ -77,29 +77,29 @@ namespace memory
         free(ptr);    
     }
 
-    void* realloc(void* ptr, usize size)
+    void* realloc(void* ptr, int size)
     {
-        return ::realloc(ptr, size);
+        return ::realloc(ptr, (usize)size);
     }
 
-    void* init(void* dst, int val, usize size)
+    void* init(void* dst, int val, int size)
     {
-        return memset(dst, val, size);
+        return memset(dst, val, (usize)size);
     }
 
-    void* copy(void* dst, const void* src, usize size)
+    void* copy(void* dst, const void* src, int size)
     {
-        return memcpy(dst, src, size);
+        return memcpy(dst, src, (usize)size);
     }
     
-    void* move(void* dst, const void* src, usize size)
+    void* move(void* dst, const void* src, int size)
     {
-        return memmove(dst, src, size);
+        return memmove(dst, src, (usize)size);
     }
 
-    int compare(const void* a, const void* b, usize size)
+    int compare(const void* a, const void* b, int size)
     {
-        return memcmp(a, b, size);
+        return memcmp(a, b, (usize)size);
     }
 }
 
@@ -212,7 +212,7 @@ namespace process
         return path;
     }
 
-    const char* cwd(char* buffer, usize length)
+    const char* cwd(char* buffer, int length)
     {
     #if PLATFORM_WINDOWS
         GetCurrentDirectoryA((DWORD)length, buffer);
@@ -494,12 +494,12 @@ Date Date::utc(int year, int month, int day, int hours, int minutes, int seconds
         (int)tm->tm_hour, (int)tm->tm_min, (int)tm->tm_sec);
 }
 
-u32 calc_hash32(const void* buffer, usize length)
+u32 calc_hash32(const void* buffer, int length)
 {
     return crypto::murmur32(buffer, length);
 }
 
-u64 calc_hash64(const void* buffer, usize length)
+u64 calc_hash64(const void* buffer, int length)
 {
     return crypto::murmur64(buffer, length);
 }

@@ -71,7 +71,7 @@ namespace os
     #endif
     }
 
-    const char* tmpdir(char* buffer, usize length)
+    const char* tmpdir(char* buffer, int length)
     {
     #if PLATFORM_WINDOWS
         ::GetTempPathA((DWORD)length, buffer);
@@ -95,7 +95,7 @@ namespace os
     #endif
     }
 
-    const char* homedir(char* buffer, usize length)
+    const char* homedir(char* buffer, int length)
     {
     #if PLATFORM_WINDOWS
         usize drive_size = (usize)::GetEnvironmentVariableA("HOMEDRIVE", buffer, (DWORD)length);
@@ -142,11 +142,14 @@ namespace os
         return name;
     }
 
-    const char* hostname(char* buffer, usize length)
+    const char* hostname(char* buffer, int length)
     {
     #if PLATFORM_WINDOWS
         DWORD size = (DWORD)length;
-        GetComputerNameExA(ComputerNameDnsHostname, buffer, &size) ? (usize)size : 0;
+        if (!GetComputerNameExA(ComputerNameDnsHostname, buffer, &size))
+        {
+            buffer[0] = 0;
+        }
         return buffer;
     #elif PLATFORM_UNIX
         gethostname(buffer, length);
@@ -199,7 +202,7 @@ namespace os
         return buffer;
     }
 
-    const char* version(char* buffer, usize length)
+    const char* version(char* buffer, int length)
     {
     #if PLATFORM_WINDOWS
         OSVERSIONINFOA os_info;
@@ -212,8 +215,8 @@ namespace os
 
         return string::format(buffer, length,
             "Windows_NT-%u.%u",
-            (uint)os_info.dwMajorVersion,
-            (uint)os_info.dwMinorVersion);
+            (u32)os_info.dwMajorVersion,
+            (u32)os_info.dwMinorVersion);
     #elif PLATFORM_UNIX
         struct utsname buf;
         if (::uname(&buf) == -1)
@@ -236,7 +239,12 @@ namespace os
     #endif
     }
 
-    usize cpus(CPU* buffer, usize length)
+    CPU* cpus(int* count)
+    {
+        return NULL;
+    }
+
+    int cpus(CPU* buffer, int length)
     {
         (void)buffer;
         (void)length;

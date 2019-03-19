@@ -312,7 +312,7 @@ inline u64 hashof(const Table<TKey, TValue>& table)
 }
 
 template <typename TKey, typename TValue>
-inline u32 lengthof(const Table<TKey, TValue>& table)
+inline int lengthof(const Table<TKey, TValue>& table)
 {
-    return (u32)table.get_length();
+    return table.get_length();
 }

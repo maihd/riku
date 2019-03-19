@@ -298,7 +298,7 @@ inline u64 hashof(const List<T>& list)
 }
 
 template <typename T>
-inline u32 lengthof(const List<T>& list)
+inline int lengthof(const List<T>& list)
 {
-    return (u32)list.get_length();
+    return list.get_length();
 }

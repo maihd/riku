@@ -42,19 +42,19 @@ namespace fs
         return traits::make_rvalue(Buffer());
     }
     
-    usize read_file(const char* path, Buffer& buffer)
+    int read_file(const char* path, Buffer& buffer)
     {
         return read_file(path, buffer.data, buffer.get_length());
     }
 
-    usize read_file(const char* path, void* buffer, usize length)
+    int read_file(const char* path, void* buffer, int length)
     {
         FILE* file = fopen(path, "r");
         if (file)
         {
             usize ret = fread(buffer, 1, length, file);
             fclose(file);
-            return ret;
+            return (int)ret;
         }
         else
         {
@@ -62,19 +62,19 @@ namespace fs
         }
     }
     
-    usize write_file(const char* path, const Buffer& buffer)
+    int write_file(const char* path, const Buffer& buffer)
     {
         return write_file(path, buffer.data, buffer.get_length());
     }
 
-    usize write_file(const char* path, const void* buffer, usize length)
+    int write_file(const char* path, const void* buffer, int length)
     {
         FILE* file = fopen(path, "w+");
         if (file)
         {
             usize ret = fwrite(buffer, 1, length, file);
             fclose(file);
-            return ret;
+            return (int)ret;
         }
         else
         {

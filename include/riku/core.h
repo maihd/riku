@@ -337,19 +337,19 @@ RIKU_API void __assert_abort(const char* exp, const char* func, const char* file
 
 namespace memory
 {
-    RIKU_API void* alloc(usize size);
+    RIKU_API void* alloc(int size);
     RIKU_API void  dealloc(void* ptr);
-    RIKU_API void* realloc(void* ptr, usize size);
+    RIKU_API void* realloc(void* ptr, int size);
 
-    RIKU_API void* init(void* dst, int val, usize size);
-    RIKU_API void* copy(void* dst, const void* src, usize size);
-    RIKU_API void* move(void* dst, const void* src, usize size);
+    RIKU_API void* init(void* dst, int val, int size);
+    RIKU_API void* copy(void* dst, const void* src, int size);
+    RIKU_API void* move(void* dst, const void* src, int size);
 
-    RIKU_API int   compare(const void* a, const void* b, usize size);
+    RIKU_API int   compare(const void* a, const void* b, int size);
 
-    inline   void* zero(void* dst, usize size)                          { return init(dst, 0, size);          }
-    inline   bool  equal(const void* a, const void* b, usize size)      { return compare(a, b, size) == 0;    }
-    inline   bool  not_equal(const void* a, const void* b, usize size)  { return compare(a, b, size) != 0;    }
+    inline   void* zero(void* dst, int size)                           { return init(dst, 0, size);          }
+    inline   bool  equals(const void* a, const void* b, int size)      { return compare(a, b, size) == 0;    }
+    inline   bool  not_equals(const void* a, const void* b, int size)  { return compare(a, b, size) != 0;    }
 }
 
 // NULL
@@ -496,7 +496,7 @@ public:
 
     inline ~Buffer()
     {
-        memory::dealloc(data ? (usize*)data - 1 : NULL);
+        memory::dealloc(data ? (int*)data - 1 : NULL);
     }
 
 public:
@@ -514,10 +514,10 @@ public:
     }
 
 public:
-    PROPERTY_READONLY(usize, length, get_length);
-    inline usize get_length(void) const
+    PROPERTY_READONLY(int, length, get_length);
+    inline int get_length(void) const
     {
-        return data ? *((usize*)data - 1) : 0;
+        return data ? *((int*)data - 1) : 0;
     }
 
 public:
@@ -532,7 +532,7 @@ public:
     }
 
 public: // Factory functions
-    RIKU_API static Buffer alloc(usize length);
+    RIKU_API static Buffer alloc(int length);
 };
 
 // UTF8 string operator
@@ -542,7 +542,7 @@ namespace string
     RIKU_API char*       clone(const char* str);
 
     // Get length of string
-    RIKU_API usize       length(const char* str);
+    RIKU_API int         length(const char* str);
 
 #if 0 && PREVIEWING
     RIKU_API const char* sub(const char* str, int start);
@@ -556,31 +556,31 @@ namespace string
     RIKU_API const char* copy(char* dst, const char* src);
 
     // Copy content of src string to dst string
-    RIKU_API const char* copy(char* dst, const char* src, usize length);
+    RIKU_API const char* copy(char* dst, const char* src, int length);
 
     // Add content of src string to end of dst string
     RIKU_API const char* concat(char* dst, const char* src);
 
     // Add content of src string to end of dst string
-    RIKU_API const char* concat(char* dst, const char* src, usize length);
+    RIKU_API const char* concat(char* dst, const char* src, int length);
 
     // Make a string with specified format
     RIKU_API const char* format(const char* fmt, ...);
 
     // Make a string with specified format
-    RIKU_API const char* format(char* buffer, usize length, const char* fmt, ...);
+    RIKU_API const char* format(char* buffer, int length, const char* fmt, ...);
 
     // Make a string with specified format
     RIKU_API const char* format_args(const char* fmt, ArgsList args_list);
 
     // Make a string with specified format
-    RIKU_API const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list);
+    RIKU_API const char* format_args(char* buffer, int length, const char* fmt, ArgsList args_list);
 
     // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
     RIKU_API int         compare(const char* dst, const char* src);
 
     // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
-    RIKU_API int         compare(const char* dst, const char* src, usize length);
+    RIKU_API int         compare(const char* dst, const char* src, int length);
 
     // Checking string is empty
     inline bool is_empty(const char* str)                { return !str || str[0] == 0;   }
@@ -593,6 +593,12 @@ namespace string
 
     // Compare two strings are not equal
     inline bool not_equals(const char* a, const char* b) { return compare(a, b) != 0;    }
+
+    // Compare two strings are equal
+    inline bool equals(const char* a, const char* b, int length)     { return compare(a, b, length) == 0; }
+
+    // Compare two strings are not equal
+    inline bool not_equals(const char* a, const char* b, int length) { return compare(a, b, length) != 0; }
 }
 
 // Detemine two string are equal or not
@@ -640,7 +646,7 @@ namespace process
     ;
 
     RIKU_API const char* cwd(void);
-    RIKU_API const char* cwd(char* buffer, usize length);
+    RIKU_API const char* cwd(char* buffer, int length);
     RIKU_API bool        chdir(const char* directory);
 
     RIKU_API void        exit(int code);
@@ -800,13 +806,13 @@ public: // Utils
 };
 
 // Default 32-bit hash function
-RIKU_API u32 calc_hash32(const void* buffer, usize length);
+RIKU_API u32 calc_hash32(const void* buffer, int length);
 
 // Default 64-bit hash function
-RIKU_API u64 calc_hash64(const void* buffer, usize length);
+RIKU_API u64 calc_hash64(const void* buffer, int length);
 
 // Default hash function, compute at compile time
-template <u32 length>
+template <int length>
 constexpr u32 calc_hash32(const char (&buffer)[length])
 {
     u32 h = 0;
@@ -872,7 +878,7 @@ constexpr u32 calc_hash32(const char (&buffer)[length])
 }
 
 // Default 64-bit hash function, compute at compile time
-template <u32 length>
+template <int length>
 constexpr u64 calc_hash64(const char(&buffer)[length])
 {
     u64 h = 0;
@@ -927,7 +933,7 @@ constexpr u64 calc_hash64(const char(&buffer)[length])
 // Function-like operators
 
 // Compute hash of given data
-inline u64 hashof(const void* buffer, usize length)
+inline u64 hashof(const void* buffer, int length)
 {
     return calc_hash64(buffer, length);
 }
@@ -954,43 +960,43 @@ inline u64 hashof(const Buffer& buffer)
 }
 
 // Compute hash of given data
-template <u32 length>
+template <int length>
 constexpr u64 hashof(const char(&buffer)[length])
 {
     return calc_hash64<length>(buffer);
 }
 
 // Get length of given buffer
-template <typename T, u32 length>
-constexpr u32 lengthof(const T(&array)[length])
+template <typename T, int length>
+constexpr int lengthof(const T(&array)[length])
 {
     return length;
 }
 
 // Get length of given buffer
-template <u32 length>
-constexpr u32 lengthof(const char(&array)[length])
+template <int length>
+constexpr int lengthof(const char(&array)[length])
 {
     return length - 1;
 }
 
 // Get length of given value
 template <typename T>
-constexpr u32 lengthof(const T& x)
+constexpr int lengthof(const T& x)
 {
     return 1;
 }
 
 // Get length of given string
 template <>
-inline u32 lengthof(const cstr& str)
+inline int lengthof(const cstr& str)
 {
-    return (u32)string::length(str);
+    return string::length(str);
 }
 
 // Get length of given buffer
 template <>
-inline u32 lengthof(const Buffer& buffer)
+inline int lengthof(const Buffer& buffer)
 {
-    return (u32)buffer.get_length();
+    return buffer.get_length();
 }

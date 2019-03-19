@@ -408,7 +408,7 @@ inline u64 hashof(const Array<T>& array)
 }
 
 template <typename T>
-inline u32 lengthof(const Array<T>& array)
+inline int lengthof(const Array<T>& array)
 {
-    return (u32)array.get_length();
+    return array.get_length();
 }

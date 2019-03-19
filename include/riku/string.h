@@ -202,6 +202,10 @@ public:
     } 
 };
 
+//
+// @region: Function-like operators
+//
+
 template <>
 inline u64 hashof(const String& string)
 {
@@ -209,10 +213,14 @@ inline u64 hashof(const String& string)
 }
 
 template <>
-inline u32 lengthof<String>(const String& string)
+inline int lengthof<String>(const String& string)
 {
     return (u32)string.get_length();
 }
+
+//
+// @region: Operator overloading
+//
 
 inline bool operator==(const String& a, const String& b)
 {

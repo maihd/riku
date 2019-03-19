@@ -19,9 +19,9 @@ namespace string
 #endif
     }
 
-    usize length(const char* str)
+    int length(const char* str)
     {
-        return strlen(str);
+        return (int)strlen(str);
     }
 
 #if 0 && PREVIEWING
@@ -51,9 +51,9 @@ namespace string
         return strcpy(dst, src);
     }
 
-    const char* copy(char* dst, const char* src, usize length)
+    const char* copy(char* dst, const char* src, int length)
     {
-        return strncpy(dst, src, length);
+        return strncpy(dst, src, (usize)length);
     }
 
     const char* concat(char* dst, const char* src)
@@ -61,9 +61,9 @@ namespace string
         return strcat(dst, src);
     }
 
-    const char* concat(char* dst, const char* src, usize length)
+    const char* concat(char* dst, const char* src, int length)
     {
-        return strncat(dst, src, length);
+        return strncat(dst, src, (usize)length);
     }
 
     int compare(const char* dst, const char* src)
@@ -71,9 +71,9 @@ namespace string
         return strcmp(dst, src);
     }
 
-    int compare(const char* dst, const char* src, usize length)
+    int compare(const char* dst, const char* src, int length)
     {
-        return strncmp(dst, src, length);
+        return strncmp(dst, src, (usize)length);
     }
 
     const char* format(const char* fmt, ...)
@@ -86,11 +86,11 @@ namespace string
         return result;
     }
 
-    const char* format(char* buffer, usize length, const char* fmt, ...)
+    const char* format(char* buffer, int length, const char* fmt, ...)
     {
         ArgsList args_list;
         argslist_begin(args_list, fmt);
-        const char* result = format_args(buffer, length, fmt, args_list);
+        const char* result = format_args(buffer, (usize)length, fmt, args_list);
         argslist_end(args_list);
 
         return result;
@@ -103,9 +103,9 @@ namespace string
         return buffer;
     }
 
-    const char* format_args(char* buffer, usize length, const char* fmt, ArgsList args_list)
+    const char* format_args(char* buffer, int length, const char* fmt, ArgsList args_list)
     {
-        vsnprintf(buffer, length, fmt, args_list);
+        vsnprintf(buffer, (usize)length, fmt, args_list);
         return buffer; 
     }
 }

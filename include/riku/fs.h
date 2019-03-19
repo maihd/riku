@@ -57,9 +57,9 @@ namespace fs
     RIKU_API bool   exists(const char* path);
     
     RIKU_API Buffer read_file(const char* path);
-    RIKU_API usize  read_file(const char* path, Buffer& buffer);
-    RIKU_API usize  read_file(const char* path, void* buffer, usize length);
+    RIKU_API int    read_file(const char* path, Buffer& buffer);
+    RIKU_API int    read_file(const char* path, void* buffer, int length);
     
-    RIKU_API usize  write_file(const char* path, const Buffer& buffer);
-    RIKU_API usize  write_file(const char* path, const void* buffer, usize length);
+    RIKU_API int    write_file(const char* path, const Buffer& buffer);
+    RIKU_API int    write_file(const char* path, const void* buffer, int length);
 }

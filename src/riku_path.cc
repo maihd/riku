@@ -17,18 +17,18 @@ namespace path
         return basename(path, ext, result, sizeof(result));
     }
 
-    const char* basename(const char* path, char* buffer, usize length)
+    const char* basename(const char* path, char* buffer, int length)
     {
         return basename(path, "", buffer, length);
     }
 
-    const char* basename(const char* path, const char* ext, char* buffer, usize length)
+    const char* basename(const char* path, const char* ext, char* buffer, int length)
     {
         ALWAYS_FALSE_ASSERT("path::basename is not implemented!");
         return "";
     }
 
-    const char* dirname(const char* path, char* buffer, usize length)
+    const char* dirname(const char* path, char* buffer, int length)
     {
         ALWAYS_FALSE_ASSERT("path::dirname is not implemented!");
         return "";
@@ -40,7 +40,7 @@ namespace path
         return dirname(path, result, sizeof(result));
     }
 
-    const char* extname(const char* path, char* buffer, usize length)
+    const char* extname(const char* path, char* buffer, int length)
     {
         ALWAYS_FALSE_ASSERT("path::extname is not implemented!");
         return "";
@@ -70,7 +70,7 @@ namespace path
         return absolute(path, result, sizeof(result));
     }
 
-    const char* absolute(const char* path, char* buffer, usize length)
+    const char* absolute(const char* path, char* buffer, int length)
     {
         ALWAYS_FALSE_ASSERT("path::absolute is not implemented!");
         return "";
@@ -82,7 +82,7 @@ namespace path
         return relative(from, to, result, sizeof(result));
     }
 
-    const char* relative(const char* from, const char* to, char* buffer, usize length)
+    const char* relative(const char* from, const char* to, char* buffer, int length)
     {
         ALWAYS_FALSE_ASSERT("path::relative is not implemented!");
         return "";
@@ -101,7 +101,7 @@ namespace path
         return ret;
     }
 
-    const char* join(char* buffer, usize length, const char* path, ...)
+    const char* join(char* buffer, int length, const char* path, ...)
     {
         ArgsList args_list;
         argslist_begin(args_list, path);
@@ -117,9 +117,9 @@ namespace path
         return join_args(result, sizeof(result), path, args_list);
     }
 
-    const char* join_args(char* buffer, usize length, const char* path, ArgsList args_list)
+    const char* join_args(char* buffer, int length, const char* path, ArgsList args_list)
     {
-        if (!buffer || !length || !path)
+        if (!buffer || length <= 0 || !path)
         {
             return "";
         }

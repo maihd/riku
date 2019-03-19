@@ -102,18 +102,20 @@ namespace os
 
     RIKU_API const char*   tmpdir(void);
     RIKU_API const char*   homedir(void);
-    RIKU_API const char*   tmpdir(char* buffer, usize length);
-    RIKU_API const char*   homedir(char* buffer, usize length);
+    RIKU_API const char*   tmpdir(char* buffer, int length);
+    RIKU_API const char*   homedir(char* buffer, int length);
 
     RIKU_API const char*   hostname(void);
-    RIKU_API const char*   hostname(char* buffer, usize length);
+    RIKU_API const char*   hostname(char* buffer, int length);
 
     RIKU_API void          loadavg(float avgs[3]);
     RIKU_API void          loadavg(double avgs[3]);
 
     RIKU_API const char*   version(void);
-    RIKU_API const char*   version(char* buffer, usize length);
+    RIKU_API const char*   version(char* buffer, int length);
 
     RIKU_API u64           uptime(void);
-    RIKU_API usize         cpus(CPU* buffer, usize length);
+
+    RIKU_API CPU*          cpus(int* count);
+    RIKU_API int           cpus(CPU* buffer, int count);
 }
