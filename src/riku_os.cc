@@ -74,7 +74,7 @@ namespace os
     const char* tmpdir(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
-        ::GetTempPathA(length, buffer);
+        ::GetTempPathA((DWORD)length, buffer);
         return buffer;
     #elif PLATFORM_UNIX
         const char* envbuf;
@@ -98,8 +98,8 @@ namespace os
     const char* homedir(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
-        usize drive_size = ::GetEnvironmentVariableA("HOMEDRIVE", buffer, length);
-        usize path_size  = ::GetEnvironmentVariableA("HOMEPATH", buffer + drive_size, length - drive_size);
+        usize drive_size = (usize)::GetEnvironmentVariableA("HOMEDRIVE", buffer, (DWORD)length);
+        usize path_size  = (usize)::GetEnvironmentVariableA("HOMEPATH", buffer + drive_size, (DWORD)(length - drive_size));
 
         if (!path_size)
         {

@@ -12,7 +12,11 @@ namespace string
 {
     char* clone(const char* str)
     {
+#if PLATFORM_WINDOWS
+        return _strdup(str);
+#else
         return strdup(str);
+#endif
     }
 
     usize length(const char* str)

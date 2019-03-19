@@ -215,7 +215,7 @@ namespace process
     const char* cwd(char* buffer, usize length)
     {
     #if PLATFORM_WINDOWS
-        GetCurrentDirectoryA(length, buffer);
+        GetCurrentDirectoryA((DWORD)length, buffer);
         return buffer;
     #elif PLATFORM_UNIX
         return ::getcwd(buffer, length);

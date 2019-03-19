@@ -72,7 +72,7 @@ public:
 
 public:
     inline String(const char* buffer)
-        : String(buffer, string::length(buffer))
+        : String(buffer, (int)string::length(buffer))
     {
     }
 

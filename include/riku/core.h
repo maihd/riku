@@ -776,41 +776,13 @@ public: // Utils
     }
 };
 
-// Common 32-bit hash function
+// Default 32-bit hash function
 RIKU_API u32 calc_hash32(const void* buffer, usize length);
 
-// Common 64-bit hash function
+// Default 64-bit hash function
 RIKU_API u64 calc_hash64(const void* buffer, usize length);
 
-// Common 32-bit hash function
-template <typename T>
-inline u32 calc_hash32(const T& x)
-{
-    return calc_hash32(&x, sizeof(x));
-}
-
-// Common 32-bit hash function, for c-string
-template <>
-inline u32 calc_hash32<cstr>(const cstr& x)
-{
-    return calc_hash32(x, string::length(x));
-}
-
-// Common 64-bit hash function
-template <typename T>
-inline u64 calc_hash64(const T& x)
-{
-    return calc_hash64(&x, sizeof(x));
-}
-
-// Common 64-bit hash function, for c-string
-template <>
-inline u64 calc_hash64<cstr>(const cstr& x)
-{
-    return calc_hash64(x, string::length(x));
-}
-
-// Common hash function, compute at compile time
+// Default hash function, compute at compile time
 template <u32 length>
 constexpr u32 calc_hash32(const char (&buffer)[length])
 {
@@ -876,7 +848,7 @@ constexpr u32 calc_hash32(const char (&buffer)[length])
     return h;
 }
 
-// Common 64-bit hash function, compute at compile time
+// Default 64-bit hash function, compute at compile time
 template <u32 length>
 constexpr u64 calc_hash64(const char(&buffer)[length])
 {
@@ -959,9 +931,9 @@ constexpr u64 hashof(const char(&buffer)[length])
 }
 
 // Get length of given buffer
-u32 lengthof(const Buffer& buffer)
+inline u32 lengthof(const Buffer& buffer)
 {
-    return buffer.get_length();
+    return (u32)buffer.get_length();
 }
 
 // Get length of given buffer
