@@ -360,15 +360,15 @@ namespace crypto
 
         u64 h = seed;
 
-        const u64 * data = (const u64*)buffer;
-        const u64 * end = data + (length / 8);
+        const u64* data = (const u64*)buffer;
+        const u64* end = data + (length >> 3);
 
         while (data != end)
         {
-#ifdef PLATFORM_BIG_ENDIAN
+#if CPU_BIG_ENDIAN
             u64 k = *data++;
-            char *p = (char *)&k;
-            char c;
+            u8* p = (u8*)&k;
+            u8 c;
             c = p[0]; p[0] = p[7]; p[7] = c;
             c = p[1]; p[1] = p[6]; p[6] = c;
             c = p[2]; p[2] = p[5]; p[5] = c;
@@ -385,7 +385,7 @@ namespace crypto
             h *= m;
         }
 
-        const unsigned char * data2 = (const unsigned char*)data;
+        const u8* data2 = (const u8*)data;
 
         switch (length & 7)
         {

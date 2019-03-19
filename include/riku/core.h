@@ -884,26 +884,28 @@ constexpr u32 calc_hash32(const char (&buffer)[length])
 template <u32 length>
 constexpr u64 calc_hash64(const char(&buffer)[length])
 {
+    using u8_ptr  = u8*;
+    using u64_ptr = u64*;
+
     u64 h = 0;
 
     const u64 m   = 0xc6a4a7935bd1e995ULL;
     const u64 r   = 47;
     const u32 len = length - 1;
 
-    for (u32 i = 0; i < len; i += 8)
+    u64* data = u64_ptr(buffer);
+    for (u32 i = 0, n = len >> 3; i < n; i += 8)
     {
-        u64 b0 = buffer[i + 0];
-        u64 b1 = buffer[i + 1];
-        u64 b2 = buffer[i + 2];
-        u64 b3 = buffer[i + 3];
-        u64 b4 = buffer[i + 4];
-        u64 b5 = buffer[i + 5];
-        u64 b6 = buffer[i + 6];
-        u64 b7 = buffer[i + 7];
-#if CPU_LITTLE_ENDIAN
-        u64 k = (b7 << 56) | (b6 << 48) | (b5 << 40) | (b4 << 32) | (b3 << 24) | (b2 << 16) | (b1 << 8) | (b0 << 0);
+#if CPU_BIG_ENDIAN
+        u64 k = *data++;
+        u8* p = (u8*)&k;
+        u8 c;
+        c = p[0]; p[0] = p[7]; p[7] = c;
+        c = p[1]; p[1] = p[6]; p[6] = c;
+        c = p[2]; p[2] = p[5]; p[5] = c;
+        c = p[3]; p[3] = p[4]; p[4] = c;
 #else
-        u64 k = (b7 << 0) | (b6 << 8) | (b5 << 16) | (b4 << 24) | (b3 << 32) | (b2 << 40) | (b1 << 48) | (b0 << 56);
+        u64 k = *data++;
 #endif
 
         k *= m;
@@ -914,16 +916,16 @@ constexpr u64 calc_hash64(const char(&buffer)[length])
         h *= m;
     }
 
-    u32 n = (len >> 3) << 3;
+    u8* data_u8 = u8_ptr(data);
     switch (len & 7)
     {
-    case 7: h ^= u64((buffer + n)[6]) << 48;
-    case 6: h ^= u64((buffer + n)[5]) << 40;
-    case 5: h ^= u64((buffer + n)[4]) << 32;
-    case 4: h ^= u64((buffer + n)[3]) << 24;
-    case 3: h ^= u64((buffer + n)[2]) << 16;
-    case 2: h ^= u64((buffer + n)[1]) <<  8;
-    case 1: h ^= u64((buffer + n)[0]) <<  0; h *= m;
+    case 7: h ^= u64(data_u8[6]) << 48;
+    case 6: h ^= u64(data_u8[5]) << 40;
+    case 5: h ^= u64(data_u8[4]) << 32;
+    case 4: h ^= u64(data_u8[3]) << 24;
+    case 3: h ^= u64(data_u8[2]) << 16;
+    case 2: h ^= u64(data_u8[1]) <<  8;
+    case 1: h ^= u64(data_u8[0]) <<  0; h *= m;
     };
 
     h ^= h >> r;
