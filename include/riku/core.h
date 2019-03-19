@@ -931,39 +931,47 @@ constexpr u64 calc_hash64(const char(&buffer)[length])
 
 // Function-like operators
 
-// Global hash function
+// Compute hash of given data
 inline u64 hashof(const void* buffer, usize length)
 {
     return calc_hash64(buffer, length);
 }
 
-// Global hash function
+// Compute hash of given data
 template <typename T>
 inline u64 hashof(const T& x)
 {
     return calc_hash64(&x, sizeof(x));
 }
 
-// Global hash function
+// Compute hash of given data
 template <>
 inline u64 hashof<cstr>(const cstr& x)
 {
     return calc_hash64(x, string::length(x));
 }
 
-// Global hash function
+// Compute hash of given data
 template <u32 length>
 constexpr u64 hashof(const char(&buffer)[length])
 {
     return calc_hash64<length>(buffer);
 }
 
+// Get length of given buffer
+u32 lengthof(const Buffer& buffer)
+{
+    return buffer.get_length();
+}
+
+// Get length of given buffer
 template <typename T, u32 length>
 constexpr u32 lengthof(const T(&array)[length])
 {
     return length;
 }
 
+// Get length of given buffer
 template <u32 length>
 constexpr u32 lengthof(const char(&array)[length])
 {
