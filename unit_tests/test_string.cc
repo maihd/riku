@@ -35,12 +35,10 @@ TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
     char buffer[2048];
     REQUIRE(string::compare(string::format(buffer, sizeof(buffer), "Hello world %d", 0), "Hello world 0") == 0);
 
-    const char* tmp = "hello world";
-    u32 tmp_hash1 = calc_hash32("hello world");
-    u32 tmp_hash0 = calc_hash32(tmp);
-    switch (tmp_hash0)
+    u64 tmp_hash1 = hashof("hello world");
+    switch (tmp_hash1)
     {
-    case calc_hash32("hello world"):
+    case hashof("hello world"):
         REQUIRE(true);
         break;
 

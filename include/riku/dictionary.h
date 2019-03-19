@@ -171,7 +171,7 @@ public: // Methods
 
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)((uint)calc_hash64(key) % this->get_hash_count());
+        int hash = (int)((uint)hashof(key) % this->get_hash_count());
         int curr = buffer->hashs[hash];
         int prev = -1;
 
