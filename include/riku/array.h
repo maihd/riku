@@ -257,7 +257,7 @@ public:
     {
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (buffer->items[i] == value)
+            if (CompareTrait<TItem>::equal(buffer->items[i], value))
             {
                 return i;
             }
@@ -272,13 +272,19 @@ public:
         int index = -1;
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (buffer->items[i] == value)
+            if (CompareTrait<TItem>::equal(buffer->items[i], value))
             {
                 index = i;
             }
         }
 
         return index;
+    }
+
+    // Determines whether the contains given item
+    inline bool contains(const TItem& item) const
+    {
+        return index_of(item) > 0;
     }
 
     // Add other array items to this array, from the last position

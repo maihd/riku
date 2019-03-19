@@ -209,7 +209,7 @@ public: // Methods
         return buffer->values[curr];
     }
 
-    bool has(const TKey& key) const
+    bool contains(const TKey& key) const
     {
         return index_of(key) > -1;
     }

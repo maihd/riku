@@ -187,7 +187,7 @@ public: // Methods
         return buffer->values[curr];
     }
 
-    bool has(u64 key) const
+    bool contains(u64 key) const
     {
         return index_of(key) > -1;
     }

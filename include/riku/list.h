@@ -242,7 +242,7 @@ public:
     {
         for (int i = 0, n = get_length(); i < n; i++)
         {
-            if (value == buffer->items[i])
+            if (CompareTrait<TItem>::equal(value, buffer->items[i]))
             {
                 return i;
             }
@@ -255,13 +255,19 @@ public:
     {
         for (int i = get_length() - 1; i > -1; i--)
         {
-            if (value == buffer->items[i])
+            if (CompareTrait<TItem>::equal(value, buffer->items[i]))
             {
                 return i;
             }
         }
 
         return -1;
+    }
+
+    // Determines whether the contains given item
+    inline bool contains(const TItem& item) const
+    {
+        return index_of(item) > 0;
     }
 
 public:
