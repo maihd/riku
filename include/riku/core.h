@@ -601,12 +601,15 @@ namespace string
     inline bool not_equals(const char* a, const char* b, int length) { return compare(a, b, length) != 0; }
 }
 
-// Detemine two string are equal or not
-// @note: use for trait purpose only
-template <>
-inline bool traits::equals<cstr>(const cstr& a, const cstr& b)
+namespace traits
 {
-    return string::equals(a, b);
+    // Detemine two string are equal or not
+    // @note: use for trait purpose only
+    template <>
+    inline bool equals<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::equals(a, b);
+    }
 }
 
 // Console
