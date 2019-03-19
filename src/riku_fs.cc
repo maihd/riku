@@ -22,6 +22,26 @@ namespace fs
     #endif
     }
 
+    FileHandle open(const char* path, const char* flags)
+    {
+        return fopen(path, flags);
+    }
+
+    int read(FileHandle handle, void* buffer, int length)
+    {
+        return (int)fread(buffer, 1, (usize)length, (FILE*)handle);
+    }
+
+    int write(FileHandle handle, void* buffer, int length)
+    {
+        return (int)fwrite(buffer, 1, (usize)length, (FILE*)handle);
+    }
+
+    void close(FileHandle handle)
+    {
+        fclose((FILE*)handle);
+    }
+
     Buffer read_file(const char* path)
     {
         FILE* file = fopen(path, "r");

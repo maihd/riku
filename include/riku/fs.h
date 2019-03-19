@@ -26,14 +26,10 @@ namespace enums
     };
 };
 using FileOpen = enums::FileOpen;
+using FileHandle = void*;
 
 namespace fs
 {
-#if PLATFORM_WINDOWS
-    using Handle = void*;
-#else
-    using Handle = int;
-#endif
 
 #if 0 && PREVIEWING
     enum struct FileType
@@ -51,11 +47,26 @@ namespace fs
     RIKU_API Stats stat(const char* path);
 #endif
     
-    RIKU_API Handle open(const char* path, FileOpen flags);
-    RIKU_API Handle open(const char* path, const char* flags);
+    //
+    // File stats
+    //
 
-    RIKU_API bool   exists(const char* path);
-    
+    RIKU_API bool exists(const char* path);
+
+    //
+    // Low-level file working functions
+    //
+
+    //RIKU_API FileHandle open(const char* path, FileOpen flags);
+    RIKU_API FileHandle open(const char* path, const char* flags);
+    RIKU_API int        read(FileHandle handle, void* buffer, int length);
+    RIKU_API int        write(FileHandle handle, void* buffer, int length);
+    RIKU_API void       close(FileHandle handle);
+
+    //
+    // High-level, easily file working functions
+    //
+
     RIKU_API Buffer read_file(const char* path);
     RIKU_API int    read_file(const char* path, Buffer& buffer);
     RIKU_API int    read_file(const char* path, void* buffer, int length);
