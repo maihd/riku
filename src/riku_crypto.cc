@@ -326,7 +326,8 @@ namespace crypto
 
     static void md5_update(MD5* context, const byte* input, int length)
     {
-        u32 i, index, part_len;
+        int i, index;
+        int part_len;
 
         // Compute number of bytes mod 64
         index = (u32)((context->count[0] >> 3) & 0x3F);
@@ -427,7 +428,7 @@ namespace crypto
 
     u64 crc64(const void* buffer, int length)
     {
-        return crc32(buffer, length, 0xffffffffffffffffULL);
+        return crc64(buffer, length, 0xffffffffffffffffULL);
     }
 
     u64 crc64(const void* buffer, int length, u64 seed)

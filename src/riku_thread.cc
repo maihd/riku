@@ -109,7 +109,7 @@ bool Mutex::trylock(void)
 #if PLATFORM_WINDOWS
     return TryEnterCriticalSection((CRITICAL_SECTION*)handle);
 #elif PLATFORM_UNIX
-    pthread_mutex_lock((pthread_mutex_t*)handle);
+    return pthread_mutex_lock((pthread_mutex_t*)handle) == 0;
 #endif
 }
 
