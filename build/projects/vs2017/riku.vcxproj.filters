@@ -13,8 +13,8 @@
     <Filter Include="include\riku">
       <UniqueIdentifier>{A0EB0F6D-8C4E-9F11-35D4-D7C721166B94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\riku\math">
-      <UniqueIdentifier>{466FB296-B285-B02C-FBFC-3B4E675281B4}</UniqueIdentifier>
+    <Filter Include="include\riku\gmath">
+      <UniqueIdentifier>{AD0A9A6C-99EE-5AC2-024F-5515EE514544}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\riku\previewing">
       <UniqueIdentifier>{DCBC8103-48F4-C99A-51FE-2DBEBDB4F093}</UniqueIdentifier>
@@ -54,6 +54,9 @@
     <ClInclude Include="..\..\..\include\riku\func.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\hash_table.h">
       <Filter>include\riku</Filter>
     </ClInclude>
@@ -90,11 +93,80 @@
     <ClInclude Include="..\..\..\include\riku\zlib.h">
       <Filter>include\riku</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\riku\math\operators.h">
-      <Filter>include\riku\math</Filter>
+    <ClInclude Include="..\..\..\include\riku\gmath\base.h">
+      <Filter>include\riku\gmath</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\riku\math\types.h">
-      <Filter>include\riku\math</Filter>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool2x2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool3x3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\bool4x4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float2x2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float3x3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\float4x4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int2x2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int3x3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\int4x4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint2x2.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint3x3.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint4.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\uint4x4.h">
+      <Filter>include\riku\gmath</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\riku\previewing\alloc.h">
       <Filter>include\riku\previewing</Filter>
@@ -153,6 +225,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_fs.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_gmath.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_json.cc">

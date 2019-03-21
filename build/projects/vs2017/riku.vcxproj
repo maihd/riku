@@ -239,6 +239,7 @@
     <ClInclude Include="..\..\..\include\riku\events.h" />
     <ClInclude Include="..\..\..\include\riku\fs.h" />
     <ClInclude Include="..\..\..\include\riku\func.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath.h" />
     <ClInclude Include="..\..\..\include\riku\hash_table.h" />
     <ClInclude Include="..\..\..\include\riku\json.h" />
     <ClInclude Include="..\..\..\include\riku\list.h" />
@@ -251,8 +252,31 @@
     <ClInclude Include="..\..\..\include\riku\table.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
-    <ClInclude Include="..\..\..\include\riku\math\operators.h" />
-    <ClInclude Include="..\..\..\include\riku\math\types.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\base.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool2x2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool3x3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\bool4x4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float2x2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float3x3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\float4x4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int2x2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int3x3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\int4x4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint2x2.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint3x3.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\uint4x4.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\alloc.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h" />
@@ -278,6 +302,8 @@
     <ClCompile Include="..\..\..\src\riku_dylib.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_fs.cc">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_gmath.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_json.cc">
     </ClCompile>

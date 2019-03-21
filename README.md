@@ -26,7 +26,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Thread, Mutex, Condition, Semaphore
 * [ ] Fiber, TaskSystem, Coroutine
 * [ ] Future and Promise/A+
-* [x] High-level graphics math
+* [x] Linear and graphics math, all with same module `math`
 * [x] Operator System functions
 * [ ] FileSystem: NodeJS's `fs`
 * [ ] Path: NodeJS's `path`
