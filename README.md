@@ -26,7 +26,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Thread, Mutex, Condition, Semaphore
 * [ ] Fiber, TaskSystem, Coroutine
 * [ ] Future and Promise/A+
-* [x] High-level math
+* [x] High-level graphics math
 * [x] Operator System functions
 * [ ] FileSystem: NodeJS's `fs`
 * [ ] Path: NodeJS's `path`
@@ -40,7 +40,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] EventEmitter: NodeJS's `EventEmitter`
 * [x] List: high-level of Array
 * [x] Array: POD continous container
-* [ ] Table: POD table with generic key
+* [x] Table: POD table with generic key
 * [x] HashTable: POD table with hashed key
 * [x] Dictionary: high-level of Table
 
