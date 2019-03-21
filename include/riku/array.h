@@ -14,6 +14,9 @@ template <typename TItem>
 struct Array
 {
 public:
+    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+
+public:
     struct Buffer : RefCount
     {
         int   length;

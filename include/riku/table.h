@@ -10,6 +10,10 @@ template <typename TKey, typename TValue>
 struct Table
 {
 public:
+    static_assert(traits::is_pod<TKey>(), "TKey is not a POD type.");
+    static_assert(traits::is_pod<TValue>(), "TValue is not a POD type.");
+
+public:
     struct Buffer : RefCount
     {
         int          length;

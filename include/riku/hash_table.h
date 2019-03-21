@@ -9,6 +9,9 @@
 template <typename TValue>
 struct HashTable
 {
+public:
+    static_assert(traits::is_pod<TValue>(), "TValue is not a POD type.");
+
 public: 
     struct Buffer : RefCount
     {

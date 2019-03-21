@@ -423,9 +423,33 @@ namespace traits
     using WithoutRef = typename WithoutRefTrait<T>::Type;
 
     template <typename T>
-    inline traits::WithoutRef<T>&& make_rvalue(T&& value)
+    inline WithoutRef<T>&& make_rvalue(T&& value)
     {
         return (static_cast<WithoutRef<T>&&>(value));
+    }
+
+    template <typename T>
+    constexpr bool is_pod(void)
+    {
+        return __is_pod(T);
+    }
+
+    template <typename T>
+    constexpr bool is_enum(void)
+    {
+        return __is_enum(T);
+    }
+
+    template <typename T>
+    constexpr bool is_union(void)
+    {
+        return __is_union(T);
+    }
+
+    template <typename T>
+    constexpr bool is_struct(void)
+    {
+        return __is_class(T);
     }
 }
 

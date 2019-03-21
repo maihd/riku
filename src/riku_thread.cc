@@ -424,7 +424,7 @@ bool Semaphore::trywait(void)
         return false;
     }
 
-    abort();
+    process::abort();
     return false; /* Satisfy the compiler. */
 #elif PLATFORM_OSX
     mach_timespec_t interval;
