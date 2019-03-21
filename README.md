@@ -49,9 +49,9 @@ Main purpose of this library for using as a standard library, replacement for C/
 2. Unlicense or public domain
 
 ## Acknowledge
-1. Branimir Karadžić and GENie team
+1. GENie team
 2. NodeJS and libuv team
-3. Bitsquid foundation maker
+3. Bitsquid foundation makers
 4. ZLib software
 5. Rust language developers
 6. And many more open source projects
