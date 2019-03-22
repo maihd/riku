@@ -22,27 +22,28 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] JSON
 * [ ] Allocator
 * [x] Dynamic string
-* [x] Crypto: NodeJS's `crypto`
-* [x] Thread, Mutex, Condition, Semaphore
-* [ ] Fiber, TaskSystem, Coroutine
+* [x] Crypto: hashing, encrypt, decrypt, encode, decode
+* [x] Thread, Mutex, Condition, Semaphore, Atomic, Fiber
+* [ ] Tasks or jobs system
 * [ ] Future and Promise/A+
 * [x] Linear and graphics math, all with same module `math`
-* [x] Operator System functions
-* [ ] FileSystem: NodeJS's `fs`
-* [ ] Path: NodeJS's `path`
-* [ ] Net: NodeJS's `net`
+* [x] OS functions
+* [ ] File system
+* [ ] Path: helpers for working with filesystem path
+* [ ] Url: helpers for working with network URL 
+* [ ] Net: sockets and streaming
 * [ ] Http/Https: NodeJS's `http` and `https`
 * [x] Dylib (low level)
 * [ ] Zlib: NodeJS's `zlib`
-* [ ] ArgsParse (parsing command line)
-* [ ] Stream: NodeJS's `stream`
-* [x] Func: fast delegate
-* [x] EventEmitter: NodeJS's `EventEmitter`
-* [x] List: high-level of Array
-* [x] Array: POD continous container
-* [x] Table: POD table with generic key
-* [x] HashTable: POD table with hashed key
-* [x] Dictionary: high-level of Table
+* [ ] ArgsParse: parsing command line
+* [ ] Stream: base of all streaming type
+* [x] Func<>: fast delegate
+* [x] EventEmitter<N,F>: raise an event and callback to listeners
+* [x] List<T>: high-level of Array
+* [x] Array<T>: POD continous container
+* [x] Table<K,V>: POD table with generic key
+* [x] HashTable<V>: POD table with hashed key
+* [x] Dictionary<K,V>: high-level of Table
 
 ## License
 1. Author: MaiHD @ 2019
