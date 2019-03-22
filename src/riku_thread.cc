@@ -62,7 +62,7 @@ Atomic operator--(Atomic& atomic, int)
 
 Atomic& operator+=(Atomic& atomic, i64 value)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	_InterlockedAdd64(&atomic.value, value);
 #else
     atomic.value += value;
@@ -73,7 +73,7 @@ Atomic& operator+=(Atomic& atomic, i64 value)
 
 Atomic& operator-=(Atomic& atomic, i64 value)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	_InterlockedAdd64(&atomic.value, -value);
 #else
     atomic.value -= value;
@@ -83,7 +83,7 @@ Atomic& operator-=(Atomic& atomic, i64 value)
 
 Atomic& operator^=(Atomic& atomic, i64 value)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	_InterlockedXor64(&atomic.value, value);
 #else
     atomic.value ^= value;
@@ -93,7 +93,7 @@ Atomic& operator^=(Atomic& atomic, i64 value)
 
 Atomic& operator|=(Atomic& atomic, i64 value)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	_InterlockedOr64(&atomic.value, value);
 #else
     atomic.value |= value;
@@ -103,7 +103,7 @@ Atomic& operator|=(Atomic& atomic, i64 value)
 
 Atomic& operator&=(Atomic& atomic, i64 value)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	_InterlockedAnd64(&atomic.value, value);
 #else
     atomic.value &= value;
