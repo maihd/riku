@@ -22,12 +22,7 @@ RIKU_API Atomic& operator&=(Atomic& atomic, i64 value);
 struct Thread
 { 
 public:
-#if PLATFORM_WINDOWS
-    void* handle; // HANDLE
-#elif PLATFORM_UNIX
-    void* handle; // pthread_t
-#endif
-
+    void*      handle;
     ThreadFunc func;
 
 public:
@@ -86,4 +81,17 @@ public:
     RIKU_API void wait(void);
     RIKU_API void post(void);
     RIKU_API bool trywait(void);
+};
+
+
+struct Fiber
+{
+public:
+    void*      handle;
+    ThreadFunc func;
+
+public:
+    RIKU_API bool init(const ThreadFunc& func);
+    RIKU_API void release(void);
+    RIKU_API void switch_to(void);
 };
