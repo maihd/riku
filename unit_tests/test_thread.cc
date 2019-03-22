@@ -8,11 +8,14 @@ TEST_CASE("Thread testing", "[thread]")
 {
     Thread* thread = CREATE(Thread) Thread();
     thread->start([]() {
-        int count = 0;
-        while (count--)
+        Atomic count;
+        count.value = 10;
+        while (count.value > 0)
         {
             console::log("Thread: hello world!");
             performance::sleep(1000);
+
+            count--;
         }
     });
 

@@ -5,6 +5,20 @@
 
 using ThreadFunc = Func<void(void)>;
 
+struct Atomic 
+{
+	volatile i64 value;
+};
+RIKU_API Atomic& operator++(Atomic& atomic);
+RIKU_API Atomic& operator--(Atomic& atomic);
+RIKU_API Atomic  operator++(Atomic& atomic, int);
+RIKU_API Atomic  operator--(Atomic& atomic, int);
+RIKU_API Atomic& operator+=(Atomic& atomic, i64 value);
+RIKU_API Atomic& operator-=(Atomic& atomic, i64 value);
+RIKU_API Atomic& operator^=(Atomic& atomic, i64 value);
+RIKU_API Atomic& operator|=(Atomic& atomic, i64 value);
+RIKU_API Atomic& operator&=(Atomic& atomic, i64 value);
+
 struct Thread
 { 
 public:

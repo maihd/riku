@@ -18,6 +18,99 @@
 #   include <TargetConditionals.h>
 #endif
 
+Atomic& operator++(Atomic& atomic)
+{
+#if PLATFORM_WINDOWS
+	_InterlockedIncrement64(&atomic.value);
+#else
+    atomic.value++;
+#endif
+    return atomic;
+}
+
+Atomic& operator--(Atomic& atomic)
+{
+#if PLATFORM_WINDOWS
+	_InterlockedDecrement64(&atomic.value);
+#else
+    atomic.value--;
+#endif
+    return atomic;
+}
+
+Atomic operator++(Atomic& atomic, int)
+{
+    auto result = atomic;
+#if PLATFORM_WINDOWS
+	_InterlockedIncrement64(&atomic.value);
+#else
+    atomic.value++;
+#endif
+    return result;
+}
+
+Atomic operator--(Atomic& atomic, int)
+{
+    auto result = atomic;
+#if PLATFORM_WINDOWS
+	_InterlockedDecrement64(&atomic.value);
+#else
+    atomic.value--;
+#endif
+    return result;
+}
+
+Atomic& operator+=(Atomic& atomic, i64 value)
+{
+#ifdef PLATFORM_WINDOWS
+	_InterlockedAdd64(&atomic.value, value);
+#else
+    atomic.value += value;
+#endif
+
+    return atomic;
+}
+
+Atomic& operator-=(Atomic& atomic, i64 value)
+{
+#ifdef PLATFORM_WINDOWS
+	_InterlockedAdd64(&atomic.value, -value);
+#else
+    atomic.value -= value;
+#endif
+    return atomic;
+}
+
+Atomic& operator^=(Atomic& atomic, i64 value)
+{
+#ifdef PLATFORM_WINDOWS
+	_InterlockedXor64(&atomic.value, value);
+#else
+    atomic.value ^= value;
+#endif
+    return atomic;
+}
+
+Atomic& operator|=(Atomic& atomic, i64 value)
+{
+#ifdef PLATFORM_WINDOWS
+	_InterlockedOr64(&atomic.value, value);
+#else
+    atomic.value |= value;
+#endif
+    return atomic;
+}
+
+Atomic& operator&=(Atomic& atomic, i64 value)
+{
+#ifdef PLATFORM_WINDOWS
+	_InterlockedAnd64(&atomic.value, value);
+#else
+    atomic.value &= value;
+#endif
+    return atomic;
+}
+
 #if PLATFORM_WINDOWS
 static DWORD WINAPI thread_routine(void* params)
 #elif PLATFORM_UNIX
