@@ -2,13 +2,21 @@
 // License: Unlicensed
 
 #include <riku/path.h>
+#include <ctype.h>
 
 namespace path
 {
     const char* basename(const char* path)
     {
-        __threadstatic char result[max_size];
-        return basename(path, result, sizeof(result));
+        int index = string::last_index_of(path, ::path::sep);
+        if (index)
+        {
+            return path + index + 1;
+        }
+        else
+        {
+            return path;
+        }
     }
 
     const char* basename(const char* path, const char* ext)
@@ -19,19 +27,19 @@ namespace path
 
     const char* basename(const char* path, char* buffer, int length)
     {
-        return basename(path, "", buffer, length);
+        const char* result = ::path::basename(path);
+        return string::copy(buffer, result, length);
     }
 
     const char* basename(const char* path, const char* ext, char* buffer, int length)
     {
-        ALWAYS_FALSE_ASSERT("path::basename is not implemented!");
-        return "";
-    }
-
-    const char* dirname(const char* path, char* buffer, int length)
-    {
-        ALWAYS_FALSE_ASSERT("path::dirname is not implemented!");
-        return "";
+        ::path::basename(path, buffer, length); 
+        int index = string::last_index_of(buffer, ext);
+        if (index)
+        {
+            buffer[index - 1] = 0;
+        }
+        return buffer;
     }
 
     const char* dirname(const char* path)
@@ -40,28 +48,48 @@ namespace path
         return dirname(path, result, sizeof(result));
     }
 
-    const char* extname(const char* path, char* buffer, int length)
+    const char* dirname(const char* path, char* buffer, int length)
     {
-        ALWAYS_FALSE_ASSERT("path::extname is not implemented!");
-        return "";
+        string::copy(buffer, path, length);
+        int index = string::last_index_of(path, ::path::sep);
+        if (index)
+        {
+            buffer[index] = 0;
+        }
+        return buffer;
     }
 
     const char* extname(const char* path)
     {
-        ALWAYS_FALSE_ASSERT("path::extname is not implemented!");
-        return "";
+        int index = string::last_index_of(path, '.');
+        if (index)
+        {
+            return path + index + 1;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    const char* extname(const char* path, char* buffer, int length)
+    {
+        const char* result = ::path::extname(path);
+        return string::copy(buffer, result, length);
     }
 
     bool is_absolute(const char* path)
     {
-        ALWAYS_FALSE_ASSERT("path::is_absolute is not implemented!");
-        return "";
+#if PLATFORM_WINDOWS
+        return path[0] == '/' || path[0] == '\\' || (isalpha(path[0]) && path[1] == ':');
+#else
+        return path[0] == '/';
+#endif
     }
 
     bool is_relative(const char* path)
     {
-        ALWAYS_FALSE_ASSERT("path::is_relative is not implemented!");
-        return "";
+        return !is_absolute(path);
     }
 
     const char* absolute(const char* path)
