@@ -568,13 +568,11 @@ namespace string
     // Get length of string
     RIKU_API int         length(const char* str);
 
-#if 0 && PREVIEWING
     RIKU_API const char* sub(const char* str, int start);
-    RIKU_API const char* sub(const char* str, int start, char* buffer, usize length);
+    RIKU_API const char* sub(const char* str, int start, char* buffer, int length);
 
     RIKU_API const char* sub(const char* str, int start, int end);
-    RIKU_API const char* sub(const char* str, int start, int end, char* buffer, usize length);
-#endif
+    RIKU_API const char* sub(const char* str, int start, int end, char* buffer, int length);
 
     RIKU_API int index_of(const char* str, char value);
     RIKU_API int index_of(const char* str, const char* value);

@@ -1,4 +1,5 @@
 #include <riku/core.h>
+#include <riku/math.h>
 #include <riku/string.h>
 
 #include <stdio.h>
@@ -10,6 +11,8 @@
 
 namespace string
 {
+    __threadstatic char g_buffer[2048];
+
     char* clone(const char* str)
     {
 #if PLATFORM_WINDOWS
@@ -24,27 +27,33 @@ namespace string
         return (int)strlen(str);
     }
 
-#if 0 && PREVIEWING
     const char* sub(const char* str, int start)
     {
-        return "";
+        return sub(str, start, g_buffer, sizeof(g_buffer));
     }
 
-    const char* sub(const char* str, int start, char* buffer, usize length)
+    const char* sub(const char* str, int start, char* buffer, int length)
     {
-        return "";
+        return string::copy(buffer, str + start, length);
     }
 
     const char* sub(const char* str, int start, int end)
     {
-        return "";
+        return sub(str, start, end, g_buffer, sizeof(g_buffer));
     }
 
-    const char* sub(const char* str, int start, int end, char* buffer, usize length)
+    const char* sub(const char* str, int start, int end, char* buffer, int length)
     {
-        return "";
+        if (end > start)
+        {
+            return string::copy(buffer, str + start, math::min(length, end - start));
+        }
+        else
+        {
+            buffer[0] = 0;
+            return buffer;
+        }
     }
-#endif
 
     const char* copy(char* dst, const char* src)
     {
@@ -98,9 +107,7 @@ namespace string
 
     const char* format_args(const char* fmt, ArgsList args_list)
     {
-        __threadstatic char buffer[2048];
-        vsnprintf(buffer, sizeof(buffer), fmt, args_list);
-        return buffer;
+        return format_args(g_buffer, sizeof(g_buffer), fmt, args_list);
     }
 
     const char* format_args(char* buffer, int length, const char* fmt, ArgsList args_list)
