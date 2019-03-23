@@ -576,6 +576,11 @@ namespace string
     RIKU_API const char* sub(const char* str, int start, int end, char* buffer, usize length);
 #endif
 
+    RIKU_API int index_of(const char* str, char value);
+    RIKU_API int index_of(const char* str, const char* value);
+    RIKU_API int last_index_of(const char* str, char value);
+    RIKU_API int last_index_of(const char* str, const char* value);
+
     // Copy content of src string to dst string
     RIKU_API const char* copy(char* dst, const char* src);
 

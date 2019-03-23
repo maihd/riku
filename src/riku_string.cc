@@ -106,6 +106,62 @@ namespace string
     const char* format_args(char* buffer, int length, const char* fmt, ArgsList args_list)
     {
         vsnprintf(buffer, (usize)length, fmt, args_list);
-        return buffer; 
+        return buffer;
+    }
+
+    int index_of(const char* str, char value)
+    {
+        for (int i = 0, c; (c = *str++); i++)
+        {
+            if (c == value)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    int index_of(const char* str, const char* value)
+    {
+        int length = string::length(value);
+        for (int i = 0, c; (c = *str++); i++)
+        {
+            if (equals(str, value, length))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    int last_index_of(const char* str, char value)
+    {
+        int r = -1;
+        for (int i = 0, c; (c = *str++); i++)
+        {
+            if (c == value)
+            {
+                r = i;
+            }
+        }
+
+        return r;
+    }
+
+    int last_index_of(const char* str, const char* value)
+    {
+        int r = -1;
+        int length = string::length(value);
+        for (int i = 0, c; (c = *str++); i++)
+        {
+            if (equals(str, value, length))
+            {
+                return i;
+            }
+        }
+
+        return r;
     }
 }
