@@ -537,7 +537,8 @@ bool Semaphore::trywait(void)
 #endif
 }
 
-static void fiber_routine(void* params)
+#if PLATFORM_WINDOWS 
+static void WINAPI fiber_routine(void* params)
 {
     Fiber* fiber = (Fiber*)params;
     if (fiber->func)
@@ -545,6 +546,7 @@ static void fiber_routine(void* params)
         fiber->func();
     }
 }
+#endif
 
 bool Fiber::init(const ThreadFunc& func)
 {
