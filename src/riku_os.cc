@@ -2,6 +2,7 @@
 // License: Unlicensed
 
 #include <riku/os.h>
+#include <riku/math.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,8 @@
 
 #if PLATFORM_WINDOWS
 #include <Windows.h>
+#undef min
+#undef max
 #elif PLATFORM_UNIX
 #include <pwd.h>
 #include <unistd.h>
@@ -241,13 +244,69 @@ namespace os
 
     CPU* cpus(int* count)
     {
-        return NULL;
+        __threadstatic CPU buffer[128]; // 128 core chip?
+        int length = cpus(buffer, lengthof(buffer));
+        if (count) *count = length;
+        return buffer;
     }
 
     int cpus(CPU* buffer, int length)
     {
-        (void)buffer;
-        (void)length;
-        return 0;
+        int cpu_count;
+#if PLATFORM_WINDOWS
+        SYSTEM_INFO system_info;
+        GetSystemInfo(&system_info);
+        cpu_count = (int)system_info.dwNumberOfProcessors;
+#else
+        cpu_count = 0;
+#endif
+
+        if (buffer && length > 0)
+        {
+            for (int i = 0, n = math::min(cpu_count, length); i < n; i++)
+            {
+#if PLATFORM_WINDOWS
+                HKEY  hKey;
+                DWORD buf_size;
+                DWORD dwMHz = _MAX_PATH;
+
+                char reg_key[64];
+                string::format(reg_key, sizeof(reg_key), "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\%d", i);
+
+                // open the key where the proc speed is hidden:
+                long lError = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+                    reg_key,
+                    0,
+                    KEY_READ,
+                    &hKey);
+
+                if (lError != ERROR_SUCCESS)
+                {
+                    char Buffer[_MAX_PATH];
+                    // if the key is not found, tell the user why:
+                    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+                        NULL,
+                        lError,
+                        0,
+                        Buffer,
+                        _MAX_PATH,
+                        0);
+                    return -1;
+                }
+
+                // query the speed:
+                buf_size = sizeof(buffer[i].speed);
+                RegQueryValueExA(hKey, "~MHz", NULL, NULL, (LPBYTE)&buffer[i].speed, &buf_size);
+
+                // query the model
+                buf_size = sizeof(buffer[i].model);
+                RegQueryValueExA(hKey, "ProcessorNameString", NULL, NULL, (LPBYTE)buffer[i].model, &buf_size);
+#else 
+
+#endif
+            }
+        }
+
+        return cpu_count;
     }
 }

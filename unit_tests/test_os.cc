@@ -20,5 +20,13 @@ TEST_CASE("OS module testing", "[os]")
     console::log("os::version: %s", os::version());
     console::log("os::hostname: %s", os::hostname());
 
-    console::log("os::uptime: %lus", (ulong)os::uptime());
+    console::log("os::uptime: %lus", (u64)os::uptime());
+
+    os::CPU cpus[64]; // 64 core chip?
+    int cpu_count = os::cpus(cpus, lengthof(cpus));
+    console::log("os::cpus count: %d", cpu_count);
+    for (int i = 0; i < cpu_count; i++)
+    {
+        console::log("os::cpus #%d: %s - speed: %d", i + 1, cpus[i].model, cpus[i].speed);
+    }
 }

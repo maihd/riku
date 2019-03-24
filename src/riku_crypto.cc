@@ -544,13 +544,13 @@ namespace crypto
 
         switch (length & 7)
         {
-        case 7: h ^= u64(data2[6]) << 48;
-        case 6: h ^= u64(data2[5]) << 40;
-        case 5: h ^= u64(data2[4]) << 32;
-        case 4: h ^= u64(data2[3]) << 24;
-        case 3: h ^= u64(data2[2]) << 16;
-        case 2: h ^= u64(data2[1]) <<  8;
-        case 1: h ^= u64(data2[0]) <<  0; h *= m;
+        case 7: h ^= u64(data2[6]) << 48;           /* fall through */
+        case 6: h ^= u64(data2[5]) << 40;           /* fall through */
+        case 5: h ^= u64(data2[4]) << 32;           /* fall through */
+        case 4: h ^= u64(data2[3]) << 24;           /* fall through */
+        case 3: h ^= u64(data2[2]) << 16;           /* fall through */
+        case 2: h ^= u64(data2[1]) <<  8;           /* fall through */
+        case 1: h ^= u64(data2[0]) <<  0; h *= m;   /* fall through */
         };
 
         h ^= h >> r;

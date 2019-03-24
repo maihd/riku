@@ -43,7 +43,7 @@ namespace fs
     #endif
     }
 
-#if !PLATFORM_WINDOWS
+#if !PLATFORM_WINDOWS && !PLATFORM_LINUX
     FileHandle open(const char* path, Flags flags)
     {
         char string_flags[80];

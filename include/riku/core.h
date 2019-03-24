@@ -944,13 +944,13 @@ constexpr u64 calc_hash64(const char(&buffer)[length])
 
     switch (l & 7)
     {
-    case 7: h ^= u64((buffer + n)[6]) << 48;
-    case 6: h ^= u64((buffer + n)[5]) << 40;
-    case 5: h ^= u64((buffer + n)[4]) << 32;
-    case 4: h ^= u64((buffer + n)[3]) << 24;
-    case 3: h ^= u64((buffer + n)[2]) << 16;
-    case 2: h ^= u64((buffer + n)[1]) <<  8;
-    case 1: h ^= u64((buffer + n)[0]) <<  0; h *= m;
+    case 7: h ^= u64((buffer + n)[6]) << 48;            /* fall through */
+    case 6: h ^= u64((buffer + n)[5]) << 40;            /* fall through */
+    case 5: h ^= u64((buffer + n)[4]) << 32;            /* fall through */
+    case 4: h ^= u64((buffer + n)[3]) << 24;            /* fall through */
+    case 3: h ^= u64((buffer + n)[2]) << 16;            /* fall through */
+    case 2: h ^= u64((buffer + n)[1]) <<  8;            /* fall through */
+    case 1: h ^= u64((buffer + n)[0]) <<  0; h *= m;    /* fall through */
     };
 
     h ^= h >> r;
