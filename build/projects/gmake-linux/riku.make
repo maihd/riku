@@ -93,7 +93,6 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -154,7 +153,6 @@ ifeq ($(config),release32)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -215,7 +213,6 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -276,7 +273,6 @@ ifeq ($(config),release64)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -337,7 +333,6 @@ ifeq ($(config),debug)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -398,7 +393,6 @@ ifeq ($(config),release)
 	$(OBJDIR)/src/riku_string.o \
 	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/windows/riku_fs_windows.o \
 
   define PREBUILDCMDS
   endef
@@ -412,7 +406,6 @@ OBJDIRS := \
 	$(OBJDIR) \
 	$(OBJDIR)/3rdparty/zlib-1.2.11 \
 	$(OBJDIR)/src \
-	$(OBJDIR)/src/windows \
 
 RESOURCES := \
 
@@ -582,10 +575,6 @@ $(OBJDIR)/src/riku_thread.o: ../../../src/riku_thread.cc $(GCH) $(MAKEFILE) | $(
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/riku_zlib.o: ../../../src/riku_zlib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
-
-$(OBJDIR)/src/windows/riku_fs_windows.o: ../../../src/windows/riku_fs_windows.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/windows
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

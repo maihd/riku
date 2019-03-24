@@ -20,32 +20,36 @@ do
    defines {
    }
 
-   configuration { "osx" }
-   do
+   local PLATFORM = _OPTIONS["platform"];
+   if PLATFORM == "osx" then
       files {
          path.join(RIKU_DIR, "src/osx/*.cc"),
          path.join(RIKU_DIR, "src/osx/**/*.cc"),
       }
    end
 
-   configuration { "linux" }
-   do
+   if PLATFORM == "ios" then
+      files {
+         path.join(RIKU_DIR, "src/ios/*.cc"),
+         path.join(RIKU_DIR, "src/ios/**/*.cc"),
+      }
+   end
+
+   if string.sub(PLATFORM, 0, 5) == "linux" then
       files {
          path.join(RIKU_DIR, "src/linux/*.cc"),
          path.join(RIKU_DIR, "src/linux/**/*.cc"),
       }
    end
 
-   configuration { "android" }
-   do
+   if string.sub(PLATFORM, 0, 7) == "android" then
       files {
          path.join(RIKU_DIR, "src/android/*.cc"),
          path.join(RIKU_DIR, "src/android/**/*.cc"),
       }
    end
 
-   configuration { "windows" }
-   do
+   if string.sub(PLATFORM, 0, 7) == "windows" then
       files {
          path.join(RIKU_DIR, "src/windows/*.cc"),
          path.join(RIKU_DIR, "src/windows/**/*.cc"),
