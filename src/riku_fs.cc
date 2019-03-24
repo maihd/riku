@@ -22,9 +22,56 @@ namespace fs
     #endif
     }
 
+    FileHandle open(const char* path, Flags flags)
+    {
+        char string_flags[80];
+        char* ptr = string_flags;
+
+        if (flags & FileOpen::ReadWrite)
+        {
+            *ptr++ = 'r';
+            *ptr++ = 'w';
+        }
+        else
+        {
+            if (flags & FileOpen::ReadOnly)
+            {
+                *ptr++ = 'r';
+            }
+
+            if (flags & FileOpen::WriteOnly)
+            {
+                *ptr++ = 'w';
+            }
+        }
+
+        if (flags & FileOpen::Append)
+        {
+            *ptr++ = 'a';
+        }
+
+        if (flags & FileOpen::Create) 
+        {
+            *ptr++ = '+';
+        }
+
+        *ptr = 0;
+        return fopen(path, string_flags);
+    }
+
     FileHandle open(const char* path, const char* flags)
     {
         return fopen(path, flags);
+    }
+
+    int seek(FileHandle handle, FileSeek whence, int count)
+    {
+        return fseek((FILE*)handle, count, (int)whence);
+    }
+
+    int tell(FileHandle handle)
+    {
+        return (int)ftell((FILE*)handle);
     }
 
     int read(FileHandle handle, void* buffer, int length)
@@ -32,7 +79,7 @@ namespace fs
         return (int)fread(buffer, 1, (usize)length, (FILE*)handle);
     }
 
-    int write(FileHandle handle, void* buffer, int length)
+    int write(FileHandle handle, const void* buffer, int length)
     {
         return (int)fwrite(buffer, 1, (usize)length, (FILE*)handle);
     }
@@ -44,17 +91,17 @@ namespace fs
 
     Buffer read_file(const char* path)
     {
-        FILE* file = fopen(path, "r");
+        FileHandle file = fs::open(path, "r");
         if (file)
         {
-            fseek(file, SEEK_END, 0);
-            usize size = ftell(file);
-            fseek(file, SEEK_SET, 0);
+            fs::seek(file, FileSeek::End, 0);
+            usize size = fs::tell(file);
+            fs::seek(file, FileSeek::Set, 0);
 
             Buffer buffer = Buffer::alloc(size);
-            fread(buffer.data, 1, size, file);
+            fs::read(file, buffer.data, size);
 
-            fclose(file);
+            fs::close(file);
 
             return traits::make_rvalue(buffer);
         }
@@ -69,16 +116,16 @@ namespace fs
 
     int read_file(const char* path, void* buffer, int length)
     {
-        FILE* file = fopen(path, "r");
+        FileHandle file = fs::open(path, "r");
         if (file)
         {
-            usize ret = fread(buffer, 1, length, file);
-            fclose(file);
+            int ret = fs::read(file, buffer, length);
+            fs::close(file);
             return (int)ret;
         }
         else
         {
-            return false;
+            return 0;
         }
     }
     
@@ -89,11 +136,11 @@ namespace fs
 
     int write_file(const char* path, const void* buffer, int length)
     {
-        FILE* file = fopen(path, "w+");
+        FileHandle file = fs::open(path, "w+");
         if (file)
         {
-            usize ret = fwrite(buffer, 1, length, file);
-            fclose(file);
+            int ret = fs::write(file, buffer, length);
+            fs::close(file);
             return (int)ret;
         }
         else
