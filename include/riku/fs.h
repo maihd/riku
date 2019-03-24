@@ -10,20 +10,21 @@ namespace enums
     enum FileOpen
     {
         None        = 0,
-        Sync        = 1 <<  0,
-        Link        = 1 <<  1,
-        NoLink      = 1 <<  2,
-        Append      = 1 <<  3,
-        Create      = 1 <<  4,
-        Direct      = 1 <<  5,
-        DataSync    = 1 <<  6,
-        NonBlock    = 1 <<  7,
-        Truncate    = 1 <<  8,
-        ReadOnly    = 1 <<  9,
-        WriteOnly   = 1 << 10,
-        ReadWrite   = 1 << 11,
-        Directory   = 1 << 12,
-        CreateOnly  = 1 << 13,
+        Sync        = 04000000 | 00010000,
+        //Link        = 1 <<  1,
+        NoLink      = 00400000,
+        Append      = 00002000,
+        Create      = 00000100,
+        Direct      = 00040000,
+        DataSync    = 00010000,
+        NonBlock    = 00004000,
+        Existing    = 00000200,
+        Truncate    = 00001000,
+        Directory   = 00200000,
+
+        Read        = 00000000,
+        Write       = 00000001,
+        ReadWrite   = Read | Write,
     };
 };
 using FileOpen   = enums::FileOpen;

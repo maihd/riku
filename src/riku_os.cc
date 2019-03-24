@@ -260,7 +260,7 @@ namespace os
         cpu_count = (int)system_info.dwNumberOfProcessors;
 #else
         {
-            FileHandle stat_file = fs::open("/proc/file", FileOpen::ReadOnly);
+            FileHandle stat_file = fs::open("/proc/file", FileOpen::Read);
             if (!stat_file)
             {
                 return -1;
@@ -331,7 +331,7 @@ namespace os
                 char buf[1024];
                 string::format(buf, sizeof(buf), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
 
-                FileHandle speed_file = fs::open(buf, FileOpen::ReadOnly);
+                FileHandle speed_file = fs::open(buf, FileOpen::Read);
                 if (!speed_file)
                 {
                     return -1;

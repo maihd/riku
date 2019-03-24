@@ -13,18 +13,14 @@ namespace fs
         DWORD disposition;
         DWORD attributes = 0;
 
-        switch (flags & (FileOpen::ReadOnly | FileOpen::WriteOnly | FileOpen::ReadWrite)) 
+        switch (flags & (FileOpen::ReadWrite)) 
         {
-        case FileOpen::ReadOnly:
-            access = FILE_GENERIC_READ;
+        case FileOpen::Read:
+            access |= FILE_GENERIC_READ;
             break;
 
-        case FileOpen::WriteOnly:
-            access = FILE_GENERIC_WRITE;
-            break;
-
-        case FileOpen::ReadWrite:
-            access = FILE_GENERIC_READ | FILE_GENERIC_WRITE;
+        case FileOpen::Write:
+            access |= FILE_GENERIC_WRITE;
             break;
 
         default:
@@ -40,10 +36,10 @@ namespace fs
 
         shared = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
 
-        switch (flags & (FileOpen::Create | FileOpen::CreateOnly | FileOpen::Truncate)) 
+        switch (flags & (FileOpen::Create | FileOpen::Existing | FileOpen::Truncate))
         {
         case 0:
-        case FileOpen::CreateOnly:
+        case FileOpen::Existing:
             disposition = OPEN_EXISTING;
             break;
 
@@ -51,13 +47,13 @@ namespace fs
             disposition = OPEN_ALWAYS;
             break;
 
-        case FileOpen::Create | FileOpen::CreateOnly:
-        case FileOpen::Create | FileOpen::Truncate | FileOpen::CreateOnly:
+        case FileOpen::Create | FileOpen::Existing:
+        case FileOpen::Create | FileOpen::Truncate | FileOpen::Existing:
             disposition = CREATE_NEW;
             break;
 
         case FileOpen::Truncate:
-        case FileOpen::Truncate | FileOpen::CreateOnly:
+        case FileOpen::Truncate | FileOpen::Existing:
             disposition = TRUNCATE_EXISTING;
             break;
 
@@ -172,7 +168,7 @@ namespace fs
         if (file == INVALID_HANDLE_VALUE) 
         {
             DWORD error = GetLastError();
-            if (error == ERROR_FILE_EXISTS && (flags & FileOpen::Create) && !(flags & FileOpen::CreateOnly))
+            if (error == ERROR_FILE_EXISTS && (flags & FileOpen::Create) && !(flags & FileOpen::Existing))
             {
                 /* Special case: when ERROR_FILE_EXISTS happens and UV_FS_O_CREAT was
                  * specified, it means the path referred to a directory. */
@@ -196,11 +192,11 @@ namespace fs
             switch (i)
             {
             case 'r':
-                int_flags |= FileOpen::ReadOnly;
+                int_flags |= FileOpen::Read;
                 break;
 
             case 'w':
-                int_flags |= FileOpen::WriteOnly;
+                int_flags |= FileOpen::Write;
                 break;
 
             case 'a':
@@ -211,11 +207,6 @@ namespace fs
                 int_flags |= FileOpen::Create;
                 break;
             }
-        }
-
-        if (int_flags & FileOpen::ReadOnly && int_flags & FileOpen::WriteOnly)
-        {
-            int_flags |= FileOpen::ReadWrite;
         }
 
         return fs::open(path, int_flags);
