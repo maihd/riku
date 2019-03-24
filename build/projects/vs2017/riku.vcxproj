@@ -323,8 +323,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_zlib.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\windows\riku_fs_windows.cc">
-    </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\adler32.c">
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\compress.c">
@@ -354,6 +352,8 @@
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\uncompr.c">
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\zutil.c">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_fs_windows.cc">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
