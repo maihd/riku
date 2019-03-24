@@ -998,14 +998,14 @@ constexpr u64 hashof(const char(&buffer)[length])
 
 // Get length of given buffer
 template <typename T, int length>
-constexpr int lengthof(const T(&array)[length])
+constexpr int lengthof(const T(&)[length])
 {
     return length;
 }
 
 // Get length of given buffer
 template <int length>
-constexpr int lengthof(const char(&array)[length])
+constexpr int lengthof(const char(&)[length])
 {
     return length - 1;
 }

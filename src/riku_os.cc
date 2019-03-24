@@ -1,6 +1,7 @@
 // Copyright (c) 2019, MaiHD. All right reversed.
 // License: Unlicensed
 
+#include <riku/fs.h>
 #include <riku/os.h>
 #include <riku/math.h>
 
@@ -258,7 +259,32 @@ namespace os
         GetSystemInfo(&system_info);
         cpu_count = (int)system_info.dwNumberOfProcessors;
 #else
-        cpu_count = 0;
+        {
+            FileHandle stat_file = fs::open("/proc/file", FileOpen::ReadOnly);
+            if (!stat_file)
+            {
+                return -1;
+            }
+
+            char read_buf[1024];
+            if (fs::read(stat_file, read_buf, sizeof(read_buf)) <= 0)
+            {
+                return -1;
+            }
+
+            cpu_count = 0;
+            char* buf_ptr = read_buf;
+            while (*buf_ptr)
+            {
+                if (string::compare(buf_ptr, "cpu", 3) == 0)
+                {
+                    cpu_count++;
+                }
+
+                while (*buf_ptr++ && *buf_ptr != '\n');
+            }
+            fs::close(stat_file);
+        }
 #endif
 
         if (buffer && length > 0)
@@ -282,15 +308,15 @@ namespace os
 
                 if (lError != ERROR_SUCCESS)
                 {
-                    char Buffer[_MAX_PATH];
-                    // if the key is not found, tell the user why:
-                    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
-                        NULL,
-                        lError,
-                        0,
-                        Buffer,
-                        _MAX_PATH,
-                        0);
+                    //char Buffer[_MAX_PATH];
+                    //// if the key is not found, tell the user why:
+                    //FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+                    //    NULL,
+                    //    lError,
+                    //    0,
+                    //    Buffer,
+                    //    _MAX_PATH,
+                    //    0);
                     return -1;
                 }
 
@@ -302,7 +328,20 @@ namespace os
                 buf_size = sizeof(buffer[i].model);
                 RegQueryValueExA(hKey, "ProcessorNameString", NULL, NULL, (LPBYTE)buffer[i].model, &buf_size);
 #else 
+                char buf[1024];
+                string::format(buf, sizeof(buf), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
 
+                FileHandle speed_file = fs::open(buf, FileOpen::ReadOnly);
+                if (!speed_file)
+                {
+                    return -1;
+                }
+                
+                fs::read(speed_file, buf, sizeof(buf));
+                buffer[i].speed = atoi(buf);
+                fs::close(speed_file);
+
+                string::format(buffer[i].model, "Unknown");
 #endif
             }
         }
