@@ -4,15 +4,36 @@
 #if PLATFORM_WINDOWS
 #include <Windows.h>
 #include <Shlwapi.h>
+#include <fcntl.h>
+#include <direct.h>
 #pragma comment(lib, "Shlwapi.lib")
 #undef  PLATFORM_WINDOWS
 #define PLATFORM_WINDOWS 1
 #elif PLATFORM_UNIX
 #include <unistd.h>
+#include <sys/stat.h>
 #endif
 
 namespace fs
 {
+    bool mkdir(const char* path)
+    {
+#if PLATFORM_WINDOWS
+        return _mkdir(path) == 0;
+#else
+        return mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
+#endif
+    }
+
+    bool rmdir(const char* path)
+    {
+#if PLATFORM_WINDOWS
+        return _rmdir(path) == 0;
+#else
+        return rmdir(path) == 0;
+#endif
+    }
+
     bool exists(const char* path)
     {
     #if PLATFORM_WINDOWS

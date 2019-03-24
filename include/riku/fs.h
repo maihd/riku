@@ -54,6 +54,13 @@ namespace fs
 
     RIKU_API Stats stat(const char* path);
 #endif
+
+    //
+    // Common file system operations
+    //
+
+    RIKU_API bool mkdir(const char* path);
+    RIKU_API bool rmdir(const char* path);
     
     //
     // File stats
