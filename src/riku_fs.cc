@@ -22,6 +22,7 @@ namespace fs
     #endif
     }
 
+#if !PLATFORM_WINDOWS
     FileHandle open(const char* path, Flags flags)
     {
         char string_flags[80];
@@ -88,6 +89,7 @@ namespace fs
     {
         fclose((FILE*)handle);
     }
+#endif
 
     Buffer read_file(const char* path)
     {
