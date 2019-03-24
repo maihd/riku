@@ -21,7 +21,7 @@ namespace fs
 #if PLATFORM_WINDOWS
         return _mkdir(path) == 0;
 #else
-        return mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
+        return ::mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
 #endif
     }
 
@@ -30,7 +30,7 @@ namespace fs
 #if PLATFORM_WINDOWS
         return _rmdir(path) == 0;
 #else
-        return rmdir(path) == 0;
+        return ::rmdir(path) == 0;
 #endif
     }
 
