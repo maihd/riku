@@ -57,6 +57,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			{ "linux-afl",        	"Linux (AFL fuzzer)"		 	},
 			{ "linux-clang",        "Linux (Clang compiler)"     	},
 			{ "linux-clang-afl",    "Linux (Clang + AFL fuzzer)" 	},
+			{ "windows",            "Windows (MSVC compiler)"       },
 			{ "windows-clang",   	"Windows (Clang compiler)"   	},
 			{ "ios-arm",         	"iOS - ARM"                  	},
 			{ "ios-arm64",       	"iOS - ARM64"                	},
@@ -195,10 +196,24 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		"ExtraWarnings",
 	}
 
+	if string.startwith(_ACTION, "vs") then
+		if not _OPTIONS["platform"] then
+			_OPTIONS["platform"] = "windows"
+		else
+			print("Platform cannot specified when generate vs* projects.")
+			os.exit(1)
+		end
+	end
+
 	_PLATFORM = _OPTIONS["platform"]
 	if _ACTION == "gmake" or _ACTION == "ninja" then
 		if nil == _PLATFORM then
 			print("Platform must be specified for gmake or ninja build!")
+			os.exit(1)
+		end
+
+		if "windows" == _PLATFORM then
+			print("Platform of gmake or ninja cannot be windows! Maybe your choice is windows-clang.")
 			os.exit(1)
 		end
 
