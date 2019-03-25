@@ -31,6 +31,9 @@ namespace path
     RIKU_API bool        is_absolute(const char* path);
     RIKU_API bool        is_relative(const char* path);
     
+    RIKU_API const char* normalize(const char* path);
+    RIKU_API const char* normalize(const char* path, char* buffer, int length);
+
     RIKU_API const char* absolute(const char* path);
     RIKU_API const char* absolute(const char* path, char* buffer, int length);
     

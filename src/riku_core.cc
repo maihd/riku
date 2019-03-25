@@ -208,8 +208,7 @@ namespace process
     {
         __threadstatic char path[1024];
 
-        cwd(path, sizeof(path)); 
-        return path;
+        return cwd(path, sizeof(path));
     }
 
     const char* cwd(char* buffer, int length)

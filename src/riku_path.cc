@@ -80,8 +80,13 @@ namespace path
 
     bool is_absolute(const char* path)
     {
+        if (!path)
+        {
+            return false;
+        }
+
 #if PLATFORM_WINDOWS
-        return path[0] == '/' || path[0] == '\\' || (isalpha(path[0]) && path[1] == ':');
+        return path[0] == '/' || path[0] == '\\' || (isalpha(path[0]) && path[1] == ':' && is_absolute(path + 2));
 #else
         return path[0] == '/';
 #endif
@@ -92,6 +97,70 @@ namespace path
         return !is_absolute(path);
     }
 
+    const char* normalize(const char* path)
+    {
+        __threadstatic char result[max_size];
+        return normalize(path, result, sizeof(result));
+    }
+
+    const char* normalize(const char* path, char* buffer, int length)
+    {
+        if (string::is_empty(path))
+        {
+            if (buffer) buffer[0] = 0;
+            return "";
+        }
+
+        const char* ptr = path;
+        for (int i = 0, c = *ptr++; c && i < length; c = *ptr++, i++)
+        {
+            if (c == '.')
+            {
+                int c1 = ptr[0];
+                if (!c1 || c1 == '/' || c1 == ::path::sep[0])
+                {
+                    i--;
+                    ptr++;
+                    if (!c1)
+                    {
+                        buffer[i] = 0;
+                        return buffer;
+                    }
+
+                    continue;
+                }
+
+                int c2 = ptr[1];
+                if (c1 == '.' && (!c2 || c2 == '/' || c2 == ::path::sep[0]))
+                {
+                    i -= 2;
+                    while (i > -1 && buffer[i] != ::path::sep[0])
+                    {
+                        i--;
+                    }
+
+                    ptr += 2; 
+                        
+                    if (!c2)
+                    {
+                        buffer[i] = 0;
+                        return buffer;
+                    }
+
+                    continue;
+                }
+            }
+
+            //if (c == '/')
+            //{
+            //    c = ::path::sep[0];
+            //}
+            buffer[i] = c;
+        }
+
+        return buffer;
+    }
+
     const char* absolute(const char* path)
     {
         __threadstatic char result[max_size];
@@ -100,8 +169,19 @@ namespace path
 
     const char* absolute(const char* path, char* buffer, int length)
     {
-        ALWAYS_FALSE_ASSERT("path::absolute is not implemented!");
-        return "";
+        if (string::compare(path, ".") == 0)
+        {
+            return process::cwd(buffer, length);
+        }
+        else if (is_absolute(path))
+        {
+            return normalize(path, buffer, length);
+        }
+        else
+        {
+            char tmp[max_size] = "";
+            return normalize(::path::join(tmp, max_size, process::cwd(), path, NULL), buffer, length);
+        }
     }
 
     const char* relative(const char* from, const char* to)
@@ -112,8 +192,46 @@ namespace path
 
     const char* relative(const char* from, const char* to, char* buffer, int length)
     {
-        ALWAYS_FALSE_ASSERT("path::relative is not implemented!");
-        return "";
+        char _tmp0[max_size] = ""; 
+        char _tmp1[max_size] = "";
+        to = absolute(to, _tmp0, max_size);
+        from = absolute(from, _tmp1, max_size);
+
+        const char* ptr0 = from;
+        const char* ptr1 = to;
+        
+        while (*ptr0 && *ptr1 && *ptr0 == *ptr1)
+        {
+            ptr0++;
+            ptr1++;
+        }
+
+        int sep_count = 0;
+        while (*ptr0)
+        {
+            sep_count += *ptr0 == '/' || *ptr0 == ::path::sep[0];
+            ptr0++;
+        }
+
+        int i = 0;
+        while (sep_count-- > 0 && i < length)
+        {
+            buffer[i++] = '.';
+            buffer[i++] = '.';
+            buffer[i++] = ::path::sep[0];
+        }
+        
+        if (length - i - 1 > 0 && *(++ptr1))
+        {
+            int c;
+            while ((c = *ptr1++))
+            {
+                buffer[i++] = c;
+            }
+        }
+
+        buffer[i] = 0;
+        return buffer;
     }
 
     //const char* relative(const char* path, ...);
@@ -152,6 +270,7 @@ namespace path
             return "";
         }
 
+        buffer[0] = 0;
         while (true)
         {
             string::concat(buffer, path, length);
