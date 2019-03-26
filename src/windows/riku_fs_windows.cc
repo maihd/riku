@@ -10,7 +10,7 @@ namespace fs
     {
         DWORD access = 0;
         DWORD shared = 0;
-        DWORD disposition;
+        DWORD disposition = 0;
         DWORD attributes = 0;
 
         switch (flags & (FileOpen::ReadWrite)) 

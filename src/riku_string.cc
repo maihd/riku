@@ -3,6 +3,7 @@
 #include <riku/string.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 //
@@ -170,5 +171,45 @@ namespace string
         }
 
         return r;
+    }
+
+    i32 to_i32(const char* str)
+    {
+        return atoi(str);
+    }
+
+    u32 to_u32(const char* str)
+    {
+        return (u32)atoi(str);
+    }
+
+    i64 to_i64(const char* str)
+    {
+        return atoll(str);
+    }
+
+    u64 to_u64(const char* str)
+    {
+        return (u64)atoll(str);
+    }
+
+    int to_int(const char* str)
+    {
+        return string::to_i32(str);
+    }
+
+    uint to_uint(const char* str)
+    {
+        return string::to_u32(str);
+    }
+
+    float to_float(const char* str)
+    {
+        return (float)atof(str);
+    }
+
+    double to_double(const char* str)
+    {
+        return atof(str);
     }
 }

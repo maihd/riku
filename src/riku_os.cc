@@ -294,7 +294,6 @@ namespace os
 #if PLATFORM_WINDOWS
                 HKEY  hKey;
                 DWORD buf_size;
-                DWORD dwMHz = _MAX_PATH;
 
                 char reg_key[64];
                 string::format(reg_key, sizeof(reg_key), "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\%d", i);

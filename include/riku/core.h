@@ -642,6 +642,16 @@ namespace string
     // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
     RIKU_API int         compare(const char* dst, const char* src, int length);
 
+    RIKU_API i32         to_i32(const char* str);
+    RIKU_API u32         to_u32(const char* str);
+    RIKU_API i64         to_i64(const char* str);
+    RIKU_API u64         to_u64(const char* str);
+
+    RIKU_API int         to_int(const char* str);
+    RIKU_API uint        to_uint(const char* str);
+    RIKU_API float       to_float(const char* str);
+    RIKU_API double      to_double(const char* str);
+
     // Checking string is empty
     inline bool is_empty(const char* str)                { return !str || str[0] == 0;   }
 
@@ -1049,6 +1059,7 @@ constexpr int lengthof(const char(&)[length])
 template <typename T>
 constexpr int lengthof(const T& x)
 {
+    static_assert(false, "Cannot get length of T");
     return 1;
 }
 

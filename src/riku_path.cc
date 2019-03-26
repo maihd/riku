@@ -155,7 +155,7 @@ namespace path
             //{
             //    c = ::path::sep[0];
             //}
-            buffer[i] = c;
+            buffer[i] = (char)c;
         }
 
         return buffer;
@@ -228,7 +228,7 @@ namespace path
         
         if (length - i - 1 > 0 && *(++ptr1))
         {
-            int c;
+            char c;
             while ((c = *ptr1++))
             {
                 buffer[i++] = c;
