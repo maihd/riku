@@ -194,7 +194,7 @@ namespace path
     {
         char _tmp0[max_size] = ""; 
         char _tmp1[max_size] = "";
-        to = absolute(to, _tmp0, max_size);
+        to   = absolute(to, _tmp0, max_size);
         from = absolute(from, _tmp1, max_size);
 
         const char* ptr0 = from;
@@ -207,6 +207,11 @@ namespace path
         }
 
         int sep_count = 0;
+        if (*ptr1 == '/' || *ptr1 == ::path::sep[0] || *ptr1 == 0)
+        {
+            sep_count = (*ptr0 == '/' || *ptr0 == ::path::sep[0] || *ptr0 == 0);
+        }
+
         while (*ptr0)
         {
             sep_count += *ptr0 == '/' || *ptr0 == ::path::sep[0];

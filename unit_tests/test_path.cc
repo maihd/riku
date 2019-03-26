@@ -24,7 +24,7 @@ TEST_CASE("Path module testing", "[path]")
     const char* abs_path1 = path::absolute("..");
     console::log("Parent path of current working directory is: %s", abs_path1);
 
-    const char* rel_a = "a/b/c/d/e/f";
+    const char* rel_a = "a/b/c/d/e/fg";
     const char* rel_b = "a/b/c/d/e/f/g/h";
     const char* rel_c = path::relative(rel_a, rel_b);
 }
