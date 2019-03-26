@@ -28,9 +28,9 @@ else
   RM    = $(SILENT) del /F "$(subst /,\\,$(1))" 2> nul || exit 0
 endif
 
-CC  = gcc
-CXX = g++
-AR  = ar
+CC  = $(ANDROID_NDK_CLANG)/bin/clang
+CXX = $(ANDROID_NDK_CLANG)/bin/clang++
+AR  = $(ANDROID_NDK_ARM)/bin/arm-linux-androideabi-ar
 
 ifndef RESCOMP
   ifdef WINDRES
@@ -43,25 +43,25 @@ endif
 MAKEFILE = riku.make
 
 ifeq ($(config),debug32)
-  OBJDIR              = ../../linux_x32/obj/x32/debug/riku
-  TARGETDIR           = ../../linux_x32/bin
+  OBJDIR              = ../../android-arm/obj/x32/debug/riku
+  TARGETDIR           = ../../android-arm/bin
   TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"$(ANDROID_NDK_ROOT)/sysroot/usr/include/arm-linux-androideabi" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m32
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m32
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m32 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -m32 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a" -L"." -m32 -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm/usr/lib/crtbegin_so.o $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm/usr/lib/crtend_so.o -target armv7-none-linux-androideabi -march=armv7-a -Wl,--fix-cortex-a8
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -78,7 +78,6 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -105,25 +104,25 @@ ifeq ($(config),debug32)
 endif
 
 ifeq ($(config),release32)
-  OBJDIR              = ../../linux_x32/obj/x32/release/riku
-  TARGETDIR           = ../../linux_x32/bin
+  OBJDIR              = ../../android-arm/obj/x32/release/riku
+  TARGETDIR           = ../../android-arm/bin
   TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"$(ANDROID_NDK_ROOT)/sysroot/usr/include/arm-linux-androideabi" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -msse2 -Wunused-value -Wundef -m32
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m32 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm -target armv7-none-linux-androideabi -mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=neon
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x32" -L"." -s -m32 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a" -L"." -s -m32 -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm/usr/lib/crtbegin_so.o $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm/usr/lib/crtend_so.o -target armv7-none-linux-androideabi -march=armv7-a -Wl,--fix-cortex-a8
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -140,7 +139,6 @@ ifeq ($(config),release32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -167,25 +165,25 @@ ifeq ($(config),release32)
 endif
 
 ifeq ($(config),debug64)
-  OBJDIR              = ../../linux_x64/obj/x64/debug/riku
-  TARGETDIR           = ../../linux_x64/bin
+  OBJDIR              = ../../android-arm64/obj/x64/debug/riku
+  TARGETDIR           = ../../android-arm64/bin
   TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"$(ANDROID_NDK_ROOT)/sysroot/usr/include/aarch64-linux-android" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m64
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef -m64
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -m64 -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -m64 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/arm64-v8a" -L"." -m64 -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64/usr/lib/crtbegin_so.o $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64/usr/lib/crtend_so.o -target arm64-none-linux-android -march=armv8-a -Wl,--fix-cortex-a8
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -202,7 +200,6 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -229,25 +226,25 @@ ifeq ($(config),debug64)
 endif
 
 ifeq ($(config),release64)
-  OBJDIR              = ../../linux_x64/obj/x64/release/riku
-  TARGETDIR           = ../../linux_x64/bin
+  OBJDIR              = ../../android-arm64/obj/x64/release/riku
+  TARGETDIR           = ../../android-arm64/bin
   TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"$(ANDROID_NDK_ROOT)/sysroot/usr/include/aarch64-linux-android" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -msse2 -Wunused-value -Wundef -m64
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -m64 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 -target arm64-none-linux-android -march=armv8-a
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"../../../3rdparty/lib/linux_x64" -L"." -s -m64 -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/libs/arm64-v8a" -L"." -s -m64 -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -gcc-toolchain $(ANDROID_NDK_ARM) --sysroot=$(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64 $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64/usr/lib/crtbegin_so.o $(ANDROID_NDK_ROOT)/platforms/android-24/arch-arm64/usr/lib/crtend_so.o -target arm64-none-linux-android -march=armv8-a -Wl,--fix-cortex-a8
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -264,7 +261,6 @@ ifeq ($(config),release64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -295,21 +291,21 @@ ifeq ($(config),debug)
   TARGETDIR           = ../../../scripts
   TARGET              = $(TARGETDIR)/libriku.debug.a
   DEFINES            += -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D_DEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g -Wall -Wextra -fomit-frame-pointer -std=c++14 -fno-rtti -fno-exceptions -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"." -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"." -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -326,7 +322,6 @@ ifeq ($(config),debug)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -357,21 +352,21 @@ ifeq ($(config),release)
   TARGETDIR           = ../../../scripts
   TARGET              = $(TARGETDIR)/libriku.a
   DEFINES            += -DNDEBUG
-  INCLUDES           += -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
+  INCLUDES           += -I"$(ANDROID_NDK_ROOT)/sources/cxx-stl/llvm-libc++/include" -I"${ANDROID_NDK_ROOT}/sysroot/usr/include" -I"../../../include" -I"../../../3rdparty/zlib-1.2.11"
   ALL_CPPFLAGS       += $(CPPFLAGS) -MMD -MP -MP $(DEFINES) $(INCLUDES)
-  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
-  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
-  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
-  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
-  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -msse2 -Wunused-value -Wundef
+  ALL_ASMFLAGS       += $(ASMFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_CFLAGS         += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_CXXFLAGS       += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_OBJCFLAGS      += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
+  ALL_OBJCPPFLAGS    += $(CXXFLAGS) $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O3 -fdeclspec -fms-extensions -fPIC -no-canonical-prefixes -Wa,--noexecstack -fstack-protector-strong -ffunction-sections -Wunused-value -Wundef
   ALL_RESFLAGS       += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS        += $(LDFLAGS) -L"." -s -Wl,--gc-sections -Wl,--as-needed
+  ALL_LDFLAGS        += $(LDFLAGS) -L"." -s -no-canonical-prefixes -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now
   LIBDEPS            +=
   LDDEPS             +=
-  LIBS               += $(LDDEPS) -lm -lrt -ldl
+  LIBS               += $(LDDEPS) -lc -ldl -lm -landroid -llog -lc++_shared -lgcc
   EXTERNAL_LIBS      +=
   LINKOBJS            = $(OBJECTS)
-  LINKCMD             = $(AR)  -rcs $(TARGET)
+  LINKCMD             = $(AR)  rcs $(TARGET)
   OBJECTS := \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/adler32.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/compress.o \
@@ -388,7 +383,6 @@ ifeq ($(config),release)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/trees.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
-	$(OBJDIR)/src/linux/riku_fs_linux.o \
 	$(OBJDIR)/src/riku_cluster.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
@@ -418,7 +412,6 @@ OBJDIRS := \
 	$(OBJDIR) \
 	$(OBJDIR)/3rdparty/zlib-1.2.11 \
 	$(OBJDIR)/src \
-	$(OBJDIR)/src/linux \
 
 RESOURCES := \
 
@@ -530,10 +523,6 @@ $(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o: ../../../3rdparty/zlib-1.2.11/uncompr.
 $(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o: ../../../3rdparty/zlib-1.2.11/zutil.c $(GCH) $(MAKEFILE) | $(OBJDIR)/3rdparty/zlib-1.2.11
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
-
-$(OBJDIR)/src/linux/riku_fs_linux.o: ../../../src/linux/riku_fs_linux.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/linux
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/riku_cluster.o: ../../../src/riku_cluster.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)

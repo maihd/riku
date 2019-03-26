@@ -383,18 +383,51 @@ inline bool __DO_DESTROY(T* ptr)
     }
 }
 
-//
-// Common traits
-//
-
+// Trait utils
+// @note: use for traiting only
 namespace traits
 {
     // Detemine two values are equal or not
-    // @note: use for trait purpose only
+    // @note: use for traiting only
     template <typename TValue>
     inline bool equals(const TValue& a, const TValue& b)
     {
         return a == b;
+    }
+
+    // @note: use for traiting only
+    template <typename TValue>
+    inline bool not_equals(const TValue& a, const TValue& b)
+    {
+        return a != b;
+    }
+
+    // @note: use for traiting only
+    template <typename TValue>
+    inline bool less(const TValue& a, const TValue& b)
+    {
+        return a < b;
+    }
+
+    // @note: use for traiting only
+    template <typename TValue>
+    inline bool greater(const TValue& a, const TValue& b)
+    {
+        return a > b;
+    }
+
+    // @note: use for traiting only
+    template <typename TValue>
+    inline bool less_equals(const TValue& a, const TValue& b)
+    {
+        return a <= b;
+    }
+
+    // @note: use for traiting only
+    template <typename TValue>
+    inline bool greater_equals(const TValue& a, const TValue& b)
+    {
+        return a >= b;
     }
 
     //
@@ -631,7 +664,7 @@ namespace string
 namespace traits
 {
     // Detemine two string are equal or not
-    // @note: use for trait purpose only
+    // @note: use for traiting only
     template <>
     inline bool equals<cstr>(const cstr& a, const cstr& b)
     {
@@ -806,10 +839,12 @@ public:
     
 public: // Conversation
     RIKU_API const char* to_string(void) const;
+    RIKU_API const char* to_string(const char* fmt) const;
 
 public:
     RIKU_API static Date now(void);
     RIKU_API static Date parse(const char* date_string);
+    RIKU_API static Date parse(const char* format, const char* date_string);
 
     RIKU_API static Date utc(void);
     RIKU_API static Date utc(const Date& date);
