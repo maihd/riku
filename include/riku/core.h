@@ -484,6 +484,31 @@ namespace traits
     {
         return __is_class(T);
     }
+
+    template <typename T>
+    struct NameOfTrait
+    {
+        static const char* nameof(void)
+        {
+            const int FRONT_SIZE = sizeof("traits::NameOfTrait<") - 1;
+            const int BACK_SIZE = sizeof(">::nameof") - 1;
+            const int size = sizeof(__FUNCTION__) - FRONT_SIZE - BACK_SIZE;
+
+            static char type_name[size];
+            for (int i = 0; i < size - 1; i++)
+            {
+                type_name[i] = __FUNCTION__[FRONT_SIZE + i];
+            }
+
+            return type_name;
+        }
+    };
+
+    template <typename T>
+    constexpr const char* nameof(void)
+    {
+        return NameOfTrait<T>::nameof();
+    }
 }
 
 // Option
@@ -1059,9 +1084,9 @@ constexpr int lengthof(const char(&)[length])
 template <typename T>
 constexpr int lengthof(const T& x)
 {
-    static_assert(false, "Cannot get length of T");
+    ALWAYS_FALSE_ASSERT("Cannot get length of T");
     return 1;
-}
+} 
 
 // Get length of given string
 template <>

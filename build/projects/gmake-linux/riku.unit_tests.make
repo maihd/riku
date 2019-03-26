@@ -81,6 +81,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -132,6 +133,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -183,6 +185,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -234,6 +237,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -285,6 +289,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -336,6 +341,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/unit_tests/test_table.o \
 	$(OBJDIR)/unit_tests/test_tempo_array.o \
 	$(OBJDIR)/unit_tests/test_thread.o \
+	$(OBJDIR)/unit_tests/test_traits.o \
 	$(OBJDIR)/unit_tests/test_types.o \
 	$(OBJDIR)/unit_tests/unit_test.o \
 	$(OBJDIR)/unit_tests/using_statement.o \
@@ -467,6 +473,10 @@ $(OBJDIR)/unit_tests/test_tempo_array.o: ../../../unit_tests/test_tempo_array.cc
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/unit_tests/test_thread.o: ../../../unit_tests/test_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_traits.o: ../../../unit_tests/test_traits.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

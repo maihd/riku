@@ -65,6 +65,9 @@
     <ClCompile Include="..\..\..\unit_tests\test_thread.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\test_traits.cc">
+      <Filter>unit_tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_types.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>

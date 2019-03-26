@@ -271,6 +271,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_thread.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\test_traits.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_types.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\unit_test.cc">
