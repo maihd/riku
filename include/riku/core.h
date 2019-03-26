@@ -721,6 +721,41 @@ namespace traits
     {
         return string::equals(a, b);
     }
+
+    // @note: use for traiting only
+    template <>
+    inline bool not_equals<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::not_equals(a, b);
+    }
+
+    // @note: use for traiting only
+    template <>
+    inline bool less<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::compare(a, b) < 0;
+    }
+
+    // @note: use for traiting only
+    template <>
+    inline bool greater<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::compare(a, b) > 0;
+    }
+
+    // @note: use for traiting only
+    template <>
+    inline bool less_equals<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::compare(a, b) <= 0;
+    }
+
+    // @note: use for traiting only
+    template <>
+    inline bool greater_equals<cstr>(const cstr& a, const cstr& b)
+    {
+        return string::compare(a, b) >= 0;
+    }
 }
 
 // Console
