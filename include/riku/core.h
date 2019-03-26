@@ -490,22 +490,38 @@ namespace traits
     {
         static const char* nameof(void)
         {
+        #ifdef _MSC_VER
             const int FRONT_SIZE = sizeof("traits::NameOfTrait<") - 1;
             const int BACK_SIZE = sizeof(">::nameof") - 1;
-            const int size = sizeof(__FUNCTION__) - FRONT_SIZE - BACK_SIZE;
+            const int SIZE = sizeof(__FUNCTION__) - FRONT_SIZE - BACK_SIZE;
 
-            static char type_name[size];
-            for (int i = 0; i < size - 1; i++)
+            static char type_name[SIZE];
+            for (int i = 0; i < SIZE - 1; i++)
             {
                 type_name[i] = __FUNCTION__[FRONT_SIZE + i];
             }
+            
+            return type_name;
+        #else
+            const int FRONT_SIZE = sizeof("static const char* traits::NameOfTrait<T>::nameof() [with T = ") - 1;
+            const int BACK_SIZE = sizeof("]") - 1;
+            const int SIZE = sizeof(__PRETTY_FUNCTION__) - FRONT_SIZE - BACK_SIZE;
+
+            int i = 0;
+            static char type_name[SIZE];
+            while (__PRETTY_FUNCTION__[FRONT_SIZE + i] && __PRETTY_FUNCTION__[FRONT_SIZE + i] != ']')
+            {
+                type_name[i] = __PRETTY_FUNCTION__[FRONT_SIZE + i];
+                i++;
+            }
 
             return type_name;
+        #endif
         }
     };
 
     template <typename T>
-    constexpr const char* nameof(void)
+    inline const char* nameof(void)
     {
         return NameOfTrait<T>::nameof();
     }

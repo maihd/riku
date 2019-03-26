@@ -35,21 +35,21 @@ do
       }
    end
 
-   if string.sub(PLATFORM, 0, 5) == "linux" then
+   if PLATFORM and string.sub(PLATFORM, 0, 5) == "linux" then
       files {
          path.join(RIKU_DIR, "src/linux/*.cc"),
          path.join(RIKU_DIR, "src/linux/**/*.cc"),
       }
    end
 
-   if string.sub(PLATFORM, 0, 7) == "android" then
+   if PLATFORM and string.sub(PLATFORM, 0, 7) == "android" then
       files {
          path.join(RIKU_DIR, "src/android/*.cc"),
          path.join(RIKU_DIR, "src/android/**/*.cc"),
       }
    end
 
-   if string.sub(PLATFORM, 0, 7) == "windows" then
+   if PLATFORM and string.sub(PLATFORM, 0, 7) == "windows" then
       files {
          path.join(RIKU_DIR, "src/windows/*.cc"),
          path.join(RIKU_DIR, "src/windows/**/*.cc"),

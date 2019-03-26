@@ -1,7 +1,7 @@
 local ROOT_DIR = path.getabsolute("..")
 
 function string.startwith(s, b)
-    return string.sub(s, 1, string.len(b)) == b
+    return s and b and string.sub(s, 1, string.len(b)) == b
  end
 
 local function crt_none()
