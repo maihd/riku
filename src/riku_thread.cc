@@ -21,7 +21,11 @@
 Atomic& operator++(Atomic& atomic)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedIncrement64(&atomic.value);
+#else
+    _InterlockedIncrement((volatile u32*)&atomic.value);
+#endif
 #else
     atomic.value++;
 #endif
@@ -31,7 +35,11 @@ Atomic& operator++(Atomic& atomic)
 Atomic& operator--(Atomic& atomic)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedDecrement64(&atomic.value);
+#else
+    _InterlockedDecrement((volatile u32*)&atomic.value);
+#endif
 #else
     atomic.value--;
 #endif
@@ -42,7 +50,11 @@ Atomic operator++(Atomic& atomic, int)
 {
     auto result = atomic;
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedIncrement64(&atomic.value);
+#else
+    _InterlockedIncrement((volatile u32*)&atomic.value);
+#endif
 #else
     atomic.value++;
 #endif
@@ -53,7 +65,11 @@ Atomic operator--(Atomic& atomic, int)
 {
     auto result = atomic;
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedDecrement64(&atomic.value);
+#else
+    _InterlockedDecrement((volatile u32*)&atomic.value);
+#endif
 #else
     atomic.value--;
 #endif
@@ -63,7 +79,11 @@ Atomic operator--(Atomic& atomic, int)
 Atomic& operator+=(Atomic& atomic, i64 value)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedAdd64(&atomic.value, value);
+#else
+    _InterlockedAdd((volatile long*)&atomic.value, (LONG)value);
+#endif
 #else
     atomic.value += value;
 #endif
@@ -74,7 +94,11 @@ Atomic& operator+=(Atomic& atomic, i64 value)
 Atomic& operator-=(Atomic& atomic, i64 value)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedAdd64(&atomic.value, -value);
+#else
+    _InterlockedAdd((volatile long*)&atomic.value, (LONG)-value);
+#endif
 #else
     atomic.value -= value;
 #endif
@@ -84,7 +108,11 @@ Atomic& operator-=(Atomic& atomic, i64 value)
 Atomic& operator^=(Atomic& atomic, i64 value)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedXor64(&atomic.value, value);
+#else
+    _InterlockedXor((volatile long*)&atomic.value, value);
+#endif
 #else
     atomic.value ^= value;
 #endif
@@ -94,7 +122,11 @@ Atomic& operator^=(Atomic& atomic, i64 value)
 Atomic& operator|=(Atomic& atomic, i64 value)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedOr64(&atomic.value, value);
+#else
+    _InterlockedOr((volatile long*)&atomic.value, value);
+#endif
 #else
     atomic.value |= value;
 #endif
@@ -104,7 +136,11 @@ Atomic& operator|=(Atomic& atomic, i64 value)
 Atomic& operator&=(Atomic& atomic, i64 value)
 {
 #if PLATFORM_WINDOWS
+#if ARCH_64BIT
 	_InterlockedAnd64(&atomic.value, value);
+#else
+    _InterlockedAnd((volatile long*)&atomic.value, value);
+#endif
 #else
     atomic.value &= value;
 #endif

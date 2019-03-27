@@ -56,12 +56,12 @@ namespace fs
         }
         else
         {
-            if (flags & FileOpen::ReadOnly)
+            if (flags & FileOpen::Read)
             {
                 *ptr++ = 'r';
             }
 
-            if (flags & FileOpen::WriteOnly)
+            if (flags & FileOpen::Write)
             {
                 *ptr++ = 'w';
             }
