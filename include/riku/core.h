@@ -817,13 +817,22 @@ namespace process
 #endif
     ;
 
+    // Get current working directory of this process
     RIKU_API const char* cwd(void);
+
+    // Get current working directory of this process
     RIKU_API const char* cwd(char* buffer, int length);
+
+    // Change current working directory of this process
     RIKU_API bool        chdir(const char* directory);
 
+    // Exit the process
     RIKU_API void        exit(int code);
+
+    // Abort the process
     RIKU_API void        abort(void);
 
+    // Get process id
     RIKU_API int         getpid(void);
 }
 
