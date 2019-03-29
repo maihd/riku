@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "riku.unit_tests", "riku.unit_tests.vcxproj", "{A0309EB3-0CBC-0B78-15CD-8E6C81D76778}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A05F9D7C-8C96-9E0D-3583-841021991A0F} = {A05F9D7C-8C96-9E0D-3583-841021991A0F}
@@ -38,7 +36,6 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {037A7DB6-19D2-47BD-9907-D76136FA3E41}
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

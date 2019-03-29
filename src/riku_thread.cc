@@ -1,3 +1,9 @@
+#if defined(_MSC_VER)
+#pragma warning(disable: 4458) // Params hide member
+#else
+
+#endif
+
 #include <riku/core.h>
 #include <riku/thread.h>
 
@@ -82,7 +88,7 @@ Atomic& operator+=(Atomic& atomic, i64 value)
 #if ARCH_64BIT
 	_InterlockedAdd64(&atomic.value, value);
 #else
-    _InterlockedAdd((volatile long*)&atomic.value, (LONG)value);
+    _InterlockedAdd((volatile LONG*)&atomic.value, (LONG)value);
 #endif
 #else
     atomic.value += value;
@@ -97,7 +103,7 @@ Atomic& operator-=(Atomic& atomic, i64 value)
 #if ARCH_64BIT
 	_InterlockedAdd64(&atomic.value, -value);
 #else
-    _InterlockedAdd((volatile long*)&atomic.value, (LONG)-value);
+    _InterlockedAdd((volatile LONG*)&atomic.value, (LONG)-value);
 #endif
 #else
     atomic.value -= value;
@@ -111,7 +117,7 @@ Atomic& operator^=(Atomic& atomic, i64 value)
 #if ARCH_64BIT
 	_InterlockedXor64(&atomic.value, value);
 #else
-    _InterlockedXor((volatile long*)&atomic.value, value);
+    _InterlockedXor((volatile LONG*)&atomic.value, (LONG)value);
 #endif
 #else
     atomic.value ^= value;
@@ -125,7 +131,7 @@ Atomic& operator|=(Atomic& atomic, i64 value)
 #if ARCH_64BIT
 	_InterlockedOr64(&atomic.value, value);
 #else
-    _InterlockedOr((volatile long*)&atomic.value, value);
+    _InterlockedOr((volatile LONG*)&atomic.value, (LONG)value);
 #endif
 #else
     atomic.value |= value;
@@ -139,7 +145,7 @@ Atomic& operator&=(Atomic& atomic, i64 value)
 #if ARCH_64BIT
 	_InterlockedAnd64(&atomic.value, value);
 #else
-    _InterlockedAnd((volatile long*)&atomic.value, value);
+    _InterlockedAnd((volatile LONG*)&atomic.value, (LONG)value);
 #endif
 #else
     atomic.value &= value;

@@ -88,6 +88,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -150,6 +151,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -212,6 +214,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -274,6 +277,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -336,6 +340,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -398,6 +403,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/src/riku_gmath.o \
 	$(OBJDIR)/src/riku_json.o \
 	$(OBJDIR)/src/riku_math.o \
+	$(OBJDIR)/src/riku_memory.o \
 	$(OBJDIR)/src/riku_net.o \
 	$(OBJDIR)/src/riku_os.o \
 	$(OBJDIR)/src/riku_path.o \
@@ -568,6 +574,10 @@ $(OBJDIR)/src/riku_json.o: ../../../src/riku_json.cc $(GCH) $(MAKEFILE) | $(OBJD
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/riku_math.o: ../../../src/riku_math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/riku_memory.o: ../../../src/riku_memory.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

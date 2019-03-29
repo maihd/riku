@@ -239,6 +239,9 @@
     <ClCompile Include="..\..\..\src\riku_math.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_memory.cc">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_net.cc">
       <Filter>src</Filter>
     </ClCompile>
