@@ -28,22 +28,22 @@ namespace string
         return (int)strlen(str);
     }
 
-    const char* sub(const char* str, int start)
+    const char* substr(const char* str, int start)
     {
-        return sub(str, start, g_buffer, sizeof(g_buffer));
+        return substr(str, start, g_buffer, sizeof(g_buffer));
     }
 
-    const char* sub(const char* str, int start, char* buffer, int length)
+    const char* substr(const char* str, int start, char* buffer, int length)
     {
         return string::copy(buffer, str + start, length);
     }
 
-    const char* sub(const char* str, int start, int end)
+    const char* substr(const char* str, int start, int end)
     {
-        return sub(str, start, end, g_buffer, sizeof(g_buffer));
+        return substr(str, start, end, g_buffer, sizeof(g_buffer));
     }
 
-    const char* sub(const char* str, int start, int end, char* buffer, int length)
+    const char* substr(const char* str, int start, int end, char* buffer, int length)
     {
         if (end > start)
         {
