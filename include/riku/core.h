@@ -761,6 +761,9 @@ namespace traits
 // Console
 namespace console
 {
+    RIKU_API const char* get_log_tag(void);
+    RIKU_API const char* set_log_tag(const char* tag);
+
     RIKU_API void log(const char* fmt, ...);
     RIKU_API void info(const char* fmt, ...);
     RIKU_API void warn(const char* fmt, ...);

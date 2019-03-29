@@ -24,6 +24,8 @@
 // Assertion functions
 // 
 
+static char s_log_tag[1024] = "Riku";
+
 void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
 {
 #if PLATFORM_ANDROID
@@ -32,7 +34,7 @@ void __assert_abort(const char* exp, const char* func, const char* file, int lin
 
     ArgsList args_list;
     argslist_begin(args_list, fmt);
-    __android_log_vprint(ANDROID_LOG_FATAL, "riku", final_fmt, args_list);
+    __android_log_vprint(ANDROID_LOG_FATAL, s_log_tag, final_fmt, args_list);
     argslist_end(args_list);
 #else
     console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
@@ -110,6 +112,16 @@ namespace memory
 
 namespace console
 {
+    const char* get_log_tag(void)
+    {
+        return s_log_tag;
+    }
+
+    const char* set_log_tag(const char* tag)
+    {
+        return string::copy(s_log_tag, tag, sizeof(s_log_tag));
+    }
+
     void log(const char* fmt, ...)
     {
         ArgsList args_list;
@@ -145,7 +157,7 @@ namespace console
     void log_args(const char* fmt, ArgsList args_list)
     {
     #if PLATFORM_ANDROID
-        __android_log_vprint(ANDROID_LOG_DEFAULT, "riku", fmt, args_list);
+        __android_log_vprint(ANDROID_LOG_DEFAULT, s_log_tag, fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
@@ -155,7 +167,7 @@ namespace console
     void info_args(const char* fmt, ArgsList args_list)
     {
     #if PLATFORM_ANDROID
-        __android_log_vprint(ANDROID_LOG_INFO, "riku", fmt, args_list);
+        __android_log_vprint(ANDROID_LOG_INFO, s_log_tag, fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
@@ -165,7 +177,7 @@ namespace console
     void warn_args(const char* fmt, ArgsList args_list)
     {
     #if PLATFORM_ANDROID
-        __android_log_vprint(ANDROID_LOG_WARN, "riku", fmt, args_list);
+        __android_log_vprint(ANDROID_LOG_WARN, s_log_tag, fmt, args_list);
     #else
         vfprintf(stdout, fmt, args_list);
         fputc('\n', stdout);
@@ -175,7 +187,7 @@ namespace console
     void error_args(const char* fmt, ArgsList args_list)
     {
     #if PLATFORM_ANDROID
-        __android_log_vprint(ANDROID_LOG_ERROR, "riku", fmt, args_list);
+        __android_log_vprint(ANDROID_LOG_ERROR, s_log_tag, fmt, args_list);
     #else
         vfprintf(stderr, fmt, args_list);
         fputc('\n', stdout);
