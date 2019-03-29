@@ -673,7 +673,7 @@ public:
     inline operator bool() const { return has_value; }
 };
 
-// Reference counter
+// Reference counter, simple and fast implement
 struct RefCount
 {
 public:
@@ -683,11 +683,16 @@ public:
     constexpr RefCount(void) : _refcount(1) {}
 
 public:
+    // Increase counter
+    // @note: ridiculous name for avoid member collision
     inline int _ref_inc(void) { return ++_refcount; };
+
+    // Decrease counter
+    // @note: ridiculous name for avoid member collision
     inline int _ref_dec(void) { return --_refcount; };
 };
 
-// Simple memory buffer
+// Simple container of a memory block, should use with big size block
 struct Buffer 
 {
 public:
@@ -890,7 +895,7 @@ namespace traits
     }
 }
 
-// Current process
+// Working with current process
 namespace process
 {
     // Get environment variable
@@ -931,19 +936,25 @@ namespace process
     RIKU_API int         getpid(void);
 }
 
-//
-// Performance
-// 
-
+// Working with CPU performance
 namespace performance
 {
+    // Current counter of CPU, in OS abstract measure unit
     RIKU_API long now(void);
+
+    // Frequency of CPU, in OS abstract measure unit
     RIKU_API long frequency(void);
 
+    // Sleep current thread in milliseconds
     RIKU_API bool sleep(long milliseconds);
+
+    // Sleep current thread in microseconds
     RIKU_API bool usleep(long microseconds);
+
+    // Sleep current thread in nanoseconds
     RIKU_API bool nsleep(long nanoseconds);
 
+    // Is system has monotonic timer
     RIKU_API bool has_monotonic(void);
 }
 
