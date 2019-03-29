@@ -44,17 +44,39 @@ namespace memory
 {
     void* alloc(int size)
     {
-        return malloc((usize)size);
+        return alloc(size, 16);
     }
 
     void dealloc(void* ptr)
     {
-        free(ptr);    
+        if (ptr)
+        {
+            void* org_ptr = dealign(ptr);
+            free(org_ptr);
+        }
     }
 
     void* realloc(void* ptr, int size)
     {
-        return ::realloc(ptr, (usize)size);
+        return realloc(ptr, size, 16);
+    }
+
+    void* alloc(int size, int align)
+    {
+        return memory::align(malloc((usize)size + align), align);
+    }
+
+    void* realloc(void* ptr, int size, int align)
+    {
+        if (ptr)
+        {
+            void* org_ptr = dealign(ptr);
+            return memory::align(::realloc(org_ptr, (usize)(size + align)), align);
+        }
+        else
+        {
+            return alloc(size, align);
+        }
     }
 
     void* init(void* dst, int val, int size)

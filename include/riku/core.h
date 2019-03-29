@@ -321,6 +321,46 @@ using ArgsList = va_list;
 #   define FALSE_ASSERT(fmt, ...)
 #endif
 
+// Console
+namespace console
+{
+    // Get log tag of console, which is presented on logcat and family
+    RIKU_API const char* get_log_tag(void);
+
+    // Set log tag of console, which is presented on logcat and family
+    RIKU_API const char* set_log_tag(const char* tag);
+
+    // Log a message, with standard logging-level
+    RIKU_API void log(const char* fmt, ...);
+
+    // Log an information message
+    RIKU_API void info(const char* fmt, ...);
+
+    // Log a warning message
+    RIKU_API void warn(const char* fmt, ...);
+
+    // Log an error message
+    RIKU_API void error(const char* fmt, ...);
+
+    // Log assertion message, and abort the process
+    RIKU_API void log_assert(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
+
+    // Log a message, with standard logging-level
+    RIKU_API void log_args(const char* fmt, ArgsList args_list);
+
+    // Log an information message
+    RIKU_API void info_args(const char* fmt, ArgsList args_list);
+
+    // Log a warning message
+    RIKU_API void warn_args(const char* fmt, ArgsList args_list);
+
+    // Log an error message
+    RIKU_API void error_args(const char* fmt, ArgsList args_list);
+
+    // Log assertion message, and abort the process
+    RIKU_API void log_assert_args(const char* exp, const char* func, const char* file, int line, const char* fmt, ArgsList args_list);
+}
+
 //
 // Memory management
 //
@@ -334,18 +374,76 @@ using ArgsList = va_list;
 
 namespace memory
 {
+    // Get aligned memory address from memory block
+    inline void* align(void* ptr, int align)
+    {
+        ASSERT(align >= 16, "Alignment must be greater than 1");
+        ASSERT((align & (align - 1)) == 0, "Aligment must be a POT number");
+
+        if (ptr)
+        {
+            iptr  address = (iptr)ptr;
+            usize misalign = (address & (align - 1));
+            usize adjustment = (align - misalign);
+
+            *((byte*)ptr + adjustment - 1) = (byte)adjustment;
+            void* result = (byte*)ptr + adjustment;
+            return result;
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+    // Get origin memory address of aligned memory block
+    inline void* dealign(void* ptr)
+    {
+        if (ptr)
+        {
+            byte adjustment = *((byte*)ptr - 1);
+            return (byte*)ptr - adjustment;
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+    // Allocate a memory block, with 16 bytes alignment
     RIKU_API void* alloc(int size);
-    RIKU_API void  dealloc(void* ptr);
+
+    // Re-allocate memory block, with 16 bytes alignment
     RIKU_API void* realloc(void* ptr, int size);
 
+    // Allocate a memory block, with given alignment
+    RIKU_API void* alloc(int size, int align);
+
+    // Re-allocate memory block, with given alignment
+    RIKU_API void* realloc(void* ptr, int size, int align);
+
+    // De-allocate memory block
+    RIKU_API void  dealloc(void* ptr);
+
+    // Initialize memory block
     RIKU_API void* init(void* dst, int val, int size);
+    
+    // Copy memory block content from src to dst
     RIKU_API void* copy(void* dst, const void* src, int size);
+
+    // Move memory block content from src to dst, if src and dst is collapsed, otherwise just copy it
     RIKU_API void* move(void* dst, const void* src, int size);
 
+    // Compare content of two memory blocks
     RIKU_API int   compare(const void* a, const void* b, int size);
 
+    // Initialize memory block with zero
     inline   void* zero(void* dst, int size)                           { return init(dst, 0, size);          }
+
+    // Determine content of two memory blocks are equal
     inline   bool  equals(const void* a, const void* b, int size)      { return compare(a, b, size) == 0;    }
+
+    // Determine content of two memory blocks are not equal
     inline   bool  not_equals(const void* a, const void* b, int size)  { return compare(a, b, size) != 0;    }
 }
 
@@ -384,7 +482,7 @@ inline bool __DO_DESTROY(T* ptr)
 // @note: use for traiting only
 namespace traits
 {
-    // Detemine two values are equal or not
+    // Detemine two values are equal
     // @note: use for traiting only
     template <typename TValue>
     inline bool equals(const TValue& a, const TValue& b)
@@ -392,6 +490,7 @@ namespace traits
         return a == b;
     }
 
+    // Detemine two values are not equal
     // @note: use for traiting only
     template <typename TValue>
     inline bool not_equals(const TValue& a, const TValue& b)
@@ -399,6 +498,7 @@ namespace traits
         return a != b;
     }
 
+    // Detemine a is less than b
     // @note: use for traiting only
     template <typename TValue>
     inline bool less(const TValue& a, const TValue& b)
@@ -406,6 +506,7 @@ namespace traits
         return a < b;
     }
 
+    // Detemine a is greater than b
     // @note: use for traiting only
     template <typename TValue>
     inline bool greater(const TValue& a, const TValue& b)
@@ -413,6 +514,7 @@ namespace traits
         return a > b;
     }
 
+    // Detemine a is less than b
     // @note: use for traiting only
     template <typename TValue>
     inline bool less_equals(const TValue& a, const TValue& b)
@@ -458,24 +560,28 @@ namespace traits
         return (static_cast<WithoutRef<T>&&>(value));
     }
 
+    // Detemine given type is a plain old data structure
     template <typename T>
     constexpr bool is_pod(void)
     {
         return __is_pod(T);
     }
 
+    // Detemine given type is an enum
     template <typename T>
     constexpr bool is_enum(void)
     {
         return __is_enum(T);
     }
 
+    // Detemine given type is an union
     template <typename T>
     constexpr bool is_union(void)
     {
         return __is_union(T);
     }
 
+    // Detemine given type is a struct
     template <typename T>
     constexpr bool is_struct(void)
     {
@@ -517,6 +623,7 @@ namespace traits
         }
     };
 
+    // Get true name of type
     template <typename T>
     inline const char* nameof(void)
     {
@@ -524,7 +631,7 @@ namespace traits
     }
 }
 
-// Option
+// Optional value container
 template <typename T>
 struct Option
 {
@@ -566,6 +673,7 @@ public:
     inline operator bool() const { return has_value; }
 };
 
+// Reference counter
 struct RefCount
 {
 public:
@@ -753,46 +861,6 @@ namespace traits
     {
         return string::compare(a, b) >= 0;
     }
-}
-
-// Console
-namespace console
-{
-    // Get log tag of console, which is presented on logcat and family
-    RIKU_API const char* get_log_tag(void);
-
-    // Set log tag of console, which is presented on logcat and family
-    RIKU_API const char* set_log_tag(const char* tag);
-
-    // Log a message, with standard logging-level
-    RIKU_API void log(const char* fmt, ...);
-
-    // Log an information message
-    RIKU_API void info(const char* fmt, ...);
-
-    // Log a warning message
-    RIKU_API void warn(const char* fmt, ...);
-
-    // Log an error message
-    RIKU_API void error(const char* fmt, ...);
-
-    // Log assertion message, and abort the process
-    RIKU_API void log_assert(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
-
-    // Log a message, with standard logging-level
-    RIKU_API void log_args(const char* fmt, ArgsList args_list);
-
-    // Log an information message
-    RIKU_API void info_args(const char* fmt, ArgsList args_list);
-
-    // Log a warning message
-    RIKU_API void warn_args(const char* fmt, ArgsList args_list);
-
-    // Log an error message
-    RIKU_API void error_args(const char* fmt, ArgsList args_list);
-
-    // Log assertion message, and abort the process
-    RIKU_API void log_assert_args(const char* exp, const char* func, const char* file, int line, const char* fmt, ArgsList args_list);
 }
 
 // Current process
