@@ -311,8 +311,8 @@ using ArgsList = va_list;
 #define argslist_end(args_list)             va_end(args_list)
 
 // Assertion helper
-#define ALWAYS_ASSERT(exp, fmt, ...) (!(exp) ? (void)::__assert_abort(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
-#define ALWAYS_FALSE_ASSERT(fmt, ...) (void)::__assert_abort("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define ALWAYS_ASSERT(exp, fmt, ...) (!(exp) ? (void)::console::log_assert(#exp, __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__) : (void)0)
+#define ALWAYS_FALSE_ASSERT(fmt, ...) (void)::console::log_assert("__false_assert__", __FUNCTION__, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #if !defined(NDEBUG) || !NDEBUG
 #   define ASSERT(exp, fmt, ...)  ALWAYS_ASSERT(exp, fmt, ##__VA_ARGS__)
 #   define FALSE_ASSERT(fmt, ...) ALWAYS_FALSE_ASSERT(fmt, ##__VA_ARGS__)
@@ -320,9 +320,6 @@ using ArgsList = va_list;
 #   define ASSERT(exp, fmt, ...)
 #   define FALSE_ASSERT(fmt, ...)
 #endif
-
-// Assertion functions
-RIKU_API void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
 
 //
 // Memory management
@@ -761,18 +758,41 @@ namespace traits
 // Console
 namespace console
 {
+    // Get log tag of console, which is presented on logcat and family
     RIKU_API const char* get_log_tag(void);
+
+    // Set log tag of console, which is presented on logcat and family
     RIKU_API const char* set_log_tag(const char* tag);
 
+    // Log a message, with standard logging-level
     RIKU_API void log(const char* fmt, ...);
+
+    // Log an information message
     RIKU_API void info(const char* fmt, ...);
+
+    // Log a warning message
     RIKU_API void warn(const char* fmt, ...);
+
+    // Log an error message
     RIKU_API void error(const char* fmt, ...);
 
+    // Log assertion message, and abort the process
+    RIKU_API void log_assert(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
+
+    // Log a message, with standard logging-level
     RIKU_API void log_args(const char* fmt, ArgsList args_list);
+
+    // Log an information message
     RIKU_API void info_args(const char* fmt, ArgsList args_list);
+
+    // Log a warning message
     RIKU_API void warn_args(const char* fmt, ArgsList args_list);
+
+    // Log an error message
     RIKU_API void error_args(const char* fmt, ArgsList args_list);
+
+    // Log assertion message, and abort the process
+    RIKU_API void log_assert_args(const char* exp, const char* func, const char* file, int line, const char* fmt, ArgsList args_list);
 }
 
 // Current process

@@ -21,34 +21,6 @@
 #endif
 
 //
-// Assertion functions
-// 
-
-static char s_log_tag[1024] = "Riku";
-
-void __assert_abort(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
-{
-#if PLATFORM_ANDROID
-    char final_fmt[4096];
-    sprintf(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
-
-    ArgsList args_list;
-    argslist_begin(args_list, fmt);
-    __android_log_vprint(ANDROID_LOG_FATAL, s_log_tag, final_fmt, args_list);
-    argslist_end(args_list);
-#else
-    console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
-
-    ArgsList args_list;
-    argslist_begin(args_list, fmt);
-    console::error_args(fmt, args_list);
-    argslist_end(args_list);
-#endif
-
-    process::abort();
-}
-
-//
 // Buffer functions
 //
 
@@ -112,6 +84,8 @@ namespace memory
 
 namespace console
 {
+    static char s_log_tag[1024] = "Riku";
+
     const char* get_log_tag(void)
     {
         return s_log_tag;
@@ -154,6 +128,14 @@ namespace console
         argslist_end(args_list);
     }
 
+    void log_assert(const char* exp, const char* func, const char* file, int line, const char* fmt, ...)
+    {
+        ArgsList args_list;
+        argslist_begin(args_list, fmt);
+        log_assert_args(exp, func, file, line, fmt, args_list);
+        argslist_end(args_list);
+    }
+
     void log_args(const char* fmt, ArgsList args_list)
     {
     #if PLATFORM_ANDROID
@@ -192,6 +174,22 @@ namespace console
         vfprintf(stderr, fmt, args_list);
         fputc('\n', stdout);
     #endif
+    }
+
+    void log_assert_args(const char* exp, const char* func, const char* file, int line, const char* fmt, ArgsList args_list)
+    {
+#if PLATFORM_ANDROID
+        char final_fmt[4096];
+        string::format(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
+
+        __android_log_vprint(ANDROID_LOG_FATAL, s_log_tag, final_fmt, args_list);
+#else
+        console::error("Assertion failed!: %s\nIn %s:%s:%d", exp, func, file, line);
+
+        console::error_args(fmt, args_list);
+#endif
+
+        process::abort();
     }
 }
 
