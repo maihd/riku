@@ -440,9 +440,9 @@ public:
     // Get index of given item
     inline int index_of(const TItem& value) const
     {
-        for (int i = 0, n = get_length(); i < n; i++)
+        for (int i = 0, n = length; i < n; i++)
         {
-            if (traits::equals(buffer->items[i], value))
+            if (traits::equals(items[i], value))
             {
                 return i;
             }
@@ -455,9 +455,9 @@ public:
     inline int last_index_of(const TItem& value) const
     {
         int index = -1;
-        for (int i = 0, n = get_length(); i < n; i++)
+        for (int i = 0, n = length; i < n; i++)
         {
-            if (traits::equals(buffer->items[i], value))
+            if (traits::equals(items[i], value))
             {
                 index = i;
             }
@@ -597,9 +597,9 @@ public:
     // Get index of given item
     inline int index_of(const TItem& value) const
     {
-        for (int i = 0, n = get_length(); i < n; i++)
+        for (int i = 0, n = length; i < n; i++)
         {
-            if (traits::equals(buffer->items[i], value))
+            if (traits::equals(items[i], value))
             {
                 return i;
             }
@@ -612,9 +612,9 @@ public:
     inline int last_index_of(const TItem& value) const
     {
         int index = -1;
-        for (int i = 0, n = get_length(); i < n; i++)
+        for (int i = 0, n = length; i < n; i++)
         {
-            if (traits::equals(buffer->items[i], value))
+            if (traits::equals(items[i], value))
             {
                 index = i;
             }
