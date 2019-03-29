@@ -747,15 +747,28 @@ namespace string
     // Get length of string
     RIKU_API int         length(const char* str);
 
+    // Get sub string of given string, with given start position
     RIKU_API const char* substr(const char* str, int start);
+
+    // Get sub string of given string, with given start position
     RIKU_API const char* substr(const char* str, int start, char* buffer, int length);
 
+    // Get sub string of given string, with given start and end position
     RIKU_API const char* substr(const char* str, int start, int end);
+
+    // Get sub string of given string, with given start and end position
     RIKU_API const char* substr(const char* str, int start, int end, char* buffer, int length);
 
+    // Get position of given character in given string
     RIKU_API int index_of(const char* str, char value);
+
+    // Get position of given sub string in given string
     RIKU_API int index_of(const char* str, const char* value);
+
+    // Get last position of given character in given string
     RIKU_API int last_index_of(const char* str, char value);
+
+    // Get last position of given sub string in given string
     RIKU_API int last_index_of(const char* str, const char* value);
 
     // Copy content of src string to dst string
