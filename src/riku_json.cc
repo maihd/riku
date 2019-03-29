@@ -1,6 +1,10 @@
 // Copyright (c) 2019, MaiHD. All right reversed.
 // License: Unlicensed
 
+#if defined(_MSC_VER)
+#pragma warning(disable: 4611)
+#endif
+
 #include <riku/core.h>
 #include <riku/json.h>
 
