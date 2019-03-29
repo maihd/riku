@@ -788,14 +788,28 @@ namespace string
     // Compare two strings: 0 -> dst == src, -1 -> dst < src, 1 dst > src
     RIKU_API int         compare(const char* dst, const char* src, int length);
 
+    // Convert string to 32 bits integer
     RIKU_API i32         to_i32(const char* str);
+
+    // Convert string to 32 bits unsigned integer
     RIKU_API u32         to_u32(const char* str);
+
+    // Convert string to 64 bits integer
     RIKU_API i64         to_i64(const char* str);
+
+    // Convert string to 64 bits unsigned integer
     RIKU_API u64         to_u64(const char* str);
 
+    // Convert string to standard integer
     RIKU_API int         to_int(const char* str);
+
+    // Convert string to standard unsigned integer
     RIKU_API uint        to_uint(const char* str);
+
+    // Convert string to single precision floating-point number
     RIKU_API float       to_float(const char* str);
+
+    // Convert string to double precision floating-point number
     RIKU_API double      to_double(const char* str);
 
     // Checking string is empty
