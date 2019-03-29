@@ -213,3 +213,81 @@ namespace string
         return atof(str);
     }
 }
+
+String String::substr(int start) const
+{
+    return String(string::substr(this->get_characters(), start));
+}
+
+String String::substr(int start, int end) const
+{
+    return String(string::substr(this->get_characters(), start, end));
+}
+
+int String::index_of(char value) const
+{
+    return string::index_of(this->get_characters(), value);
+}
+
+int String::index_of(const char* value) const
+{
+    return string::index_of(this->get_characters(), value);
+}
+
+int String::last_index_of(char value) const
+{
+    return string::last_index_of(this->get_characters(), value);
+}
+
+int String::last_index_of(const char* value) const
+{
+    return string::last_index_of(this->get_characters(), value);
+}
+
+String& String::concat(const char* other)
+{
+    int length = string::length(other);
+    int new_length = this->get_length() + length;
+    if (this->get_capacity() < new_length)
+    {
+        int target_size;
+        int require_size = (sizeof(Buffer) + new_length);
+        target_size = require_size - 1;
+        target_size |= target_size >> 1;
+        target_size |= target_size >> 2;
+        target_size |= target_size >> 4;
+        target_size |= target_size >> 8;
+        target_size |= target_size >> 16;
+        target_size++;
+
+        bool success = buffer.grow(target_size);
+        ASSERT(success, "Out of memory when grow buffer of string.");
+    }
+
+    string::concat(this->get_characters(), other, length);
+    return *this;
+}
+
+String& String::concat(const String& other)
+{
+    int length = other.get_length();
+    int new_length = this->get_length() + length;
+    if (this->get_capacity() < new_length)
+    {
+        int target_size;
+        int require_size = (sizeof(Buffer) + new_length);
+        target_size = require_size - 1;
+        target_size |= target_size >> 1;
+        target_size |= target_size >> 2;
+        target_size |= target_size >> 4;
+        target_size |= target_size >> 8;
+        target_size |= target_size >> 16;
+        target_size++;
+
+        bool success = buffer.grow(target_size);
+        ASSERT(success, "Out of memory when grow buffer of string.");
+    }
+
+    string::concat(this->get_characters(), other.get_characters(), length);
+    return *this;
+}

@@ -9,19 +9,13 @@
 //
 
 #include "./core.h"
+#include "./array.h"
 
-// String: high-level string type, use to store dynamic string
+// High-level string type, use to store dynamic string
 struct String 
 {
 public:
-    struct Buffer
-    {
-        int  length;
-        int  capacity;
-        char characters[1];
-    };
-    Buffer* buffer;
-
+    Array<char> buffer;
 
 public:
     PROPERTY_READONLY(int, length, get_length);
@@ -30,22 +24,22 @@ public:
 
     inline int get_length(void) const
     {
-        return buffer ? buffer->length : 0;
+        return buffer.get_length();
     }
 
     inline int get_capacity(void) const
     {
-        return buffer ? buffer->capacity : 0;
+        return buffer.get_capacity();
     }
 
     inline char* get_characters(void)
     {
-        return buffer ? buffer->characters : NULL;
+        return buffer.get_items();
     }
 
     inline const char* get_characters(void) const
     {
-        return buffer ? buffer->characters : NULL;
+        return buffer.get_items();
     }
 
     inline bool is_empty(void) const
@@ -59,15 +53,10 @@ public:
     }
 
 public:
-    inline String() 
-        : buffer(NULL) {}
+    constexpr String(void) {}
 
-    inline ~String() 
-    { 
-        if (buffer)
-        {
-            memory::dealloc(buffer); 
-        }
+    inline ~String(void) 
+    {
     }
 
 public:
@@ -90,15 +79,11 @@ public:
             target_size |= target_size >> 16;
             target_size++;
 
-            this->buffer = (Buffer*)memory::alloc(target_size);
-            this->buffer->length   = (int)len;
-            this->buffer->capacity = (int)(target_size - sizeof(Buffer));
+            bool success = buffer.grow(target_size);
+            ASSERT(success, "Out of memory when create buffer for string.");
 
-            memory::copy(this->buffer->characters, str, len + 1);
-        }
-        else
-        {
-            this->buffer = NULL;
+            buffer.buffer->length = len;
+            memory::copy(buffer.buffer->items, str, len + 1);
         }
     }
 
@@ -117,75 +102,66 @@ public:
                 target_size |= target_size >> 4;
                 target_size |= target_size >> 8;
                 target_size |= target_size >> 16;
-                target_size++;
-
-                buffer = (Buffer*)memory::realloc(buffer, target_size);
-                buffer->capacity = target_size - sizeof(Buffer);
+                target_size++; 
+                
+                bool success = buffer.grow(target_size);
+                ASSERT(success, "Out of memory when grow buffer of string.");
             }
-            
-            this->buffer->length = len;
-            memory::copy(this->buffer->characters, str, len + 1);
+
+            buffer.buffer->length = len;
+            memory::copy(buffer.buffer->items, str, len + 1);
         }
-        else
+        else if (buffer.buffer)
         {
-            buffer->length        = 0;
-            buffer->characters[0] = 0;
+            buffer.buffer->length   = 0;
+            buffer.buffer->items[0] = 0;
         }
         return *this;
     }
 
 public: // RAII
     inline String(String&& other)
-        : buffer(other.buffer)
+        : buffer(traits::make_rvalue(other.buffer))
     {
-        other.buffer = NULL;
+        other.buffer.buffer = NULL;
     }
 
     inline String& operator=(String&& other)
     {
-        memory::dealloc(buffer ? buffer - sizeof(int) : NULL);
-        buffer = other.buffer;
-        other.buffer = NULL;
+        this->~String();
+
+        buffer.buffer = other.buffer.buffer;
+        other.buffer.buffer = NULL;
         return *this;
     }
 
 public: // Copy
     inline String(const String& other)
     {
-        if (other.buffer)
+        if (other.get_length() > 0)
         {
-            int len = other.get_length();
+            bool success = buffer.grow(other.get_capacity());
+            ASSERT(success, "Out of memory when grow buffer of string.");
 
-            buffer = (Buffer*)memory::alloc(sizeof(Buffer) + len);
-            buffer->length   = len;
-            buffer->capacity = len;
-
-            memory::copy(buffer->characters, other.buffer->characters, len + 1);
-        }
-        else
-        {
-            buffer = NULL;
+            buffer.buffer->length = other.get_length();
+            memory::copy(buffer.buffer->items, other.get_characters(), other.get_length() + 1);
         }
     }
 
     inline String& operator=(const String& other)
     {
-        if (other.buffer)
+        if (other.get_length() > 0)
         {
-            int len = other.get_length();
-            if (get_capacity() < len)
-            {
-                buffer = (Buffer*)memory::realloc(buffer, sizeof(Buffer) + other.get_capacity());
-                buffer->capacity = other.get_capacity();
-            }
+            bool success = buffer.grow(other.get_capacity());
+            ASSERT(success, "Out of memory when grow buffer of string.");
 
-            buffer->length = len;
-            memory::copy(buffer->characters, other.buffer->characters, len + 1);
+            buffer.buffer->length = other.get_length();
+            memory::copy(buffer.buffer->items, other.get_characters(), other.get_length() + 1);
         }
-        else if (buffer)
+        else if (buffer.buffer)
         {
-            buffer->length        = 0;
-            buffer->characters[0] = 0;
+            buffer.buffer->length = 0;
+            buffer.buffer->items[0] = 0;
         }
         return *this;
     }
@@ -193,13 +169,26 @@ public: // Copy
 public:
     inline explicit operator char*(void)
     {
-        return buffer ? buffer->characters : NULL;
+        return this->get_characters();
     }
 
     inline explicit operator const char*(void) const
     {
-        return buffer ? buffer->characters : NULL;
-    } 
+        return this->get_characters();
+    }
+
+public: // No side-effect functions
+    RIKU_API String  substr(int start) const;
+    RIKU_API String  substr(int start, int end) const;
+
+    RIKU_API int     index_of(char value) const;
+    RIKU_API int     index_of(const char* value) const;
+    RIKU_API int     last_index_of(char value) const;
+    RIKU_API int     last_index_of(const char* value) const; 
+
+public: // Side-effect function
+    RIKU_API String& concat(const char* other);
+    RIKU_API String& concat(const String& other);
 };
 
 //

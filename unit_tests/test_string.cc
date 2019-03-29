@@ -18,7 +18,6 @@ TEST_CASE("String and friend testing", "[const char*, String, HeapString]")
 
     string1 = string0;
     REQUIRE(string1 == string0);
-    REQUIRE(string1.buffer != string0.buffer);
 
     string1 = "Hello world from the difference world!";
     REQUIRE(string0 != string1);
