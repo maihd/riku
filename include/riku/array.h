@@ -5,9 +5,6 @@
 
 #include "./core.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 // Array: POD growable continuos-sequence container
 // @note: Donot use pointer of this type
 template <typename TItem>
@@ -295,7 +292,7 @@ public:
     {
         int dst_len = get_length();
         int src_len = src.get_length();
-        if (src_len)
+        if (src_len > 0)
         {
             int new_len = dst_len + src_len;
             if (!ensure(new_len))
@@ -303,7 +300,7 @@ public:
                 return false;
             }
 
-            memcpy(buffer->items + get_length(), src.buffer->items, src_len * sizeof(TItem));
+            memory::copy(buffer->items + get_length(), src.buffer->items, src_len * sizeof(TItem));
             buffer->length = new_len;
         }
 
@@ -322,7 +319,7 @@ public:
             if (res.grow(cap))
             {
                 res.buffer->length = len;
-                memcpy(res.buffer->items, buffer->items, len * sizeof(TItem));
+                memory::copy(res.buffer->items, buffer->items, len * sizeof(TItem));
             }
         }
 
@@ -334,7 +331,7 @@ public:
     {
         if (index > -1 && index < get_length())
         {
-            memory::move(buffer->items + index, buffer->items + index + 1, get_length() - index - 2);
+            memory::move(buffer->items + index, buffer->items + index + 1, (get_length() - index - 2) * sizeof(TItem));
             buffer->length--;
             return true;
         }
@@ -353,22 +350,22 @@ public:
 
 // TempoArray: POD temporary continuos-sequence container, unknown size at compile-time
 // @note: Donot use pointer of this type
-template <typename TValue>
+template <typename TItem>
 struct TempoArray
 {
 public:
     int           length;
     const uint    capacity;
-    TValue* const items;
+    TItem* const items;
 
 public:
     inline explicit TempoArray(uint capacity = 64)
         : length(0)
         , capacity(capacity)
 #ifdef NDEBUG
-        , items((TValue*)stackalloc(capacity * sizeof(TValue)))
+        , items((TItem*)stackalloc(capacity * sizeof(TItem)))
 #else
-        , items((TValue*)memory::alloc(capacity * sizeof(TValue)))
+        , items((TItem*)memory::alloc(capacity * sizeof(TItem)))
 #endif
     {
     }
@@ -379,16 +376,137 @@ public:
         memory::dealloc(items);
 #endif
     }
+
+public:
+    // Add an item at the last position
+    inline bool push(const TItem& value)
+    {
+        if (length < capacity)
+        {
+            items[length++] = value;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the item at the last position
+    inline TItem pop(void)
+    {
+        ASSERT(length > 0, "Attempt to pop the empty array.");
+        return items[--length];
+    }
+
+    // Add an item at the first position
+    inline bool unshift(const TItem& value)
+    {
+        if (length < capacity)
+        {
+            memory::move(items, items + 1, length * sizeof(TItem));
+            length++;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the item at the first position
+    inline TItem shift(void)
+    {
+        ASSERT(length > 0, "Attempt to pop the empty array.");
+        TItem result = items[--length];
+        memory::move(items + 1, items, length * sizeof(TItem));
+        return result;
+    }
+
+public:
+    // Get index of given item
+    inline int index_of(const TItem& value) const
+    {
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (traits::equals(buffer->items[i], value))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // Get index of given item, with backward iteration
+    inline int last_index_of(const TItem& value) const
+    {
+        int index = -1;
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (traits::equals(buffer->items[i], value))
+            {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    // Determines whether the contains given item
+    inline bool contains(const TItem& item) const
+    {
+        return index_of(item) > 0;
+    }
+
+    // Add other array items to this array, from the last position
+    inline bool concat(const TempoArray& src)
+    {
+        int dst_len = length;
+        int src_len = src.length;
+        int new_len = dst_len + src_len;
+        if (new_len <= capacity)
+        {
+            length = new_len;
+            memory::copy(items + dst_len, src.items, src_len * sizeof(TItem));
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove an item with given index
+    inline int erase(int index)
+    {
+        if (index > -1 && index < length)
+        {
+            memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            length--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove an item with given value
+    inline int remove(const TItem& value)
+    {
+        return erase(index_of(value));
+    }
 };
 
 // StaticArray: POD temporary continuos-sequence container, fixed size at compile-time
 // @note: Donot use pointer of this type
-template <typename TValue, int capacity>
+template <typename TItem, int capacity>
 struct StaticArray
 {
 public:
-    int    length;
-    TValue items[capacity];
+    int   length;
+    TItem items[capacity];
 
 public:
     constexpr StaticArray(void)
@@ -402,16 +520,167 @@ public: // Properties
     {
         return capacity;
     }
+
+public:
+    // Add an item at the last position
+    inline bool push(const TItem& value)
+    {
+        if (length < capacity)
+        {
+            items[length++] = value;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the item at the last position
+    inline TItem pop(void)
+    {
+        ASSERT(length > 0, "Attempt to pop the empty array.");
+        return items[--length];
+    }
+
+    // Add an item at the first position
+    inline bool unshift(const TItem& value)
+    {
+        if (length < capacity)
+        {
+            memory::move(items, items + 1, length * sizeof(TItem));
+            length++;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the item at the first position
+    inline TItem shift(void)
+    {
+        ASSERT(length > 0, "Attempt to pop the empty array.");
+        TItem result = items[--length];
+        memory::move(items + 1, items, length * sizeof(TItem));
+        return result;
+    }
+
+public:
+    // Get index of given item
+    inline int index_of(const TItem& value) const
+    {
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (traits::equals(buffer->items[i], value))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // Get index of given item, with backward iteration
+    inline int last_index_of(const TItem& value) const
+    {
+        int index = -1;
+        for (int i = 0, n = get_length(); i < n; i++)
+        {
+            if (traits::equals(buffer->items[i], value))
+            {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    // Determines whether the contains given item
+    inline bool contains(const TItem& item) const
+    {
+        return index_of(item) > 0;
+    }
+
+    // Add other array items to this array, from the last position
+    inline bool concat(const StaticArray& src)
+    {
+        int dst_len = length;
+        int src_len = src.length;
+        int new_len = dst_len + src_len;
+        if (new_len <= capacity)
+        {
+            length = new_len;
+            memory::copy(items + dst_len, src.items, src_len * sizeof(TItem));
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove an item with given index
+    inline int erase(int index)
+    {
+        if (index > -1 && index < length)
+        {
+            memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            length--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove an item with given value
+    inline int remove(const TItem& value)
+    {
+        return erase(index_of(value));
+    }
 };
 
+// Calculate hash of Array<>
 template <typename T>
 inline u64 hashof(const Array<T>& array)
 {
     return hashof(array.get_items(), array.get_length());
 }
 
+// Get length of Array<>
 template <typename T>
 inline int lengthof(const Array<T>& array)
 {
     return array.get_length();
+}
+
+// Calculate hash of Array<>
+template <typename T>
+inline u64 hashof(const TempoArray<T>& array)
+{
+    return hashof(array.items, array.length);
+}
+
+// Get length of Array<>
+template <typename T>
+inline int lengthof(const TempoArray<T>& array)
+{
+    return array.length;
+}
+
+// Calculate hash of Array<>
+template <typename T, int capacity>
+inline u64 hashof(const StaticArray<T, capacity>& array)
+{
+    return hashof(array.items, array.length);
+}
+
+// Get length of Array<>
+template <typename T, int capacity>
+inline int lengthof(const StaticArray<T, capacity>& array)
+{
+    return array.length;
 }
