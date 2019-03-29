@@ -120,7 +120,20 @@ public: // Indexor
         return buffer->items[index];
     }
 
-public: // Buffer sizing
+public:
+    // Checking array is empty or not
+    inline bool is_empty(void) const
+    {
+        return !buffer || buffer->length <= 0;
+    }
+
+    // Checking array is valid or not
+    inline bool is_valid(void) const
+    {
+        return buffer && buffer->length > 0;
+    }
+
+    // Remove all items
     inline void clear(void)
     {
         if (buffer)
@@ -134,6 +147,7 @@ public: // Buffer sizing
         }
     }
 
+    // Leave buffer ownership free
     inline void unref(bool cleanup = true)
     {
         if (cleanup)
@@ -143,6 +157,7 @@ public: // Buffer sizing
         buffer = NULL;
     }
 
+    // Grow the array's buffer that contains enough space with given size
     inline bool grow(int new_size)
     {
         auto old_buf = buffer;
@@ -169,6 +184,7 @@ public: // Buffer sizing
         }
     }
 
+    // Ensure array is big enough, and grow if can
     inline bool ensure(int size)
     {
         if (this->get_capacity() >= size)
@@ -184,12 +200,14 @@ public: // Buffer sizing
         }
     }
 
+    // Ensure array is big enough
     inline bool ensure(int size) const
     {
         return (this->get_capacity() >= size);
     }
 
-public: // Buffer modifying
+public:
+    // Add an item at the last position
     inline bool push(const TItem& value)
     {
         if (!this->ensure(this->get_length() + 1))
@@ -200,7 +218,8 @@ public: // Buffer modifying
         INIT(&buffer->items[buffer->length++]) TItem(value);
         return true;
     }
-    
+
+    // Remove the item at the last position
     inline TItem pop(void)
     {
         ASSERT(this->get_length() > 0, "Attempt to pop the List<>, which is empty.");
@@ -210,6 +229,7 @@ public: // Buffer modifying
         return item;
     }
 
+    // Remove the item at the first position
     inline TItem shift(void)
     {
         ASSERT(this->get_length() > 0, "Attempt to shift the List<>, which is empty.");
@@ -223,6 +243,7 @@ public: // Buffer modifying
         return result;
     }
 
+    // Add an item at the first position
     inline bool unshift(const TItem& value)
     {
         if (!this->ensure(this->get_length() + 1))
@@ -238,6 +259,7 @@ public: // Buffer modifying
     }
 
 public:
+    // Get index of given item
     inline int index_of(const TItem& value)
     {
         for (int i = 0, n = get_length(); i < n; i++)
@@ -251,6 +273,7 @@ public:
         return -1;
     }
 
+    // Get index of given item, with backward iteration
     inline int last_index_of(const TItem& value)
     {
         for (int i = get_length() - 1; i > -1; i--)
@@ -271,11 +294,12 @@ public:
     }
 
 public:
+    // Remove an item with given index
     inline bool erase(int index)
     {
         if (index > -1 && index < this->get_length())
         {
-            memory::move(buffer->items + index, buffer->items + index + 1, this->get_length() - index - 2);
+            memory::move(buffer->items + index, buffer->items + index + 1, (this->get_length() - index - 2) * sizeof(TItem));
             buffer->length--;
             return true;
         }
@@ -285,18 +309,21 @@ public:
         }
     }
 
+    // Remove an item with given value
     inline bool remove(const TItem& value)
     {
         return erase(index_of(value));
     }
 };
 
+// Calculate hash of List<>
 template <typename T>
 inline u64 hashof(const List<T>& list)
 {
     return hashof(list.get_items(), list.get_length());
 }
 
+// Get length of List<>
 template <typename T>
 inline int lengthof(const List<T>& list)
 {

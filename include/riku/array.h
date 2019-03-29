@@ -378,6 +378,19 @@ public:
     }
 
 public:
+    // Checking array is empty or not
+    inline bool is_empty(void) const
+    {
+        return length <= 0;
+    }
+
+    // Checking array is valid or not
+    inline bool is_valid(void) const
+    {
+        return length > 0;
+    }
+
+public:
     // Add an item at the last position
     inline bool push(const TItem& value)
     {
@@ -522,6 +535,19 @@ public: // Properties
     }
 
 public:
+    // Checking array is empty or not
+    inline bool is_empty(void) const
+    {
+        return length <= 0;
+    }
+
+    // Checking array is valid or not
+    inline bool is_valid(void) const
+    {
+        return length > 0;
+    }
+
+public:
     // Add an item at the last position
     inline bool push(const TItem& value)
     {
@@ -657,28 +683,28 @@ inline int lengthof(const Array<T>& array)
     return array.get_length();
 }
 
-// Calculate hash of Array<>
+// Calculate hash of TempoArray<>
 template <typename T>
 inline u64 hashof(const TempoArray<T>& array)
 {
     return hashof(array.items, array.length);
 }
 
-// Get length of Array<>
+// Get length of TempoArray<>
 template <typename T>
 inline int lengthof(const TempoArray<T>& array)
 {
     return array.length;
 }
 
-// Calculate hash of Array<>
+// Calculate hash of StaticArray<>
 template <typename T, int capacity>
 inline u64 hashof(const StaticArray<T, capacity>& array)
 {
     return hashof(array.items, array.length);
 }
 
-// Get length of Array<>
+// Get length of StaticArray<>
 template <typename T, int capacity>
 inline int lengthof(const StaticArray<T, capacity>& array)
 {
