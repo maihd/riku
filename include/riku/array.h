@@ -354,6 +354,9 @@ template <typename TItem>
 struct TempoArray
 {
 public:
+    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+
+public:
     int           length;
     const uint    capacity;
     TItem* const items;
@@ -517,6 +520,9 @@ public:
 template <typename TItem, int capacity>
 struct StaticArray
 {
+public:
+    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+    
 public:
     int   length;
     TItem items[capacity];

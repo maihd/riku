@@ -1271,7 +1271,7 @@ constexpr int lengthof(const char(&)[length])
 
 // Get length of given value
 template <typename T>
-constexpr int lengthof(const T& x)
+constexpr int lengthof(const T&)
 {
     ALWAYS_FALSE_ASSERT("Cannot get length of T");
     return 1;

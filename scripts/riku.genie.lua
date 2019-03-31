@@ -39,6 +39,8 @@ do
       files {
          path.join(RIKU_DIR, "src/linux/*.cc"),
          path.join(RIKU_DIR, "src/linux/**/*.cc"),
+
+         path.join(RIKU_DIR, "src/unix/riku_fs_unix.cc"),
       }
    end
 
@@ -46,6 +48,8 @@ do
       files {
          path.join(RIKU_DIR, "src/android/*.cc"),
          path.join(RIKU_DIR, "src/android/**/*.cc"),
+         
+         path.join(RIKU_DIR, "src/unix/riku_fs_unix.cc"),
       }
    end
 
