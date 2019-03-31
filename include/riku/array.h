@@ -10,8 +10,8 @@
 template <typename TItem>
 struct Array
 {
-public:
-    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+//public:
+    //static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
 
 public:
     struct Buffer : RefCount
@@ -353,8 +353,8 @@ public:
 template <typename TItem>
 struct TempoArray
 {
-public:
-    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+//public:
+    //static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
 
 public:
     int           length;
@@ -520,8 +520,8 @@ public:
 template <typename TItem, int capacity>
 struct StaticArray
 {
-public:
-    static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
+//public:
+    //static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
     
 public:
     int   length;
