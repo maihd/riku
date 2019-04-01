@@ -5,32 +5,38 @@
 
 #include "./core.h"
 
-enum struct Platform
-{
-    WinRT,
-    Windows,
-    Android,
-    Linux,
-    iOS,
-    OSX,
-    AsmJS,
-    WebAssembly,
-};
-
-enum struct PlatformFamily
-{
-    Linux,
-    Darwin,
-    Windows,
-    WebNative,
-};
-
 namespace os
 {
     struct CPU
     {
         int  speed;
         char model[64];
+    };
+
+    enum struct Endian
+    {
+        Big,
+        Little,
+    };
+
+    enum struct Platform
+    {
+        WinRT,
+        Windows,
+        Android,
+        Linux,
+        iOS,
+        OSX,
+        AsmJS,
+        WebAssembly,
+    };
+
+    enum struct PlatformFamily
+    {
+        Linux,
+        Darwin,
+        Windows,
+        WebNative,
     };
 
     // Get cpu name
@@ -40,12 +46,12 @@ namespace os
     }
 
     // Get edianness name
-    constexpr const char* edianness(void)
+    constexpr Endian edianness(void)
     {
     #if CPU_LITTLE_ENDIAN
-        return "LE";
+        return Endian::Little;
     #else
-        return "BE";
+        return Endian::Big;
     #endif
     }
 

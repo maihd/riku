@@ -5,6 +5,7 @@
 
 #include "./core.h"
 
+
 namespace dylib
 {
     // Open an dynamic linking library file
@@ -13,6 +14,6 @@ namespace dylib
     // Open dylib file handle
     RIKU_API bool  close(void* handle);
 
-    // Load or find a symbol, that is contained by symbol
+    // Load or find a symbol, that is contained by dylib
     RIKU_API void* symbol(void* handle, const char* name);
 }
