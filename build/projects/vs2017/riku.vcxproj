@@ -231,7 +231,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\riku\array.h" />
-    <ClInclude Include="..\..\..\include\riku\cluster.h" />
     <ClInclude Include="..\..\..\include\riku\core.h" />
     <ClInclude Include="..\..\..\include\riku\crypto.h" />
     <ClInclude Include="..\..\..\include\riku\dictionary.h" />
@@ -293,8 +292,6 @@
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\zutil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\riku_cluster.cc">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_core.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_crypto.cc">

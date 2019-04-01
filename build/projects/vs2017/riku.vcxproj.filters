@@ -30,9 +30,6 @@
     <ClInclude Include="..\..\..\include\riku\array.h">
       <Filter>include\riku</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\riku\cluster.h">
-      <Filter>include\riku</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\core.h">
       <Filter>include\riku</Filter>
     </ClInclude>
@@ -212,9 +209,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\riku_cluster.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_core.cc">
       <Filter>src</Filter>
     </ClCompile>
