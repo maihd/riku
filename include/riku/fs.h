@@ -4,6 +4,7 @@
 #pragma once
 
 #include "./core.h"
+#include "./buffer.h"
 
 namespace enums
 {

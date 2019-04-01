@@ -79,7 +79,7 @@ public:
         if (str && len > 0)
         {
             int target_size;
-            int require_size = (sizeof(Buffer) + len);
+            int require_size = len;
             target_size  = require_size - 1;
             target_size |= target_size >> 1;
             target_size |= target_size >> 2;
@@ -104,7 +104,7 @@ public:
             if (get_capacity() < len)
             {
                 int target_size;
-                int require_size = (sizeof(Buffer) + len);
+                int require_size = len;
                 target_size  = require_size - 1;
                 target_size |= target_size >> 1;
                 target_size |= target_size >> 2;

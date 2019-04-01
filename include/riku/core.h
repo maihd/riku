@@ -692,57 +692,6 @@ public:
     inline int _ref_dec(void) { return --_refcount; };
 };
 
-// Simple container of a memory block, should use with big size block
-struct Buffer 
-{
-public:
-    byte* data;
-
-public:
-    inline Buffer()
-        : data(NULL) {}
-
-    inline ~Buffer()
-    {
-        memory::dealloc(data ? (int*)data - 1 : NULL);
-    }
-
-public:
-    inline Buffer(Buffer&& buffer)
-        : data(buffer.data)
-    {
-        buffer.data = NULL;
-    }
-
-    inline Buffer& operator=(Buffer&& buffer)
-    {
-        data = buffer.data;
-        buffer.data = NULL;
-        return *this;
-    }
-
-public:
-    PROPERTY_READONLY(int, length, get_length);
-    inline int get_length(void) const
-    {
-        return data ? *((int*)data - 1) : 0;
-    }
-
-public:
-    inline operator byte*(void)
-    {
-        return data;
-    }
-
-    inline operator const byte*(void) const
-    {
-        return data;
-    }
-
-public: // Factory functions
-    RIKU_API static Buffer alloc(int length);
-};
-
 // UTF8 string operator
 namespace string
 {
@@ -1105,13 +1054,6 @@ inline u64 hashof(const cstr& x)
     return calc_hash64(x, string::length(x));
 }
 
-// Compute hash of given buffer
-template <>
-inline u64 hashof(const Buffer& buffer)
-{
-    return calc_hash64(buffer.data, buffer.get_length());
-}
-
 // Compute hash of given data
 template <int length>
 constexpr u64 hashof(const char(&buffer)[length])
@@ -1146,11 +1088,4 @@ template <>
 inline int lengthof(const cstr& str)
 {
     return string::length(str);
-}
-
-// Get length of given buffer
-template <>
-inline int lengthof(const Buffer& buffer)
-{
-    return buffer.get_length();
 }

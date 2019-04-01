@@ -251,7 +251,7 @@ String& String::concat(const char* other)
     if (this->get_capacity() < new_length)
     {
         int target_size;
-        int require_size = (sizeof(Buffer) + new_length);
+        int require_size = (new_length);
         target_size = require_size - 1;
         target_size |= target_size >> 1;
         target_size |= target_size >> 2;
@@ -275,7 +275,7 @@ String& String::concat(const String& other)
     if (this->get_capacity() < new_length)
     {
         int target_size;
-        int require_size = (sizeof(Buffer) + new_length);
+        int require_size = (new_length);
         target_size = require_size - 1;
         target_size |= target_size >> 1;
         target_size |= target_size >> 2;
