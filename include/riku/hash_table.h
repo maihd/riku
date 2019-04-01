@@ -230,6 +230,11 @@ public: // Methods
                     memory::dealloc(buffer->values);
                     return false;
                 }
+                else
+                {
+                    buffer->capacity = new_size;
+                    memory::init(buffer->nexts + buffer->length, -1, (buffer->capacity - buffer->length) * sizeof(int));
+                }
             }
 
             curr = buffer->length++;

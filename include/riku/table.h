@@ -187,27 +187,7 @@ public: // Methods
 
         if (curr < 0)
         {
-            if (buffer->length + 1 > buffer->capacity)
-            {
-                int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
-                buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
-
-                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
-            }
-
-            curr = buffer->length++;
-            if (prev > -1)
-            {
-                buffer->nexts[prev] = curr;
-            }
-            else
-            {
-                buffer->hashs[hash] = curr;
-            }
-            buffer->nexts[curr] = -1;
-            buffer->keys[curr]  = key;
+            ALWAYS_ASSERT(this->set(key, TValue()), "Out of memory");
         }
 
         return buffer->values[curr];
@@ -246,7 +226,18 @@ public: // Methods
                 buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
-                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
+                if (!buffer->nexts || !buffer->keys || !buffer->values)
+                {
+                    memory::dealloc(buffer->nexts);
+                    memory::dealloc(buffer->keys);
+                    memory::dealloc(buffer->values);
+                    return false;
+                }
+                else
+                {
+                    buffer->capacity = new_size;
+                    memory::init(buffer->nexts + buffer->length, -1, (buffer->capacity - buffer->length) * sizeof(int));
+                }
             }
 
             curr = buffer->length++;

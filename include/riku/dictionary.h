@@ -203,7 +203,7 @@ public: // Methods
         return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
-    TValue& get_or_new(const TKey& key)
+    bool get_or_new(const TKey& key, TValue** value)
     {
         int hash, prev;
         int curr = index_of(key, &hash, &prev);
@@ -212,12 +212,18 @@ public: // Methods
         {
             if (buffer->length + 1 > buffer->capacity)
             {
-                int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
+                int new_size = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
+                buffer->nexts = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
+                buffer->keys = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
-                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
+                if (!buffer->nexts || !buffer->keys || !buffer->values)
+                {
+                    memory::dealloc(buffer->nexts);
+                    memory::dealloc(buffer->keys);
+                    memory::dealloc(buffer->values);
+                    return false;
+                }
 
                 buffer->capacity = new_size;
                 for (int i = buffer->length; i < new_size; i++)
@@ -238,10 +244,21 @@ public: // Methods
                 buffer->hashs[hash] = curr;
             }
             buffer->nexts[curr] = -1;
-            buffer->keys[curr]  = key;
+            buffer->keys[curr] = key;
         }
 
-        return buffer->values[curr];
+        *value = &buffer->values[curr];
+        return true;
+    }
+
+    TValue& get_or_new(const TKey& key)
+    {
+        TValue* inner_value;
+        if (!get_or_new(key, &inner_value))
+        {
+            ALWAYS_FALSE_ASSERT("Out of memory.");
+        }
+        return *inner_value;
     }
 
     bool contains(const TKey& key) const
@@ -265,44 +282,16 @@ public: // Methods
 
     bool set(const TKey& key, const TValue& value)
     {
-        int hash, prev;
-        int curr = index_of(key, &hash, &prev);
-
-        if (curr < 0)
+        TValue* inner_value;
+        if (get_or_new(key, &inner_value))
         {
-            if (buffer->length + 1 > buffer->capacity)
-            {
-                int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
-                buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
-
-                ALWAYS_ASSERT(!(!buffer->nexts || !buffer->keys || !buffer->values), "Out of memory");
-
-                buffer->capacity = new_size;
-                for (int i = buffer->length; i < new_size; i++)
-                {
-                    buffer->nexts[i] = -1;
-                    INIT(&buffer->keys[i]) TKey();
-                    INIT(&buffer->values[i]) TValue();
-                }
-            }
-
-            curr = buffer->length++;
-            if (prev > -1)
-            {
-                buffer->nexts[prev] = curr;
-            }
-            else
-            {
-                buffer->hashs[hash] = curr;
-            }
-            buffer->nexts[curr] = -1;
-            buffer->keys[curr]  = key;
+            *inner_value = value;
+            return true;
         }
-
-        buffer->values[curr] = value;
-        return true;
+        else
+        {
+            return false;
+        }
     }
 
     bool remove(const TKey& key)
