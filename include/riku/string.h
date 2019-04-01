@@ -11,7 +11,8 @@
 #include "./core.h"
 #include "./array.h"
 
-// High-level string type, use to store dynamic string
+// Dynamic and growable string
+// @note: should use to store dynamic string only
 struct String 
 {
 public:
@@ -22,38 +23,46 @@ public:
     PROPERTY_READONLY(int, capacity, get_capacity);
     PROPERTY_READONLY(char*, characters, get_characters);
 
+    // Get length of string
     inline int get_length(void) const
     {
         return buffer.get_length();
     }
 
+    // Get capacity of buffer
     inline int get_capacity(void) const
     {
         return buffer.get_capacity();
     }
 
+    // Get character array
     inline char* get_characters(void)
     {
         return buffer.get_items();
     }
 
+    // Get character array
     inline const char* get_characters(void) const
     {
         return buffer.get_items();
     }
 
+    // Is string empty
     inline bool is_empty(void) const
     {
         return get_length() <= 0;
     }
 
+    // Is string valid
     inline bool is_valid(void) const
     {
         return get_length()  > 0;
     }
 
 public:
-    constexpr String(void) {}
+    constexpr String(void) 
+    {
+    }
 
     inline ~String(void) 
     {
@@ -178,16 +187,31 @@ public:
     }
 
 public: // No side-effect functions
+
+    // Get substring
     RIKU_API String  substr(int start) const;
+    
+    // Get substring
     RIKU_API String  substr(int start, int end) const;
 
+    // Index of character in string
     RIKU_API int     index_of(char value) const;
+
+    // Index of substring in string
     RIKU_API int     index_of(const char* value) const;
+
+    // Last index of character in string
     RIKU_API int     last_index_of(char value) const;
+
+    // Last index of character in string
     RIKU_API int     last_index_of(const char* value) const; 
 
 public: // Side-effect function
+
+    // Concatenate the string the last position
     RIKU_API String& concat(const char* other);
+
+    // Concatenate the string the last position
     RIKU_API String& concat(const String& other);
 };
 
@@ -195,12 +219,14 @@ public: // Side-effect function
 // @region: Function-like operators
 //
 
+// Compute hash of given string
 template <>
 inline u64 hashof(const String& string)
 {
     return hashof(string.get_characters(), string.get_length());
 }
 
+// Get length of given string
 template <>
 inline int lengthof<String>(const String& string)
 {
