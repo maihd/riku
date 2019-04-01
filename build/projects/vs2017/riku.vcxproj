@@ -233,6 +233,7 @@
     <ClInclude Include="..\..\..\include\riku\array.h" />
     <ClInclude Include="..\..\..\include\riku\core.h" />
     <ClInclude Include="..\..\..\include\riku\crypto.h" />
+    <ClInclude Include="..\..\..\include\riku\date.h" />
     <ClInclude Include="..\..\..\include\riku\dictionary.h" />
     <ClInclude Include="..\..\..\include\riku\dylib.h" />
     <ClInclude Include="..\..\..\include\riku\events.h" />

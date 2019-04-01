@@ -2,6 +2,7 @@
 // License: Unlicensed
 
 #include <riku/core.h>
+#include <riku/date.h>
 #include "./unit_test.h"
 
 TEST_CASE("Date modules", "[date]")

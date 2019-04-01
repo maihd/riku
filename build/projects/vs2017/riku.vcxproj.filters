@@ -36,6 +36,9 @@
     <ClInclude Include="..\..\..\include\riku\crypto.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\date.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\dictionary.h">
       <Filter>include\riku</Filter>
     </ClInclude>

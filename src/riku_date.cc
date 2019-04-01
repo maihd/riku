@@ -1,4 +1,5 @@
 #include <riku/core.h>
+#include <riku/date.h>
 
 #include <time.h>
 #include <ctype.h>
