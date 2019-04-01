@@ -38,6 +38,7 @@ enum struct FileSeek
     Current = 1,
 };
 
+// File system
 namespace fs
 {
 
@@ -57,39 +58,48 @@ namespace fs
     RIKU_API Stats stat(const char* path);
 #endif
 
-    //
-    // Common file system operations
-    //
-
+    // Make new directory at given path
     RIKU_API bool mkdir(const char* path);
-    RIKU_API bool rmdir(const char* path);
-    
-    //
-    // File stats
-    //
 
+    // Remove the directory at given path
+    RIKU_API bool rmdir(const char* path);
+
+    // Is file or directory exist at path
     RIKU_API bool exists(const char* path);
 
-    //
-    // Low-level file working functions
-    //
-
+    // Open file handle at given path
     RIKU_API FileHandle open(const char* path, Flags flags);
+
+    // Open file handle at given path
     RIKU_API FileHandle open(const char* path, const char* flags);
+
+    // Set the position of file pointer
     RIKU_API int        seek(FileHandle handle, FileSeek whence, int count);
+
+    // Tell the position of file pointer
     RIKU_API int        tell(FileHandle handle);
-    RIKU_API int        read(FileHandle handle, void* buffer, int length);
-    RIKU_API int        write(FileHandle handle, const void* buffer, int length);
-    RIKU_API void       close(FileHandle handle);
-
-    //
-    // High-level, easily file working functions
-    //
-
-    RIKU_API Buffer read_file(const char* path);
-    RIKU_API int    read_file(const char* path, Buffer& buffer);
-    RIKU_API int    read_file(const char* path, void* buffer, int length);
     
+    // Read content of file with handle
+    RIKU_API int        read(FileHandle handle, void* buffer, int length);
+
+    // Read content of file with handle
+    RIKU_API int        write(FileHandle handle, const void* buffer, int length);
+
+    // Close file handle
+    RIKU_API void       close(FileHandle handle);
+    
+    // Read content of file at given path
+    RIKU_API Buffer read_file(const char* path);
+
+    // Read content of file at given path
+    RIKU_API int    read_file(const char* path, Buffer& buffer);
+
+    // Read content of file at given path
+    RIKU_API int    read_file(const char* path, void* buffer, int length);
+
+    // Write content to file at given path
     RIKU_API int    write_file(const char* path, const Buffer& buffer);
+
+    // Write content to file at given path
     RIKU_API int    write_file(const char* path, const void* buffer, int length);
 }
