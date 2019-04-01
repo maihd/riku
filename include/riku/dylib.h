@@ -7,7 +7,12 @@
 
 namespace dylib
 {
+    // Open an dynamic linking library file
     RIKU_API void* open(const char* path);
+
+    // Open dylib file handle
     RIKU_API bool  close(void* handle);
+
+    // Load or find a symbol, that is contained by symbol
     RIKU_API void* symbol(void* handle, const char* name);
 }
