@@ -264,14 +264,26 @@ using uchar     = int;
 
 // Fixed size types
 
+#if PLATFORM_WINDOWS || PLATFORM_APPLE
+using i8        = char;
+using u8        = unsigned char;
+using i16       = short;
+using u16       = unsigned short;
+using i32       = long;
+using u32       = unsigned long;
+using i64       = long long;
+using u64       = unsigned long long;
+#else
 using i8        = char;
 using u8        = unsigned char;
 using i16       = short;
 using u16       = unsigned short;
 using i32       = int;
 using u32       = unsigned int;
-using i64       = long long;
-using u64       = unsigned long long;
+using i64       = long;
+using u64       = unsigned long;
+#endif
+
 static_assert(sizeof(i8)  == 1, "i8 must be 1-bytes size.");
 static_assert(sizeof(u8)  == 1, "u8 must be 1-bytes size.");
 static_assert(sizeof(i16) == 2, "i16 must be 2-bytes size.");

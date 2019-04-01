@@ -9,8 +9,8 @@ namespace crypto
 {
     struct MD5
     {
-        uint state[4];
-        uint count[2];
+        u32  state[4];
+        u32  count[2];
         byte buffer[64];
     };
 

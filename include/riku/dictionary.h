@@ -222,6 +222,7 @@ public: // Methods
                 buffer->capacity = new_size;
                 for (int i = buffer->length; i < new_size; i++)
                 {
+                    buffer->nexts[i] = -1;
                     INIT(&buffer->keys[i]) TKey();
                     INIT(&buffer->values[i]) TValue();
                 }
@@ -281,6 +282,7 @@ public: // Methods
                 buffer->capacity = new_size;
                 for (int i = buffer->length; i < new_size; i++)
                 {
+                    buffer->nexts[i] = -1;
                     INIT(&buffer->keys[i]) TKey();
                     INIT(&buffer->values[i]) TValue();
                 }
