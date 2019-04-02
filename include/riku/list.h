@@ -89,21 +89,25 @@ public: // Properties
     PROPERTY_READONLY(int, length, get_length);
     PROPERTY_READONLY(int, capacity, get_capacity);
 
+    // Get items buffer
     inline TItem* get_items(void)
     {
         return buffer ? buffer->items : NULL;
     }
 
+    // Get items buffer
     inline const TItem* get_items(void) const
     {
         return buffer ? buffer->items : NULL;
     }
 
+    // Get length of list
     inline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
     }
 
+    // Get capacity of buffer
     inline int get_capacity(void) const
     {
         return buffer ? buffer->capacity : 0;

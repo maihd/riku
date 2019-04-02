@@ -181,14 +181,21 @@ public:
     }
 
     // Determine if hash table contains the entry with key
-    bool contains(u64 key) const
+    inline bool contains(u64 key) const
     {
         return index_of(key) > -1;
     }
 
 public:
     // Get value of entry with key
-    TValue get(u64 key, const TValue& def_value = TValue()) const
+    const TValue& get(u64 key) const
+    {
+        int curr = index_of(key);
+        return buffer->values[curr];
+    }
+
+    // Get value of entry with key
+    const TValue& get(u64 key, const TValue& def_value) const
     {
         int curr = index_of(key);
         return (curr > -1) ? buffer->values[curr] : def_value;

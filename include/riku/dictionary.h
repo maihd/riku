@@ -29,26 +29,31 @@ public: // Properties
     PROPERTY_READONLY(int, length, get_length);
     PROPERTY_READONLY(int, hash_count, get_hash_count);
 
+    // Get keys buffer
     inline const TKey* get_keys(void) const
     {
         return buffer ? buffer->keys : 0;
     }
 
+    // Get values buffer
     inline TValue* get_values(void)
     {
         return buffer ? buffer->values : 0;
     }
 
+    // Get values buffer
     inline const TValue* get_values(void) const
     {
         return buffer ? buffer->values : 0;
     }
 
+    // Get length of dictionary
     inline int get_length(void) const
     {
         return buffer ? buffer->length : 0;
     }
 
+    // Get number of entry contain in dictionary
     inline int get_hash_count(void) const
     {
         return buffer ? buffer->hashs.get_length() : 0;
@@ -145,7 +150,8 @@ public: // Operators
         return try_get(key, &value) ? value : TValue();
     }
 
-public: // Methods
+public:
+    // Clear the buffer
     void clear(void)
     {
         if (buffer)
@@ -160,6 +166,7 @@ public: // Methods
         }
     }
 
+    // Unref the buffer
     void unref(bool cleanup = true)
     {
         if (cleanup)
@@ -169,6 +176,8 @@ public: // Methods
         buffer = NULL;
     }
 
+public:
+    // Find index of entry with key
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
         int hash = (int)(uint)(hashof(key) % this->get_hash_count());
@@ -191,18 +200,45 @@ public: // Methods
         return curr;
     }
 
+    // Determine if hash table contains the entry with key
+    inline bool contains(u64 key) const
+    {
+        return index_of(key) > -1;
+    }
+
+public:
+    // Get value of entry with key
     const TValue& get(const TKey& key) const
     {
         int curr = index_of(key);
         return buffer->values[curr];
     }
 
+    // Get value of entry with key
     const TValue& get(const TKey& key, const TValue& def_value) const
     {
         int curr = index_of(key);
         return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
+    // Get value of entry with key. If entry exists return true, false otherwise.
+    bool try_get(const TKey& key, TValue* out_value) const
+    {
+        int curr = index_of(key);
+        if (curr > -1)
+        {
+            *out_value = buffer->values[curr];
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+public:
+    // Get value entry, if not exists create new. 
+    // Return true if success, false otherwise.
     bool get_or_new(const TKey& key, TValue** value)
     {
         int hash, prev;
@@ -251,6 +287,8 @@ public: // Methods
         return true;
     }
 
+    // Get value entry, if not exists create new.
+    // Return a reference to value entry if success, otherwise abort the process.
     TValue& get_or_new(const TKey& key)
     {
         TValue* inner_value;
@@ -261,25 +299,7 @@ public: // Methods
         return *inner_value;
     }
 
-    bool contains(const TKey& key) const
-    {
-        return index_of(key) > -1;
-    }
-
-    bool try_get(const TKey& key, TValue* out_value) const
-    {
-        int curr = index_of(key);
-        if (curr > -1)
-        {
-            *out_value = buffer->values[curr];
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
+    // Set entry's value, if not exists create news
     bool set(const TKey& key, const TValue& value)
     {
         TValue* inner_value;
@@ -294,11 +314,32 @@ public: // Methods
         }
     }
 
+public:
+    // Remove an entry that has given key
     bool remove(const TKey& key)
     {
         int prev;
         int hash;
         int curr = index_of(key, &hash, &prev);
+        return erase(curr, hash, prev);
+    }
+
+    // Remove the entry at given index
+    bool erase(int index)
+    {
+        if (index > -1 && index < get_length())
+        {
+            return remove(buffer->keys[index]);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the entry at given index, hash entry, and previous entry
+    bool erase(int curr, int hash, int prev)
+    {
         if (curr > -1)
         {
             if (prev > -1)
