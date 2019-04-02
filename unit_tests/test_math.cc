@@ -12,4 +12,12 @@ TEST_CASE("HLSL Math", "[math]")
     auto b = fabsf(10.0f);
 
     auto c = cos(10.0f);
+
+    math::random32();
+    math::random64();
+
+    math::random();
+    math::random(0, 100);
+    //math::random(0u, 100u);
+    math::random(0.0f, 100.0f);
 }

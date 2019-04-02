@@ -385,4 +385,22 @@ namespace math
     {
         return x == 0.0f ? 0.0f : 1.0f / frsqrt(x);
     }
+
+    // Generate a random 32 integer number
+    RIKU_API i32 random32(void);
+
+    // Generate a random 32 integer number
+    RIKU_API i64 random64(void);
+
+    // Generate a random integer number, value is between [min, max]
+    RIKU_API int random(int min, int max);
+
+    // Generate a random unsigned integer number, value is between [min, max]
+    //RIKU_API uint random(uint min, uint max);
+
+    // Generate a random number between [0.0f, 1.0f]
+    RIKU_API float random(void);
+
+    // Generate a random floating-point real number, value is between [min, max]
+    RIKU_API float random(float min, float max);
 }
