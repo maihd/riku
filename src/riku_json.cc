@@ -10,11 +10,6 @@
 
 #include <math.h>
 #include <ctype.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 #include <setjmp.h>
 
 #ifndef JSON_VALUE_BUCKETS
@@ -134,13 +129,8 @@ namespace json
         char final_format[1024];
         char templ_format[1024] = "%s\n\tAt line %d, column %d. Parsing token: <%s>.";
 
-    #if defined(_MSC_VER) && _MSC_VER >= 1200
-        sprintf_s(final_format, sizeof(final_format), templ_format, fmt, state->line, state->column, type_name);
-        sprintf_s(state->errmsg, errmsg_size, final_format, args_list);
-    #else
-        sprintf(final_format, templ_format, fmt, state->line, state->column, type_name);
-        sprintf(state->errmsg, final_format, args_list);
-    #endif
+        string::format(final_format, sizeof(final_format), templ_format, fmt, state->line, state->column, type_name);
+        string::format_args(state->errmsg, sizeof(templ_format), final_format, args_list);
     }
 
     /* @funcdef: json__set_error */
@@ -336,10 +326,10 @@ namespace json
             }
         }
 
-        Value *value = (Value *)json__pool_extract(state->value_pool);
+        Value* value = (Value*)json__pool_extract(state->value_pool);
         if (value)
         {
-            memset(value, 0, sizeof(Value));
+            memory::zero(value, sizeof(Value));
             value->type = type;
             value->boolean = false;
         }
@@ -362,7 +352,7 @@ namespace json
             state->column = 1;
             state->cursor = 0;
             state->buffer = json;
-            state->length = strlen(json);
+            state->length = string::length(json);
 
             state->errmsg = NULL;
             state->errnum = Error::None;
@@ -855,7 +845,7 @@ namespace json
                         }
                         else if (values)
                         {
-                            memcpy(new_values, (int *)values - 1, old_size);
+                            memory::copy(new_values, (int *)values - 1, old_size);
                         }
                     }
                 }
@@ -923,7 +913,7 @@ namespace json
                 }
 
                 const char *token = state->buffer + state->cursor - length;
-                if (length == 4 && strncmp(token, "true", 4) == 0)
+                if (length == 4 && string::compare(token, "true", 4) == 0)
                 {
                     if (!value)
                         value = json__make_value(state, Type::Boolean);
@@ -932,11 +922,11 @@ namespace json
                     value->boolean = true;
                     return value;
                 }
-                else if (length == 4 && strncmp(token, "null", 4) == 0)
+                else if (length == 4 && string::compare(token, "null", 4) == 0)
                 {
                     return value ? (value->type = Type::Null, value) : json__make_value(state, Type::Null);
                 }
-                else if (length == 5 && strncmp(token, "false", 5) == 0)
+                else if (length == 5 && string::compare(token, "false", 5) == 0)
                 {
                     return value ? (value->type = Type::Boolean, value->boolean = false, value) : json__make_value(state, Type::Boolean);
                 }
@@ -973,43 +963,30 @@ namespace json
         {
             json__match_char(state, Type::String, '"');
 
-            int i;
-            int c0, c1;
-            int length = 0;
-            int capacity = 0;
-            char *temp_string = NULL;
+            int   i;
+            int   c0, c1;
+            int   length = 0;
+            char  tmp_buffer[1024];
+            char* tmp_string = tmp_buffer;
+            int   capacity = sizeof(tmp_buffer);
             while (!json__is_eof(state) && (c0 = json__peek_char(state)) != '"')
             {
-                if (length + 4 >= capacity - HEADER_SIZE)
+                if (length > capacity)
                 {
-                    capacity = capacity > 0 ? capacity * 2 : 32;
-                    temp_string = (char *)json__bucket_resize(state->string_bucket,
-                                                            temp_string ? temp_string - HEADER_SIZE : temp_string,
-                                                            capacity >> 1, capacity);
-                    if (!temp_string)
+                    capacity <<= 1;
+                    if (tmp_string != tmp_buffer)
                     {
-                        /* Get from unused buckets */
-                        while (state->string_bucket && state->string_bucket->prev)
-                        {
-                            state->string_bucket = state->string_bucket->prev;
-                            temp_string = (char *)json__bucket_extract(state->string_bucket, capacity);
-                            if (temp_string)
-                            {
-                                break;
-                            }
-                        }
-
-                        /* Create new bucket */
-                        state->string_bucket = json__make_bucket(state, state->string_bucket, JSON_STRING_BUCKETS, 1);
-                        temp_string = (char*)json__bucket_extract(state->string_bucket, capacity);
-                        if (!temp_string)
+                        tmp_string = (char*)memory::alloc(capacity);
+                    }
+                    else
+                    {
+                        tmp_string = (char*)memory::realloc(tmp_string, capacity);
+                        if (!tmp_string)
                         {
                             json__panic(state, Type::String, Error::OutOfMemory, "Out of memory when create new <string>");
                             return NULL;
                         }
                     }
-
-                    temp_string += HEADER_SIZE;
                 }
 
                 if (c0 == '\\')
@@ -1018,27 +995,27 @@ namespace json
                     switch (c0)
                     {
                     case 'n':
-                        temp_string[length++] = '\n';
+                        tmp_string[length++] = '\n';
                         break;
 
                     case 't':
-                        temp_string[length++] = '\t';
+                        tmp_string[length++] = '\t';
                         break;
 
                     case 'r':
-                        temp_string[length++] = '\r';
+                        tmp_string[length++] = '\r';
                         break;
 
                     case 'b':
-                        temp_string[length++] = '\b';
+                        tmp_string[length++] = '\b';
                         break;
 
                     case '\\':
-                        temp_string[length++] = '\\';
+                        tmp_string[length++] = '\\';
                         break;
 
                     case '"':
-                        temp_string[length++] = '\"';
+                        tmp_string[length++] = '\"';
                         break;
 
                     case 'u':
@@ -1057,25 +1034,25 @@ namespace json
 
                         if (c1 <= 0x7F)
                         {
-                            temp_string[length++] = (char)c1;
+                            tmp_string[length++] = c1;
                         }
                         else if (c1 <= 0x7FF)
                         {
-                            temp_string[length++] = (char)(0xC0 | (c1 >> 6));   /* 110xxxxx */
-                            temp_string[length++] = (char)(0x80 | (c1 & 0x3F)); /* 10xxxxxx */
+                            tmp_string[length++] = 0xC0 | (c1 >> 6);            /* 110xxxxx */
+                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
                         }
                         else if (c1 <= 0xFFFF)
                         {
-                            temp_string[length++] = (char)(0xE0 | (c1 >> 12));         /* 1110xxxx */
-                            temp_string[length++] = (char)(0x80 | ((c1 >> 6) & 0x3F)); /* 10xxxxxx */
-                            temp_string[length++] = (char)(0x80 | (c1 & 0x3F));        /* 10xxxxxx */
+                            tmp_string[length++] = 0xE0 | (c1 >> 12);           /* 1110xxxx */
+                            tmp_string[length++] = 0x80 | ((c1 >> 6) & 0x3F);   /* 10xxxxxx */
+                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
                         }
                         else if (c1 <= 0x10FFFF)
                         {
-                            temp_string[length++] = (char)(0xF0 | (c1 >> 18));          /* 11110xxx */
-                            temp_string[length++] = (char)(0x80 | ((c1 >> 12) & 0x3F)); /* 10xxxxxx */
-                            temp_string[length++] = (char)(0x80 | ((c1 >> 6) & 0x3F));  /* 10xxxxxx */
-                            temp_string[length++] = (char)(0x80 | (c1 & 0x3F));         /* 10xxxxxx */
+                            tmp_string[length++] = 0xF0 | (c1 >> 18);           /* 11110xxx */
+                            tmp_string[length++] = 0x80 | ((c1 >> 12) & 0x3F);  /* 10xxxxxx */
+                            tmp_string[length++] = 0x80 | ((c1 >> 6) & 0x3F);   /* 10xxxxxx */
+                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
                         }
                         break;
 
@@ -1094,7 +1071,7 @@ namespace json
                         break;
 
                     default:
-                        temp_string[length++] = (char)c0;
+                        tmp_string[length++] = c0;
                         break;
                     }
                 }
@@ -1112,18 +1089,46 @@ namespace json
                 value->type = Type::String;
             }
 
-            if (temp_string)
+            if (tmp_string)
             {
-                temp_string[length] = 0;
+                tmp_string[length] = 0;
 
-                usize size = ((usize)length + 1);
-                char *string = (char *)json__bucket_resize(state->string_bucket, temp_string - HEADER_SIZE, capacity, size);
+                size_t size = HEADER_SIZE + ((size_t)length + 1);
+                char*  string = (char*)json__bucket_extract(state->string_bucket, size);
+                if (!string)
+                {
+                    /* Get from unused buckets */
+                    while (state->string_bucket && state->string_bucket->prev)
+                    {
+                        state->string_bucket = state->string_bucket->prev;
+                        string = (char*)json__bucket_extract(state->string_bucket, capacity);
+                        if (string)
+                        {
+                            break;
+                        }
+                    }
+
+                    /* Create new bucket */
+                    state->string_bucket = json__make_bucket(state, state->string_bucket, JSON_STRING_BUCKETS, 1);
+                    string = (char*)json__bucket_extract(state->string_bucket, capacity);
+                    if (!string)
+                    {
+                        json__panic(state, Type::String, Error::OutOfMemory, "Out of memory when create new <string>");
+                        return NULL;
+                    }
+                }
 
                 /* String header */
-                ((int *)string)[0] = length;
-                ((int *)string)[1] = json__hash(temp_string, length);
+                ((int*)string)[0] = length;
+                ((int*)string)[1] = json__hash(tmp_string, length);
 
                 value->string = string + HEADER_SIZE;
+                string::copy((char*)value->string, tmp_string);
+
+                if (tmp_string != tmp_buffer)
+                {
+                    free(tmp_string);
+                }
             }
 
             return value;
@@ -1210,7 +1215,7 @@ namespace json
                         }
                         else if (root->object)
                         {
-                            memcpy(new_values, (int *)root->object - 1, old_size);
+                            memory::copy(new_values, (int *)root->object - 1, old_size);
                         }
                     }
                 }
@@ -1402,7 +1407,7 @@ namespace json
                 {
                     const char* str0 = a.object[i].name;
                     const char* str1 = a.object[i].name;
-                    if (((int*)str0 - 2)[1] != ((int*)str1 - 2)[1] || strcmp(str0, str1) == 0)
+                    if (((int*)str0 - 2)[1] != ((int*)str1 - 2)[1] || string::compare(str0, str1) == 0)
                     {
                         return false;
                     }
@@ -1416,7 +1421,7 @@ namespace json
             return true;
 
         case Type::String:
-            return ((int*)a.string - 2)[1] == ((int*)b.string - 2)[1] && strcmp(a.string, b.string) == 0;
+            return ((int*)a.string - 2)[1] == ((int*)b.string - 2)[1] && string::compare(a.string, b.string) == 0;
         }
 
         return false;
@@ -1428,11 +1433,11 @@ namespace json
         if (this->type == Type::Object)
         {
             int i, n;
-            int hash = json__hash((void*)name, strlen(name));
+            int hash = json__hash((void*)name, string::length(name));
             for (i = 0, n = this->get_length(); i < n; i++)
             {
                 const char* str = this->object[i].name;
-                if (hash == ((int*)str - 2)[1] && strcmp(str, name) == 0)
+                if (hash == ((int*)str - 2)[1] && string::compare(str, name) == 0)
                 {
                     return *this->object[i].value;
                 }
