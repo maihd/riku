@@ -131,7 +131,8 @@ public: // RAII
         return *this;
     }
 
-public: // Methods
+public:
+    // Clear the buffer
     void clear(void)
     {
         if (buffer)
@@ -140,12 +141,15 @@ public: // Methods
         }
     }
 
+    // Unref the buffer
     void unref(void)
     {
         this->~Table();
         buffer = NULL;
     }
 
+public:
+    // Find index of entry with key
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
         int hash = (int)(uint)(hashof(key) % this->get_hash_count());
@@ -168,36 +172,28 @@ public: // Methods
         return curr;
     }
 
+    // Determine if hash table contains the entry with key
+    bool contains(const TKey& key) const
+    {
+        return index_of(key) > -1;
+    }
+
+public:
+    // Get value of entry with key
     const TValue& get(const TKey& key) const
     {
         int curr = index_of(key);
         return buffer->values[curr];
     }
 
+    // Get value of entry with key
     const TValue& get(const TKey& key, const TValue& def_value) const
     {
         int curr = index_of(key);
         return (curr > -1) ? buffer->values[curr] : def_value;
     }
 
-    TValue& get_or_new(const TKey& key)
-    {
-        int hash, prev;
-        int curr = index_of(key, &hash, &prev);
-
-        if (curr < 0)
-        {
-            ALWAYS_ASSERT(this->set(key, TValue()), "Out of memory");
-        }
-
-        return buffer->values[curr];
-    }
-
-    bool contains(const TKey& key) const
-    {
-        return index_of(key) > -1;
-    }
-
+    // Get value of entry with key. If entry exists return true, false otherwise.
     bool try_get(const TKey& key, TValue* out_value) const
     {
         int curr = index_of(key);
@@ -212,7 +208,10 @@ public: // Methods
         }
     }
 
-    bool set(const TKey& key, const TValue& value)
+public:
+    // Get value entry, if not exists create new. 
+    // Return true if success, false otherwise.
+    bool get_or_new(const TKey& key, TValue** value)
     {
         int hash, prev;
         int curr = index_of(key, &hash, &prev);
@@ -221,9 +220,9 @@ public: // Methods
         {
             if (buffer->length + 1 > buffer->capacity)
             {
-                int new_size   = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts  = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys   = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
+                int new_size = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
+                buffer->nexts = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
+                buffer->keys = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
                 buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
 
                 if (!buffer->nexts || !buffer->keys || !buffer->values)
@@ -250,18 +249,66 @@ public: // Methods
                 buffer->hashs[hash] = curr;
             }
             buffer->nexts[curr] = -1;
-            buffer->keys[curr]  = key;
+            buffer->keys[curr] = key;
         }
 
-        buffer->values[curr] = value;
+        *value = &buffer->values[curr];
         return true;
     }
 
+    // Get value entry, if not exists create new.
+    // Return a reference to value entry if success, otherwise abort the process.
+    TValue& get_or_new(const TKey& key)
+    {
+        TValue* inner_value;
+        if (!get_or_new(key, &inner_value))
+        {
+            ALWAYS_FALSE_ASSERT("Out of memory.");
+        }
+        return *inner_value;
+    }
+
+    // Set entry's value, if not exists create news
+    bool set(const TKey& key, const TValue& value)
+    {
+        TValue* inner_value;
+        if (get_or_new(key, &inner_value))
+        {
+            *inner_value = value;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+public:
+    // Remove an entry that has given key
     bool remove(const TKey& key)
     {
         int prev;
         int hash;
         int curr = index_of(key, &hash, &prev);
+        return erase(curr, hash, prev);
+    }
+
+    // Remove the entry at given index
+    bool erase(int index)
+    {
+        if (index > -1 && index < get_length())
+        {
+            return remove(buffer->keys[index]);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Remove the entry at given index, hash entry, and previous entry
+    bool erase(int curr, int hash, int prev)
+    {
         if (curr > -1)
         {
             if (prev > -1)
@@ -286,11 +333,12 @@ public: // Methods
                     buffer->hashs[hash] = curr;
                 }
 
-                buffer->nexts[curr]  = buffer->nexts[last];
-                buffer->keys[curr]   = buffer->keys[last];
-                buffer->values[curr] = buffer->values[last];
+                buffer->nexts[curr] = buffer->nexts[last];
+                INIT(&buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
+                INIT(&buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
             }
             buffer->length--;
+
             return true;
         }
         else
