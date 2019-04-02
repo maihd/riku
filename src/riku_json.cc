@@ -1093,7 +1093,7 @@ namespace json
             {
                 tmp_string[length] = 0;
 
-                size_t size = HEADER_SIZE + ((size_t)length + 1);
+                int size = HEADER_SIZE + length + 1;
                 char*  string = (char*)json__bucket_extract(state->string_bucket, size);
                 if (!string)
                 {
