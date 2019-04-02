@@ -1127,7 +1127,7 @@ namespace json
 
                 if (tmp_string != tmp_buffer)
                 {
-                    free(tmp_string);
+                    memory::dealloc(tmp_string);
                 }
             }
 
