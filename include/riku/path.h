@@ -8,13 +8,13 @@
 namespace path
 {
 #if PLATFORM_WINDOWS
-    constexpr const int   max_size  = 1024;
-    constexpr const char* sep       = "\\";
-    constexpr const char* delimiter = ";";
+    constexpr const char* sep           = "\\";
+    constexpr const char* delimiter     = ";";
+    constexpr const int   max_length    = 1024;
 #else
-    constexpr const int   max_size  = 1024;
-    constexpr const char* sep       = "/";
-    constexpr const char* delimiter = ":";
+    constexpr const char* sep           = "/";
+    constexpr const char* delimiter     = ":";
+    constexpr const int   max_length    = 1024;
 #endif
 
     RIKU_API const char* basename(const char* path);

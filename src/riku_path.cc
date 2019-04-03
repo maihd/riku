@@ -21,7 +21,7 @@ namespace path
 
     const char* basename(const char* path, const char* ext)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return basename(path, ext, result, sizeof(result));
     }
 
@@ -44,7 +44,7 @@ namespace path
 
     const char* dirname(const char* path)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return dirname(path, result, sizeof(result));
     }
 
@@ -99,7 +99,7 @@ namespace path
 
     const char* normalize(const char* path)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return normalize(path, result, sizeof(result));
     }
 
@@ -163,7 +163,7 @@ namespace path
 
     const char* absolute(const char* path)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return absolute(path, result, sizeof(result));
     }
 
@@ -179,23 +179,23 @@ namespace path
         }
         else
         {
-            char tmp[max_size] = "";
-            return normalize(::path::join(tmp, max_size, process::cwd(), path, NULL), buffer, length);
+            char tmp[max_length] = "";
+            return normalize(::path::join(tmp, max_length, process::cwd(), path, NULL), buffer, length);
         }
     }
 
     const char* relative(const char* from, const char* to)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return relative(from, to, result, sizeof(result));
     }
 
     const char* relative(const char* from, const char* to, char* buffer, int length)
     {
-        char _tmp0[max_size] = ""; 
-        char _tmp1[max_size] = "";
-        to   = absolute(to, _tmp0, max_size);
-        from = absolute(from, _tmp1, max_size);
+        char _tmp0[max_length] = ""; 
+        char _tmp1[max_length] = "";
+        to   = absolute(to, _tmp0, max_length);
+        from = absolute(from, _tmp1, max_length);
 
         const char* ptr0 = from;
         const char* ptr1 = to;
@@ -264,7 +264,7 @@ namespace path
 
     const char* join_args(const char* path, ArgsList args_list)
     {
-        __threadstatic char result[max_size];
+        __threadstatic char result[max_length];
         return join_args(result, sizeof(result), path, args_list);
     }
 
