@@ -215,7 +215,7 @@ namespace math
     {
         int a = math::min(min, max);
         int b = math::max(min, max);
-        return a + random32() & (b - a);
+        return a + (((int)random32()) & (b - a));
     }
 
     // Generate a random unsigned integer number
@@ -223,7 +223,7 @@ namespace math
     {
         uint a = math::min(min, max);
         uint b = math::max(min, max);
-        return a + ((uint)random32()) & (b - a);
+        return a + (((uint)random32()) & (b - a));
     }
 
     // Generate a random number between [0.0f, 1.0f]
