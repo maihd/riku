@@ -7,7 +7,7 @@
 
 // List: high-level, non-POD continuos-sequence container, call constructor and desctructor of object
 // @note: Donot use pointer of this type
-template <typename TItem>
+template <typename TItem, typename TAllocator = ::Allocator>
 struct List
 {
 public:
@@ -19,11 +19,13 @@ public:
     };
 
 public:
-    Buffer* buffer;
+    Buffer*     buffer;
+    TAllocator* allocator;
 
 public:
-    constexpr List(void)
+    constexpr List(TAllocator* allocator = NULL)
         : buffer(NULL)
+        , allocator(NULL)
     {
     }
 
@@ -36,13 +38,14 @@ public:
                 buffer->items[i].~TItem();
             }
 
-            memory::dealloc(buffer);
+            allocator->dealloc(buffer);
         }
     }
 
 public: // Copy
     inline List(const List<TItem>& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         if (buffer)
         {
@@ -56,7 +59,8 @@ public: // Copy
         this->~List();
 
         // Assign new buffer
-        buffer = other.buffer;
+        buffer    = other.buffer;
+        allocator = other.allocator;
         if (buffer)
         {
             buffer->_ref_inc();
@@ -68,6 +72,7 @@ public: // Copy
 public: // RAII
     inline List(List<TItem>&& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         other.buffer = NULL;
     }
@@ -78,7 +83,10 @@ public: // RAII
         this->~List();
 
         // Assign new buffer
-        buffer = other.buffer;
+        buffer    = other.buffer;
+        allocator = other.allocator;
+
+        // Unref assigned buffer from ohter
         other.buffer = NULL;
 
         return *this;
@@ -170,7 +178,7 @@ public:
         {
             const auto old_buf = buffer;
             const auto new_len = get_length();
-            const auto new_buf = (decltype(old_buf))memory::alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+            const auto new_buf = (decltype(old_buf))allocator->alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
             if (new_buf)
             {
@@ -313,7 +321,10 @@ public:
     {
         if (index > -1 && index < this->get_length())
         {
-            memory::move(buffer->items + index, buffer->items + index + 1, (this->get_length() - index - 2) * sizeof(TItem));
+            if (buffer->length > 1)
+            {
+                memory::move(buffer->items + index, buffer->items + index + 1, (this->get_length() - index - 2) * sizeof(TItem));
+            }
             buffer->length--;
             return true;
         }

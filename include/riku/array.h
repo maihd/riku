@@ -7,7 +7,7 @@
 
 // Array: POD growable continuos-sequence container
 // @note: Donot use pointer of this type
-template <typename TItem>
+template <typename TItem, typename TAllocator = ::Allocator>
 struct Array
 {
 //public:
@@ -22,11 +22,13 @@ public:
     };
 
 public:
-    Buffer* buffer;
+    Buffer*     buffer;
+    TAllocator* allocator;
 
 public:
-    constexpr Array(void)
+    constexpr Array(TAllocator* allocator = NULL)
         : buffer(NULL)
+        , allocator(allocator)
     {
     }
 
@@ -34,13 +36,14 @@ public:
     {
         if (buffer && buffer->_ref_dec() <= 0)
         {
-            memory::dealloc(buffer);
+            allocator->dealloc(buffer);
         }
     }
 
 public:
     inline Array(const Array<TItem>& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         if (buffer)
         {
@@ -54,7 +57,8 @@ public:
         this->~Array();
 
         // Assign new buffer
-        buffer = other.buffer;
+        buffer    = other.buffer;
+        allocator = other.allocator;
         if (buffer)
         {
             buffer->_ref_inc();
@@ -66,6 +70,7 @@ public:
 public:
     inline Array(Array<TItem>&& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         other.buffer = NULL;
     }
@@ -77,6 +82,9 @@ public:
 
         // Assign new buffer
         buffer = other.buffer;
+        allocator = other.allocator;
+
+        // Unref assigned buffer
         other.buffer = NULL;
 
         return *this;
@@ -160,7 +168,7 @@ public:
         {
             const auto old_buf = buffer;
             const auto new_len = get_length();
-            const auto new_buf = (decltype(old_buf))memory::alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+            const auto new_buf = (decltype(old_buf))allocator->alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
             if (new_buf)
             {
@@ -334,7 +342,10 @@ public:
     {
         if (index > -1 && index < get_length())
         {
-            memory::move(buffer->items + index, buffer->items + index + 1, (get_length() - index - 2) * sizeof(TItem));
+            if (buffer->length > 1)
+            {
+                memory::move(buffer->items + index, buffer->items + index + 1, (get_length() - index - 2) * sizeof(TItem));
+            }
             buffer->length--;
             return true;
         }
@@ -360,8 +371,8 @@ struct TempoArray
     //static_assert(traits::is_pod<TItem>(), "TItem is not a POD type.");
 
 public:
-    int           length;
-    const uint    capacity;
+    int          length;
+    const uint   capacity;
     TItem* const items;
 
 public:
@@ -502,7 +513,10 @@ public:
     {
         if (index > -1 && index < length)
         {
-            memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            if (length > 1)
+            {
+                memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            }
             length--;
             return true;
         }
@@ -663,7 +677,10 @@ public:
     {
         if (index > -1 && index < length)
         {
-            memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            if (length > 1)
+            {
+                memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+            }
             length--;
             return true;
         }

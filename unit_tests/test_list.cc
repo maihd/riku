@@ -18,6 +18,15 @@ struct Object
     }
 };
 
+namespace traits
+{
+    template <>
+    bool equals<Object>(const Object& a, const Object& b)
+    {
+        return true;
+    }
+}
+
 TEST_CASE("List<> testing", "[list]")
 {
     List<Object> objects; 
@@ -30,4 +39,31 @@ TEST_CASE("List<> testing", "[list]")
     REQUIRE(objects.push(Object()));
     REQUIRE(objects.push(Object()));
     REQUIRE(objects.push(Object()));
+
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+    REQUIRE(objects.unshift(Object()));
+
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+    REQUIRE(objects.remove(Object()));
+
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
+    REQUIRE(objects.erase(0));
 }

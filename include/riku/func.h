@@ -35,8 +35,8 @@ public:
 
             struct
             {
-                usize size;
-                byte  functor[sizeof(FuncType)];
+                int  size;
+                byte functor[sizeof(FuncType)];
             };
 
             struct

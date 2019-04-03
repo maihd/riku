@@ -704,6 +704,22 @@ public:
     inline int _ref_dec(void) { return --_refcount; };
 };
 
+// Global Allocator
+struct Allocator
+{
+public: 
+    inline void* alloc(int size, int align = 16)
+    {
+        return memory::alloc(size, align);
+    }
+
+    inline void dealloc(void* ptr)
+    {
+        return memory::dealloc(ptr);
+    }
+};
+//static_assert(sizeof(Allocator) == 0, "Allocator must be has zero size.");
+
 // UTF8 string operator
 namespace string
 {
