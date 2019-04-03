@@ -71,7 +71,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			{ "osx",             "OSX"                        },
 			--{ "orbis",           "Orbis"                      },
 			--{ "riscv",           "RISC-V"                     },
-			--{ "rpi",             "RaspberryPi"                },
+			{ "rpi",             "RaspberryPi"                },
 		},
 	}
 
@@ -390,11 +390,12 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			premake.gcc.cc  = orbisToolchain .. "clang"
 			premake.gcc.cxx = orbisToolchain .. "clang++"
 			premake.gcc.ar  = orbisToolchain .. "ar"
-			location (path.join(BUILD_DIR, "projects", _ACTION .. "-orbis"))
+			location (path.join(BUILD_DIR, "projects", _ACTION .. "-orbis"))]]
 
 		elseif "rpi" == _PLATFORM then
 			location (path.join(BUILD_DIR, "projects", _ACTION .. "-rpi"))
 
+		--[[
 		elseif "riscv" == _PLATFORM then
 			premake.gcc.cc  = "$(FREEDOM_E_SDK)/work/build/riscv-gnu-toolchain/riscv64-unknown-elf/prefix/bin/riscv64-unknown-elf-gcc"
 			premake.gcc.cxx = "$(FREEDOM_E_SDK)/work/build/riscv-gnu-toolchain/riscv64-unknown-elf/prefix/bin/riscv64-unknown-elf-g++"
@@ -1216,7 +1217,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			path.join(ROOT_DIR, "include/compat/freebsd"),
 			"$(SCE_ORBIS_SDK_DIR)/target/include",
 			"$(SCE_ORBIS_SDK_DIR)/target/include_common",
-		}
+		}]]
 
 	configuration { "rpi" }
 		targetdir (path.join(BUILD_DIR, "rpi/bin"))
@@ -1246,6 +1247,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 			"-Wl,--gc-sections",
 		}
 
+	--[[
 	configuration { "riscv" }
 		targetdir (path.join(BUILD_DIR, "riscv/bin"))
 		objdir (path.join(BUILD_DIR, "riscv/obj"))
