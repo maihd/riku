@@ -229,8 +229,8 @@ namespace math
     // Generate a random number between [0.0f, 1.0f]
     float random(void)
     {
-        constexpr float ifloat_max = 1.0f / FLT_MAX;
-        return random(0, (int)FLT_MAX) * ifloat_max;
+        constexpr float ifloat_max = 1.0f / SHRT_MAX;
+        return random(0, (int)SHRT_MAX) * ifloat_max;
     }
 
     // Generate a random floating-point real number

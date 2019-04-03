@@ -165,6 +165,7 @@ public:
     inline bool grow(int new_size)
     {
         auto old_buf = buffer;
+        auto new_len = get_length();
         auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
         if (new_buf)
@@ -173,12 +174,10 @@ public:
             {
                 // Initialize RefCount
                 INIT(new_buf) RefCount();
-
-                // Initialize Buffer
-                new_buf->length = 0;
             }
 
             buffer           = new_buf;
+            buffer->length   = new_len;
             buffer->capacity = new_size;
             return true; 
         }
