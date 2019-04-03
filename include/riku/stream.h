@@ -5,13 +5,21 @@
 struct StreamWritable
 {
 public:
-    int write(const void* data, int size) {}
+    int write(const void* data, int size) 
+    {
+        (void)data;
+        (void)size;
+    }
 };
 
 struct StreamReadable 
 {
 public:
-    int read(void* data, int size) {}
+    int read(void* data, int size) 
+    {
+        (void)data;
+        (void)size;
+    }
 };
 
 struct StreamDuplex : public StreamReadable, public StreamWritable

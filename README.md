@@ -37,7 +37,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Dylib (low level)
 * [ ] Zlib: NodeJS's `zlib`
 * [ ] ArgsParse: parsing command line
-* [ ] Stream: base of all streaming type
+* [x] Stream: base of all streaming type
 * [x] Func<>: fast delegate
 * [x] EventEmitter<N,F>: raise an event and callback to listeners
 * [x] List<T>: high-level of Array
