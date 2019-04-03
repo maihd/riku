@@ -164,27 +164,38 @@ public:
     // Grow the array's buffer that contains enough space with given size
     inline bool grow(int new_size)
     {
-        auto old_buf = buffer;
-        auto new_len = get_length();
-        auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+        ASSERT(new_size > 0, "Array::grow: new size must non-zero positive value.");
 
-        if (new_buf)
+        if (new_size > get_capacity())
         {
-            if (!old_buf)
+            const auto old_buf = buffer;
+            const auto new_len = get_length();
+            const auto new_buf = (decltype(old_buf))memory::alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+
+            if (new_buf)
             {
                 // Initialize RefCount
                 INIT(new_buf) RefCount();
-            }
 
-            buffer           = new_buf;
-            buffer->length   = new_len;
-            buffer->capacity = new_size;
-            return true; 
+                // Copy content of old buffer
+                memory::copy(new_buf->items, old_buf->items, (new_len) * sizeof(TItem));
+
+                // Unref old buffer
+                this->unref(true);
+
+                // Set buffer
+                buffer           = new_buf;
+                buffer->length   = new_len;
+                buffer->capacity = new_size;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        else 
-        {
-            return false;
-        }
+            
+        return true;
     }
 
     // Ensure array is big enough, and grow if can

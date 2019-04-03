@@ -152,24 +152,28 @@ public:
     }
 
     // Grow the array's buffer that contains enough space with given size
-    inline bool grow(int new_size)
+    bool grow(int new_size)
     {
         ASSERT(new_size > 0, "Array::grow: new size must non-zero positive value.");
 
         if (new_size > get_capacity())
         {
-            auto old_buf = buffer;
-            auto new_len = get_length();
-            auto new_buf = (decltype(old_buf))memory::realloc(old_buf, sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
+            const auto old_buf = buffer;
+            const auto new_len = get_length();
+            const auto new_buf = (decltype(old_buf))memory::alloc(sizeof(*old_buf) + (new_size - 1) * sizeof(TItem));
 
             if (new_buf)
             {
-                if (!old_buf)
-                {
-                    // Initialize RefCount
-                    INIT(new_buf) RefCount();
-                }
+                // Initialize RefCount
+                INIT(new_buf) RefCount();
 
+                // Copy content of old buffer
+                memory::copy(new_buf->items, old_buf->items, (new_len) * sizeof(TItem));
+
+                // Unref old buffer
+                this->unref(true);
+
+                // Set buffer
                 buffer           = new_buf;
                 buffer->length   = new_len;
                 buffer->capacity = new_size;
@@ -180,7 +184,7 @@ public:
                 return false;
             }
         }
-
+            
         return true;
     }
 
@@ -194,7 +198,7 @@ public:
         else
         {
             int new_size = get_capacity();
-            new_size = new_size * 2 + (new_size <= 0) * 8; // no if statement or '?' operator (ternary operator)
+            new_size = new_size * 2 + (new_size <= 0) * 64; // no if statement or '?' operator (ternary operator)
             while (new_size < size) new_size *= 2;
             return grow(new_size);
         }
