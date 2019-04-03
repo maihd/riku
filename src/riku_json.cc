@@ -1034,25 +1034,25 @@ namespace json
 
                         if (c1 <= 0x7F)
                         {
-                            tmp_string[length++] = c1;
+                            tmp_string[length++] = (char)c1;
                         }
                         else if (c1 <= 0x7FF)
                         {
-                            tmp_string[length++] = 0xC0 | (c1 >> 6);            /* 110xxxxx */
-                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0xC0 | (c1 >> 6));            /* 110xxxxx */
+                            tmp_string[length++] = (char)(0x80 | (c1 & 0x3F));          /* 10xxxxxx */
                         }
                         else if (c1 <= 0xFFFF)
                         {
-                            tmp_string[length++] = 0xE0 | (c1 >> 12);           /* 1110xxxx */
-                            tmp_string[length++] = 0x80 | ((c1 >> 6) & 0x3F);   /* 10xxxxxx */
-                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0xE0 | (c1 >> 12));           /* 1110xxxx */
+                            tmp_string[length++] = (char)(0x80 | ((c1 >> 6) & 0x3F));   /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0x80 | (c1 & 0x3F));          /* 10xxxxxx */
                         }
                         else if (c1 <= 0x10FFFF)
                         {
-                            tmp_string[length++] = 0xF0 | (c1 >> 18);           /* 11110xxx */
-                            tmp_string[length++] = 0x80 | ((c1 >> 12) & 0x3F);  /* 10xxxxxx */
-                            tmp_string[length++] = 0x80 | ((c1 >> 6) & 0x3F);   /* 10xxxxxx */
-                            tmp_string[length++] = 0x80 | (c1 & 0x3F);          /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0xF0 | (c1 >> 18));           /* 11110xxx */
+                            tmp_string[length++] = (char)(0x80 | ((c1 >> 12) & 0x3F));  /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0x80 | ((c1 >> 6) & 0x3F));   /* 10xxxxxx */
+                            tmp_string[length++] = (char)(0x80 | (c1 & 0x3F));          /* 10xxxxxx */
                         }
                         break;
 
@@ -1071,7 +1071,7 @@ namespace json
                         break;
 
                     default:
-                        tmp_string[length++] = c0;
+                        tmp_string[length++] = (char)c0;
                         break;
                     }
                 }
