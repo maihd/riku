@@ -9,6 +9,7 @@ public:
     {
         (void)data;
         (void)size;
+        return -1;
     }
 };
 
@@ -19,6 +20,7 @@ public:
     {
         (void)data;
         (void)size;
+        return -1;
     }
 };
 
