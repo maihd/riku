@@ -439,7 +439,7 @@ namespace crypto
 
         while (length-- > 0)
         {
-            res = (res >> 8) ^ (CRC32_TABLE[(res ^ (*data++)) & 0xff]);
+            res = (res >> 8) ^ (CRC64_TABLE[(res ^ (*data++)) & 0xff]);
         }
 
         res = res ^ 0xffffffffffffffffULL;

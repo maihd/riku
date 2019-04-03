@@ -247,8 +247,8 @@ public:
         }
 
         memory::move(buffer->items + 1, buffer->items, get_length() * sizeof(TItem));
-        buffer->length++;
         buffer->items[0] = value;
+        buffer->length++;
         return true;
     }
 
@@ -421,6 +421,7 @@ public:
         if (length < capacity)
         {
             memory::move(items, items + 1, length * sizeof(TItem));
+            items[0] = value;
             length++;
             return true;
         }
@@ -581,6 +582,7 @@ public:
         if (length < capacity)
         {
             memory::move(items, items + 1, length * sizeof(TItem));
+            items[0] = value;
             length++;
             return true;
         }

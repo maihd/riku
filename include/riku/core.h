@@ -264,7 +264,7 @@ using uchar     = int;
 
 // Fixed size types
 
-#if PLATFORM_WINDOWS || CPU_ARM
+#if PLATFORM_WINDOWS || (CPU_ARM && ARCH_32BIT)
 using i8        = char;
 using u8        = unsigned char;
 using i16       = short;

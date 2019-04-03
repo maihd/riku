@@ -61,10 +61,10 @@ namespace net
 
     Socket Socket::accept(void)
     {
-        int handle = ::accept(handle, NULL, NULL);
+        int fd = ::accept(handle, NULL, NULL);
         
         Socket socket;
-        socket.handle = handle;
+        socket.handle    = fd;
         socket.is_server = false;
         return socket;
     }
