@@ -11,9 +11,9 @@
 #include "./core.h"
 #include "./array.h"
 
-// Dynamic and growable string
+// Dynamic and growable string container
 // @note: should use to store dynamic string only
-struct String 
+struct String
 {
 public:
     Array<char> buffer;
@@ -128,7 +128,7 @@ public:
         return *this;
     }
 
-public: // RAII
+public:
     inline String(String&& other)
         : buffer(traits::make_rvalue(other.buffer))
     {
@@ -144,7 +144,7 @@ public: // RAII
         return *this;
     }
 
-public: // Copy
+public:
     inline String(const String& other)
     {
         if (other.get_length() > 0)
@@ -176,12 +176,14 @@ public: // Copy
     }
 
 public:
-    inline explicit operator char*(void)
+    // Convert String to characters sequence
+    inline operator char*(void)
     {
         return this->get_characters();
     }
 
-    inline explicit operator const char*(void) const
+    // Convert String to characters sequence
+    inline operator const char*(void) const
     {
         return this->get_characters();
     }
