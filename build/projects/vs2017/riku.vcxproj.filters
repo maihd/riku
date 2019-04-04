@@ -87,9 +87,6 @@
     <ClInclude Include="..\..\..\include\riku\string.h">
       <Filter>include\riku</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\riku\table.h">
-      <Filter>include\riku</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\thread.h">
       <Filter>include\riku</Filter>
     </ClInclude>
@@ -178,6 +175,9 @@
       <Filter>include\riku\previewing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h">
+      <Filter>include\riku\previewing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\previewing\table.h">
       <Filter>include\riku\previewing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\crc32.h">

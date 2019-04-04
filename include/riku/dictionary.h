@@ -6,7 +6,7 @@
 #include "./core.h"
 #include "./array.h"
 
-template <typename TKey, typename TValue>
+template <typename TKey, typename TValue, typename TAllocator = ::Allocator>
 struct Dictionary
 {
 public:
@@ -21,7 +21,8 @@ public:
     };
 
 public:
-    Buffer* buffer;
+    Buffer*     buffer;
+    TAllocator* allocator;
 
 public: // Properties
     PROPERTY_READONLY(TKey*, keys, get_keys);
@@ -60,28 +61,13 @@ public: // Properties
     }
 
 public:
-    inline Dictionary(int hash_count = 64)
-        : buffer((Buffer*)memory::alloc(sizeof(Buffer)))
+    inline Dictionary(TAllocator* allocator = NULL)
+        : buffer(NULL)
+        , allocator(allocator)
     {
-        ASSERT(buffer, "Out of memory");
-
-        buffer->length   = 0;
-        buffer->capacity = 0;
-        buffer->nexts    = NULL;
-        buffer->keys     = NULL;
-        buffer->values   = NULL;
-
-        INIT(buffer) RefCount();
-        INIT(&buffer->hashs) Array<int>();
-
-        buffer->hashs.ensure(hash_count);
-        for (int i = 0; i < hash_count; i++)
-        {
-            buffer->hashs.push(-1);
-        }
     }
 
-    inline ~Dictionary()
+    inline ~Dictionary(void)
     {
         if (buffer && buffer->_ref_dec() < 0)
         {
@@ -91,18 +77,19 @@ public:
                 buffer->values[i].~TValue();
             }
 
-            memory::dealloc(buffer->nexts);
-            memory::dealloc(buffer->keys);
-            memory::dealloc(buffer->values);
+            allocator->dealloc(buffer->nexts);
+            allocator->dealloc(buffer->keys);
+            allocator->dealloc(buffer->values);
 
             buffer->hashs.~Array();
-            memory::dealloc(buffer);
+            allocator->dealloc(buffer);
         }
     }
 
 public: // Copy
     inline Dictionary(const Dictionary& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         if (buffer)
         {
@@ -113,6 +100,7 @@ public: // Copy
     inline Dictionary& operator=(const Dictionary& other)
     {
         buffer = other.buffer;
+        allocator = other.allocator;
         if (buffer)
         {
             buffer->_ref_inc();
@@ -124,6 +112,7 @@ public: // Copy
 public: // RAII
     inline Dictionary(Dictionary&& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         other.buffer = NULL;
     }
@@ -133,6 +122,8 @@ public: // RAII
         this->~Dictionary();
         
         buffer = other.buffer;
+        allocator = other.allocator;
+
         other.buffer = NULL;
 
         return *this;
@@ -180,7 +171,12 @@ public:
     // Find index of entry with key
     int index_of(const TKey& key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)(uint)(hashof(key) % this->get_hash_count());
+        if (!buffer || buffer->hashs.is_empty())
+        {
+            return -1;
+        }
+
+        int hash = (int)(hashof(key) % (u64)this->get_hash_count());
         int curr = buffer ? buffer->hashs[hash] : -1;
         int prev = -1;
 
@@ -246,27 +242,67 @@ public:
 
         if (curr < 0)
         {
-            if (buffer->length + 1 > buffer->capacity)
+            if (!buffer)
             {
-                int new_size = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys = (TKey*)memory::realloc(buffer->keys, sizeof(TKey) * new_size);
-                buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
+                buffer = (Buffer*)allocator->alloc(sizeof(Buffer));
+                ASSERT(buffer, "Out of memory");
 
-                if (!buffer->nexts || !buffer->keys || !buffer->values)
+                buffer->length   = 0;
+                buffer->capacity = 0;
+                buffer->nexts    = NULL;
+                buffer->keys     = NULL;
+                buffer->values   = NULL;
+
+                INIT(buffer) RefCount();
+                INIT(&buffer->hashs) Array<int>(allocator);
+
+                buffer->hashs.grow(64);
+                for (int i = 0; i < 64; i++)
                 {
-                    memory::dealloc(buffer->nexts);
-                    memory::dealloc(buffer->keys);
-                    memory::dealloc(buffer->values);
-                    return false;
+                    buffer->hashs.push(-1);
                 }
 
-                buffer->capacity = new_size;
-                for (int i = buffer->length; i < new_size; i++)
+                // Re-calculate hash
+                prev = -1;
+                hash = (int)(uint)(hashof(key) % this->get_hash_count());
+            }
+
+            if (buffer->length + 1 > buffer->capacity)
+            {
+                int old_size     = buffer->capacity;
+                int new_size     = (old_size << 1) + (old_size <= 0) * 8;
+                void* new_nexts  = allocator->alloc(new_size * sizeof(int));
+                void* new_keys   = allocator->alloc(new_size * sizeof(TKey));
+                void* new_values = allocator->alloc(new_size * sizeof(TValue));
+
+                if (!new_nexts || !new_keys || !new_values)
                 {
-                    buffer->nexts[i] = -1;
-                    INIT(&buffer->keys[i]) TKey();
-                    INIT(&buffer->values[i]) TValue();
+                    allocator->dealloc(new_nexts);
+                    allocator->dealloc(new_keys);
+                    allocator->dealloc(new_values);
+                    return false;
+                }
+                else
+                {
+                    memory::copy(new_nexts, buffer->nexts, old_size * sizeof(int));
+                    memory::copy(new_keys, buffer->keys, old_size * sizeof(TKey));
+                    memory::copy(new_values, buffer->values, old_size * sizeof(TValue));
+
+                    allocator->dealloc(buffer->nexts);
+                    allocator->dealloc(buffer->keys);
+                    allocator->dealloc(buffer->values);
+                
+                    buffer->nexts  = (int*)new_nexts;
+                    buffer->keys   = (TKey*)new_keys;
+                    buffer->values = (TValue*)new_values;
+
+                    buffer->capacity = new_size;
+                    for (int i = buffer->length; i < new_size; i++)
+                    {
+                        buffer->nexts[i] = -1;
+                        INIT(&buffer->keys[i]) TKey();
+                        INIT(&buffer->values[i]) TValue();
+                    }
                 }
             }
 
@@ -381,12 +417,14 @@ public:
     }
 };
 
+// Compute hash of given hash table
 template <typename TKey, typename TValue>
 inline u64 hashof(const Dictionary<TKey, TValue>& dictionary)
 {
     return hashof(dictionary.get_keys(), dictionary.get_length()) ^ hashof(dictionary.get_values(), dictionary.get_length());
 }
 
+// Get length of given hash table
 template <typename TKey, typename TValue>
 inline int lengthof(const Dictionary<TKey, TValue>& dictionary)
 {

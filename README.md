@@ -42,9 +42,9 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] EventEmitter<N,F>: raise an event and callback to listeners
 * [x] List<T>: high-level of Array
 * [x] Array<T>: POD continous container
-* [x] Table<K,V>: POD table with generic key
 * [x] HashTable<V>: POD table with hashed key
 * [x] Dictionary<K,V>: high-level of Table
+[//]: <> (* [x] Table<K,V>: POD table with generic key)
 
 ## License
 1. Author: MaiHD @ 2019

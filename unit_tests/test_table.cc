@@ -1,3 +1,4 @@
+#if 0 && PREVIEWING
 #include <riku/table.h>
 #include "./unit_test.h"
 
@@ -33,3 +34,4 @@ TEST_CASE("Table<const char*, ...> testing", "[Dictionary<const char*>]")
         console::log("dict[\"%s\"] = \"%s\"", keys[i], values[i]);
     }
 }
+#endif

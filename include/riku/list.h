@@ -25,7 +25,7 @@ public:
 public:
     constexpr List(TAllocator* allocator = NULL)
         : buffer(NULL)
-        , allocator(NULL)
+        , allocator(allocator)
     {
     }
 

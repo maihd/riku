@@ -18,6 +18,17 @@ TEST_CASE("Dictionary<> compilation and working testing", "[Dictionary<>]")
     dict[8] = 10;
     dict[9] = 10;
 
+    REQUIRE(dict.contains(0));
+    REQUIRE(dict.contains(1));
+    REQUIRE(dict.contains(2));
+    REQUIRE(dict.contains(3));
+    REQUIRE(dict.contains(4));
+    REQUIRE(dict.contains(5));
+    REQUIRE(dict.contains(6));
+    REQUIRE(dict.contains(7));
+    REQUIRE(dict.contains(8));
+    REQUIRE(dict.contains(9));
+
     for (int i = 0; i < 10; i++)
     {
         REQUIRE(dict[i] == 10);

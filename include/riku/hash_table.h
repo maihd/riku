@@ -6,7 +6,7 @@
 #include "./core.h"
 #include "./array.h"
 
-template <typename TValue>
+template <typename TValue, typename TAllocator = ::Allocator>
 struct HashTable
 {
 //public:
@@ -24,7 +24,8 @@ public:
     };
 
 public:
-    Buffer* buffer;
+    Buffer*     buffer;
+    TAllocator* allocator;
 
 public: // Properties
     PROPERTY_READONLY(u64*, keys, get_keys);
@@ -63,43 +64,29 @@ public: // Properties
     }
 
 public:
-    inline HashTable(int hash_count = 64)
-        : buffer((Buffer*)memory::alloc(sizeof(Buffer)))
+    inline HashTable(TAllocator* allocator = NULL)
+        : buffer(NULL)
+        , allocator(allocator)
     {
-        ASSERT(buffer, "Out of memory");
-
-        buffer->length   = 0;
-        buffer->capacity = 0;
-        buffer->nexts    = NULL;
-        buffer->keys     = NULL;
-        buffer->values   = NULL;
-
-        INIT(buffer) RefCount();
-        INIT(&buffer->hashs) Array<int>();
-
-        buffer->hashs.ensure(hash_count);
-        for (int i = 0; i < hash_count; i++)
-        {
-            buffer->hashs.push(-1);
-        }
     }
 
     inline ~HashTable()
     {
         if (buffer && buffer->_ref_dec() < 0)
         {
-            memory::dealloc(buffer->nexts);
-            memory::dealloc(buffer->keys);
-            memory::dealloc(buffer->values);
+            allocator->dealloc(buffer->nexts);
+            allocator->dealloc(buffer->keys);
+            allocator->dealloc(buffer->values);
 
             buffer->hashs.~Array();
-            memory::dealloc(buffer);
+            allocator->dealloc(buffer);
         }
     }
 
 public: // Copy
     inline HashTable(const HashTable<TValue>& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         if (buffer)
         {
@@ -110,6 +97,7 @@ public: // Copy
     inline HashTable<TValue>& operator=(const HashTable<TValue>& other)
     {
         buffer = other.buffer;
+        allocator = other.allocator;
         if (buffer)
         {
             buffer->_ref_inc();
@@ -121,6 +109,7 @@ public: // Copy
 public: // RAII
     inline HashTable(HashTable<TValue>&& other)
         : buffer(other.buffer)
+        , allocator(other.allocator)
     {
         other.buffer = NULL;
     }
@@ -130,6 +119,8 @@ public: // RAII
         this->~HashTable();
         
         buffer = other.buffer;
+        allocator = other.allocator;
+
         other.buffer = NULL;
 
         return *this;
@@ -160,7 +151,12 @@ public:
     // Find index of entry with key
     int index_of(u64 key, int* out_hash = NULL, int* out_prev = NULL) const
     {
-        int hash = (int)(u64)(key % get_hash_count());
+        if (!buffer || buffer->hashs.is_empty())
+        {
+            return -1;
+        }
+
+        int hash = (int)(key % (u64)get_hash_count());
         int curr = buffer->hashs[hash];
         int prev = -1;
 
@@ -226,24 +222,60 @@ public:
 
         if (curr < 0)
         {
+            if (!buffer)
+            {
+                buffer = (Buffer*)allocator->alloc(sizeof(Buffer));
+                ASSERT(buffer, "Out of memory");
+
+                buffer->length   = 0;
+                buffer->capacity = 0;
+                buffer->nexts    = NULL;
+                buffer->keys     = NULL;
+                buffer->values   = NULL;
+
+                INIT(buffer) RefCount();
+                INIT(&buffer->hashs) Array<int>(allocator);
+
+                buffer->hashs.ensure(64);
+                for (int i = 0; i < 64; i++)
+                {
+                    buffer->hashs.push(-1);
+                }
+
+                // Re-calculate hash
+                prev = -1;
+                hash = (int)(hashof(key) % (u64)this->get_hash_count());
+            }
+
             if (buffer->length + 1 > buffer->capacity)
             {
-                int new_size = buffer->capacity > 0 ? buffer->capacity * 2 : 8;
-                buffer->nexts = (int*)memory::realloc(buffer->nexts, sizeof(int) * new_size);
-                buffer->keys = (u64*)memory::realloc(buffer->keys, sizeof(u64) * new_size);
-                buffer->values = (TValue*)memory::realloc(buffer->values, sizeof(TValue) * new_size);
+                int old_size     = buffer->capacity;
+                int new_size     = (old_size << 1) + (old_size <= 0) * 8;
+                void* new_nexts  = allocator->alloc(new_size * sizeof(int));
+                void* new_keys   = allocator->alloc(new_size * sizeof(u64));
+                void* new_values = allocator->alloc(new_size * sizeof(TValue));
 
-                if (!buffer->nexts || !buffer->keys || !buffer->values)
+                if (!new_nexts || !new_keys || !new_values)
                 {
-                    memory::dealloc(buffer->nexts);
-                    memory::dealloc(buffer->keys);
-                    memory::dealloc(buffer->values);
+                    allocator->dealloc(new_nexts);
+                    allocator->dealloc(new_keys);
+                    allocator->dealloc(new_values);
                     return false;
                 }
                 else
                 {
                     buffer->capacity = new_size;
-                    memory::init(buffer->nexts + buffer->length, -1, (buffer->capacity - buffer->length) * sizeof(int));
+                    memory::copy(new_nexts, buffer->nexts, old_size * sizeof(int));
+                    memory::copy(new_keys, buffer->keys, old_size * sizeof(u64));
+                    memory::copy(new_values, buffer->values, old_size * sizeof(TValue));
+
+                    allocator->dealloc(buffer->nexts);
+                    allocator->dealloc(buffer->keys);
+                    allocator->dealloc(buffer->values);
+                
+                    buffer->nexts  = (int*)new_nexts;
+                    buffer->keys   = (u64*)new_keys;
+                    buffer->values = (TValue*)new_values;
                 }
             }
 
