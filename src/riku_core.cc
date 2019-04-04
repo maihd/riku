@@ -35,7 +35,14 @@ namespace console
 
     const char* set_log_tag(const char* tag)
     {
-        return string::copy(s_log_tag, tag, sizeof(s_log_tag));
+        if (string::is_valid(tag))
+        {
+            return string::copy(s_log_tag, tag, sizeof(s_log_tag));
+        }
+        else
+        {
+            return s_log_tag;
+        }
     }
 
     void log(const char* fmt, ...)

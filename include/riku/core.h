@@ -175,9 +175,9 @@
 #elif defined(__powerpc64__)
 #define CPU_NAME "ppc64"
 #elif defined(__x86_64__) || defined(_M_X64)
-#define CPU_NAME "x64"
+#define CPU_NAME "amd64"
 #else
-#define CPU_NAME "x32"
+#define CPU_NAME "x86"
 #endif
 
 // Platform name
@@ -254,34 +254,34 @@
 
 // Primitive types
 
-using uint      = unsigned int;
-using ulong     = unsigned long int;
-using ushort    = unsigned short int;
+using uint   = unsigned int;
+using ulong  = unsigned long int;
+using ushort = unsigned short int;
 
-using cstr      = const char*;
-using wchar     = short;
-using uchar     = int;
+using cstr   = const char*;
+using wchar  = short;
+using uchar  = int;
 
 // Fixed size types
 
 #if PLATFORM_WINDOWS || (CPU_ARM && ARCH_32BIT)
-using i8        = char;
-using u8        = unsigned char;
-using i16       = short;
-using u16       = unsigned short;
-using i32       = long;
-using u32       = unsigned long;
-using i64       = long long;
-using u64       = unsigned long long;
+using i8  = char;
+using u8  = unsigned char;
+using i16 = short;
+using u16 = unsigned short;
+using i32 = long;
+using u32 = unsigned long;
+using i64 = long long;
+using u64 = unsigned long long;
 #else
-using i8        = char;
-using u8        = unsigned char;
-using i16       = short;
-using u16       = unsigned short;
-using i32       = int;
-using u32       = unsigned int;
-using i64       = long;
-using u64       = unsigned long;
+using i8  = char;
+using u8  = unsigned char;
+using i16 = short;
+using u16 = unsigned short;
+using i32 = int;
+using u32 = unsigned int;
+using i64 = long;
+using u64 = unsigned long;
 #endif
 
 static_assert(sizeof(i8)  == 1, "i8 must be 1-bytes size.");
@@ -293,19 +293,19 @@ static_assert(sizeof(u32) == 4, "u32 must be 4-bytes size.");
 static_assert(sizeof(i64) == 8, "i64 must be 8-bytes size.");
 static_assert(sizeof(u64) == 8, "u64 must be 8-bytes size.");
 
-using byte      = u8;
-using sbyte     = i8;
+using byte  = u8;
+using sbyte = i8;
 static_assert(sizeof(byte)  == 1, "byte must be 1-bytes size.");
 static_assert(sizeof(sbyte) == 1, "sbyte must be 1-bytes size.");
 
 // Memory address and size types
 
 #if ARCH_64BIT
-using usize  = u64;
-using isize  = i64;
+using usize = u64;
+using isize = i64;
 #else 
-using usize  = u32;
-using isize  = i32;
+using usize = u32;
+using isize = i32;
 #endif
 
 using iptr = isize;
