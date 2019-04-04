@@ -393,7 +393,7 @@ struct Allocator
 };
 
 // Memory management with customable allocator
-// @note: Work with process (user space) memory only, use system_memory if you want system (kernel space) memory
+// @note: Work with process (user space) memory only, use os if you want system (kernel space) memory
 namespace memory
 {
     // Current allocator of process
@@ -470,19 +470,6 @@ namespace memory
 
     // Determine content of two memory blocks are not equal
     inline   bool  not_equals(const void* a, const void* b, int size)  { return compare(a, b, size) != 0;    }
-}
-
-// System memory
-namespace system_memory
-{
-    // Allocate a memory block, with given alignment
-    RIKU_API void* alloc(int size, int align);
-
-    // Re-allocate memory block, with given alignment
-    RIKU_API void* realloc(void* ptr, int size, int align);
-
-    // De-allocate memory block
-    RIKU_API void  dealloc(void* ptr);
 }
 
 // NULL

@@ -5,12 +5,11 @@
 #pragma warning(disable: 4611)
 #endif
 
-#include <riku/core.h>
+#include <riku/os.h>
 #include <riku/json.h>
 
 #include <math.h>
 #include <ctype.h>
-#include <setjmp.h>
 
 #ifndef JSON_VALUE_BUCKETS
 #define JSON_VALUE_BUCKETS 4096
@@ -59,14 +58,14 @@ namespace json
         usize       length;
         const char* buffer;
 
-        Error   errnum;
-        char*   errmsg;
-        jmp_buf errjmp;
+        Error         errnum;
+        char*         errmsg;
+        os::JumpPoint errjmp;
 
         Settings settings; /* Runtime settings */
     };
 
-    const  Value  Value::NONE;
+    const  Value  Value::null;
     static State* root_state = NULL;
 
     /* @funcdef: json__alloc */
@@ -150,7 +149,7 @@ namespace json
         json__set_error_valist(state, type, code, fmt, varg);
         va_end(varg);
 
-        longjmp(state->errjmp, (int)code);
+        os::longjmp(state->errjmp, (int)code);
     }
 
     /* funcdef: json__make_pool */
@@ -1250,7 +1249,7 @@ namespace json
 
         if (json__skip_space(state) == '{')
         {
-            if (setjmp(state->errjmp) == 0)
+            if (os::setjmp(state->errjmp) == 0)
             {
                 Value* value = json__parse_object(state, NULL);
 
@@ -1269,7 +1268,7 @@ namespace json
         }
         else if (json__skip_space(state) == '[')
         {
-            if (setjmp(state->errjmp) == 0)
+            if (os::setjmp(state->errjmp) == 0)
             {
                 Value* value = json__parse_array(state, NULL);
 
@@ -1310,8 +1309,24 @@ namespace json
     const Value& parse(const char* json, const Settings* settings, State** out_state)
     {
         State* state = out_state && *out_state ? json__reuse_state(*out_state, json, settings) : json__make_state(json, settings);
-        Value* value = json_parse_in(state);
 
+        if (string::is_empty(json))
+        {
+            if (!out_state && state)
+            {
+                state->next = root_state;
+                root_state = state;
+            }
+            else
+            {
+                *out_state = state;
+            }
+
+            json__set_error(state, Type::Null, Error::ContentEmpty, "JSON content is empty");
+            return Value::null;
+        }
+
+        Value* value = json_parse_in(state);
         if (value)
         {
             if (out_state)
@@ -1339,7 +1354,7 @@ namespace json
             }
         }
 
-        return value ? *value : Value::NONE;
+        return value ? *value : Value::null;
     }
 
     /* @funcdef: release */
@@ -1359,21 +1374,21 @@ namespace json
     /* @funcdef: get_errno */
     Error get_errno(const State* state)
     {
-        return (state) ? state->errnum : Error::None;
+        return (state) ? state->errnum : (root_state ? root_state->errnum : Error::None);
     }
 
     /* @funcdef: get_error */
     const char* get_error(const State* state)
     {
-        return (state) ? state->errmsg : NULL;
+        return (state) ? state->errmsg : (root_state ? root_state->errmsg : "");
     }
 
     /* @funcdef: Value::equals */
     bool Value::equals(const Value& a, const Value& b)
     {
         // meta compare
-        if (&a == &b)                     return true;
-        if (!a || !b || a.type != b.type) return false;
+        if (&a == &b)         return true;
+        if (a.type != b.type) return false;
 
         int i, n;
         switch (a.type)
@@ -1444,6 +1459,6 @@ namespace json
             }
         }
 
-        return Value::NONE;
+        return Value::null;
     }
 } // namespace JSON

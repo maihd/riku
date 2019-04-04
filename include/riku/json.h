@@ -30,6 +30,7 @@ namespace json
         /* Parsing error */
 
         WrongFormat,
+        ContentEmpty,
         UnmatchToken,
         UnknownToken,
         UnexpectedToken,
@@ -54,8 +55,8 @@ namespace json
     RIKU_API const Value& parse(const char* text, State** state = (State**)0);
     RIKU_API const Value& parse(const char* text, const Settings* settings, State** state = (State**)0);
     RIKU_API void         release(State* state);
-    RIKU_API Error        get_errno(const State* state);
-    RIKU_API const char*  get_error(const State* state);
+    RIKU_API Error        get_errno(const State* state = NULL);
+    RIKU_API const char*  get_error(const State* state = NULL);
 
     /**
      * JSON value
@@ -81,7 +82,7 @@ namespace json
         };
 
     public: // @region: Constants
-        RIKU_API static const Value NONE;
+        RIKU_API static const Value null;
 
     public: // @region: Constructors
         inline Value()
@@ -124,7 +125,7 @@ namespace json
         {
             if (type != Type::Array || index < 0 || index > this->get_length())
             {
-                return NONE;
+                return null;
             }
             else
             {

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "./core.h"
+#include <setjmp.h>
 
 namespace os
 {
@@ -147,4 +148,22 @@ namespace os
 
     // Get cpu info
     RIKU_API int           cpus(CPU* buffer, int count);
+
+    // Long jump saved-point
+    using JumpPoint = jmp_buf;
+
+    // Set saved-point to long jump
+    using ::setjmp;
+
+    // Long jump to the last saved-point
+    using ::longjmp;
+
+    // Allocate a memory block from system RAM, with given alignment
+    RIKU_API void* alloc(int size, int align);
+
+    // Re-allocate memory block from system RAM, with given alignment
+    RIKU_API void* realloc(void* ptr, int size, int align);
+
+    // De-allocate memory block from system RAM
+    RIKU_API void  dealloc(void* ptr);
 }
