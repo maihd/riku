@@ -45,7 +45,7 @@ namespace os
         return CPU_NAME;
     }
 
-    // Get edianness name
+    // Get edianness of cpu
     constexpr Endian edianness(void)
     {
     #if CPU_LITTLE_ENDIAN
@@ -103,25 +103,48 @@ namespace os
     #endif
     }
 
+    // Get free memory of RAM
     RIKU_API usize freemem(void);
+
+    // Get total memory of RAM
     RIKU_API usize totalmem(void);
 
+    // Get temporary directory of current user
     RIKU_API const char*   tmpdir(void);
+
+    // Get home directory of current user
     RIKU_API const char*   homedir(void);
+
+    // Obtain temporary directory of current user to given buffer
     RIKU_API const char*   tmpdir(char* buffer, int length);
+
+    // Obtain home directory of current user to given buffer
     RIKU_API const char*   homedir(char* buffer, int length);
 
+    // Get name of current user
     RIKU_API const char*   hostname(void);
+
+    // Obtain name of current user to given buffer
     RIKU_API const char*   hostname(char* buffer, int length);
 
+    // Get load average ìn single-precision floating point number
     RIKU_API void          loadavg(float avgs[3]);
+
+    // Get load average ìn double-precision floating point number
     RIKU_API void          loadavg(double avgs[3]);
 
+    // Get the version of current os release
     RIKU_API const char*   version(void);
+
+    // Obtain the version of current os release to given buffer
     RIKU_API const char*   version(char* buffer, int length);
 
+    // Get total running time of cpu in seconds
     RIKU_API u64           uptime(void);
 
+    // Get cpu info
     RIKU_API CPU*          cpus(int* count);
+
+    // Get cpu info
     RIKU_API int           cpus(CPU* buffer, int count);
 }
