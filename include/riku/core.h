@@ -384,8 +384,18 @@ namespace console
 #   define stackalloc __builtin_alloca 
 #endif
 
+// Memory allocator
+struct Allocator
+{
+    RIKU_API virtual void* alloc(int size, int align = 16);
+    RIKU_API virtual void  dealloc(void* ptr);
+    RIKU_API virtual void* realloc(void* ptr, int size, int align = 16);
+};
+
 namespace memory
 {
+    RIKU_API extern Allocator* const allocator;
+
     // Get aligned memory address from memory block
     inline void* align(void* ptr, int align)
     {
@@ -703,22 +713,6 @@ public:
     // @note: ridiculous name for avoid member collision
     inline int _ref_dec(void) { return --_refcount; };
 };
-
-// Global Allocator
-struct Allocator
-{
-public: 
-    inline void* alloc(int size, int align = 16)
-    {
-        return memory::alloc(size, align);
-    }
-
-    inline void dealloc(void* ptr)
-    {
-        return memory::dealloc(ptr);
-    }
-};
-//static_assert(sizeof(Allocator) == 0, "Allocator must be has zero size.");
 
 // UTF8 string operator
 namespace string

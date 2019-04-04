@@ -64,7 +64,7 @@ public: // Properties
     }
 
 public:
-    inline HashTable(TAllocator* allocator = NULL)
+    inline HashTable(TAllocator* allocator = memory::allocator)
         : buffer(NULL)
         , allocator(allocator)
     {

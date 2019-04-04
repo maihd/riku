@@ -61,7 +61,7 @@ public: // Properties
     }
 
 public:
-    inline Dictionary(TAllocator* allocator = NULL)
+    inline Dictionary(TAllocator* allocator = memory::allocator)
         : buffer(NULL)
         , allocator(allocator)
     {

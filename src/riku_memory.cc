@@ -6,8 +6,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Allocate a memory block, with given alignment
+void* Allocator::alloc(int size, int align)
+{
+    return memory::alloc(size, align);
+}
+
+// Re-allocate memory block, with given alignment
+void* Allocator::realloc(void* ptr, int size, int align)
+{
+    return memory::realloc(ptr, size, align);
+}
+
+// De-allocate memory block
+void  Allocator::dealloc(void* ptr)
+{
+    return memory::dealloc(ptr);
+}
+
 namespace memory
 {
+    static Allocator s_allocator;
+    Allocator* const allocator = &s_allocator;
+
     void* alloc(int size)
     {
         return memory::alloc(size, 16);

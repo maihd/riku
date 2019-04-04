@@ -23,7 +23,7 @@ public:
     TAllocator* allocator;
 
 public:
-    constexpr List(TAllocator* allocator = NULL)
+    constexpr List(TAllocator* allocator = memory::allocator)
         : buffer(NULL)
         , allocator(allocator)
     {
