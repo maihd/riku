@@ -11,6 +11,10 @@
 #include <math.h>
 #include <ctype.h>
 
+#if !PLATFORM_WINDOWS
+#   undef setjmp
+#endif
+
 #ifndef JSON_VALUE_BUCKETS
 #define JSON_VALUE_BUCKETS 4096
 #endif

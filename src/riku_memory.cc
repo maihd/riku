@@ -126,7 +126,7 @@ namespace memory
         }
         else
         {
-            os::realloc(ptr, size, align);
+            return os::realloc(ptr, size, align);
         }
     }
 
