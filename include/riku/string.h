@@ -60,7 +60,7 @@ public:
     }
 
 public:
-    constexpr String(void) 
+    inline String(void) 
     {
     }
 

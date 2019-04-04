@@ -27,7 +27,7 @@ void  Allocator::dealloc(void* ptr)
 namespace memory
 {
     static Allocator s_allocator;
-    Allocator* const allocator = &s_allocator;
+    Allocator* allocator = &s_allocator;
 
     void* alloc(int size)
     {

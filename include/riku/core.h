@@ -394,7 +394,8 @@ struct Allocator
 
 namespace memory
 {
-    RIKU_API extern Allocator* const allocator;
+    // Global allocator
+    RIKU_API extern Allocator* allocator;
 
     // Get aligned memory address from memory block
     inline void* align(void* ptr, int align)

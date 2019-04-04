@@ -26,7 +26,7 @@ public:
     TAllocator* allocator;
 
 public:
-    constexpr Array(TAllocator* allocator = memory::allocator)
+    inline Array(TAllocator* allocator = memory::allocator)
         : buffer(NULL)
         , allocator(allocator)
     {
