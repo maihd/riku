@@ -29,39 +29,87 @@ namespace memory
 
     void* alloc(int size, int align)
     {
-        return memory::align(::malloc((usize)size + align), align);
+        if (size > 0)
+        {
+            ASSERT(align >= 16 && align <= 256, "Alignment must be between [16, 256]");
+            ASSERT((align & (align - 1)) == 0, "Aligment must be a POT number");
+
+            return memory::align(::malloc((usize)size + align), align);
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     void* realloc(void* ptr, int size, int align)
     {
-        if (ptr)
+        if (size > 0)
         {
-            void* org_ptr = memory::dealign(ptr);
-            return memory::align(::realloc(org_ptr, (usize)(size + align)), align);
+            ASSERT(align >= 16 && align <= 256, "Alignment must be between [16, 256]");
+            ASSERT((align & (align - 1)) == 0, "Aligment must be a POT number");
+
+            if (ptr)
+            {
+                void* org_ptr = memory::dealign(ptr);
+                return memory::align(::realloc(org_ptr, (usize)(size + align)), align);
+            }
+            else
+            {
+                return memory::alloc(size, align);
+            }
         }
         else
         {
-            return memory::alloc(size, align);
+            return NULL;
         }
     }
 
     void* init(void* dst, int val, int size)
     {
-        return ::memset(dst, val, (usize)size);
+        if (size > 0)
+        {
+            return ::memset(dst, val, (usize)size);
+        }
+        else
+        {
+            return dst;
+        }
     }
 
     void* copy(void* dst, const void* src, int size)
     {
-        return ::memcpy(dst, src, (usize)size);
+        if (size > 0)
+        {
+            return ::memcpy(dst, src, (usize)size);
+        }
+        else
+        {
+            return dst;
+        }
     }
 
     void* move(void* dst, const void* src, int size)
     {
-        return ::memmove(dst, src, (usize)size);
+        if (size > 0)
+        {
+            return ::memmove(dst, src, (usize)size);
+        }
+        else
+        {
+            return dst;
+        }
     }
 
     int compare(const void* a, const void* b, int size)
     {
-        return ::memcmp(a, b, (usize)size);
+        if (size > 0)
+        {
+            return ::memcmp(a, b, (usize)size);
+        }
+        else
+        {
+            return 1;
+        }
     }
 }

@@ -246,9 +246,7 @@ public:
     {
         ASSERT(this->get_length() > 0, "Attempt to pop the List<>, which is empty.");
 
-        TItem item = buffer->items[--buffer->length];
-        buffer->items[buffer->length].~TItem();
-        return item;
+        return traits::make_rvalue(buffer->items[--buffer->length]);
     }
 
     // Remove the item at the first position
@@ -256,13 +254,12 @@ public:
     {
         ASSERT(this->get_length() > 0, "Attempt to shift the List<>, which is empty.");
 
-        TItem result = buffer->items[0];
-        buffer->items[0].~TItem();
+        TItem result = traits::make_rvalue(buffer->items[0]);
 
         buffer->length--;
-        memory::move(buffer->items, buffer->items + 1, buffer->length * sizeof(TItem));
+        memory::copy(buffer->items, buffer->items + 1, buffer->length * sizeof(TItem));
 
-        return result;
+        return traits::make_rvalue(result);
     }
 
     // Add an item at the first position
@@ -323,7 +320,7 @@ public:
         {
             if (buffer->length > 1)
             {
-                memory::move(buffer->items + index, buffer->items + index + 1, (this->get_length() - index - 2) * sizeof(TItem));
+                memory::copy(buffer->items + index, buffer->items + index + 1, (this->get_length() - index - 2) * sizeof(TItem));
             }
             buffer->length--;
             return true;

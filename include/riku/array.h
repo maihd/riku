@@ -244,7 +244,7 @@ public:
         TItem result = buffer->items[0];
 
         buffer->length--;
-        memory::move(buffer->items, buffer->items + 1, buffer->length * sizeof(TItem));
+        memory::copy(buffer->items, buffer->items + 1, buffer->length * sizeof(TItem));
 
         return result;
     }
@@ -344,7 +344,7 @@ public:
         {
             if (buffer->length > 1)
             {
-                memory::move(buffer->items + index, buffer->items + index + 1, (get_length() - index - 2) * sizeof(TItem));
+                memory::copy(buffer->items + index, buffer->items + index + 1, (get_length() - index - 2) * sizeof(TItem));
             }
             buffer->length--;
             return true;
@@ -372,11 +372,11 @@ struct TempoArray
 
 public:
     int          length;
-    const uint   capacity;
+    const int    capacity;
     TItem* const items;
 
 public:
-    inline explicit TempoArray(uint capacity = 64)
+    inline explicit TempoArray(int capacity = 64)
         : length(0)
         , capacity(capacity)
 #ifdef NDEBUG
@@ -434,7 +434,7 @@ public:
     {
         if (length < capacity)
         {
-            memory::move(items, items + 1, length * sizeof(TItem));
+            memory::move(items + 1, items, length * sizeof(TItem));
             items[0] = value;
             length++;
             return true;
@@ -448,9 +448,10 @@ public:
     // Remove the item at the first position
     inline TItem shift(void)
     {
-        ASSERT(length > 0, "Attempt to pop the empty array.");
+        ASSERT(length > 0, "Attempt to shift the empty array.");
+
         TItem result = items[--length];
-        memory::move(items + 1, items, length * sizeof(TItem));
+        memory::copy(items, items + 1, length * sizeof(TItem));
         return result;
     }
 
@@ -515,7 +516,7 @@ public:
         {
             if (length > 1)
             {
-                memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+                memory::copy(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
             }
             length--;
             return true;
@@ -598,7 +599,7 @@ public:
     {
         if (length < capacity)
         {
-            memory::move(items, items + 1, length * sizeof(TItem));
+            memory::move(items + 1, items, length * sizeof(TItem));
             items[0] = value;
             length++;
             return true;
@@ -614,7 +615,7 @@ public:
     {
         ASSERT(length > 0, "Attempt to pop the empty array.");
         TItem result = items[--length];
-        memory::move(items + 1, items, length * sizeof(TItem));
+        memory::copy(items + 1, items, length * sizeof(TItem));
         return result;
     }
 
@@ -679,7 +680,7 @@ public:
         {
             if (length > 1)
             {
-                memory::move(items + index, items + index + 1, (length - index - 2) * sizeof(TItem));
+                memory::copy(items + index, items + index + 1, (length - index - 1) * sizeof(TItem));
             }
             length--;
             return true;

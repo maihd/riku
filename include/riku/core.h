@@ -389,14 +389,14 @@ namespace memory
     // Get aligned memory address from memory block
     inline void* align(void* ptr, int align)
     {
-        ASSERT(align >= 16, "Alignment must be greater than 1");
+        ASSERT(align >= 16 && align <= 256, "Alignment must be between [16, 256]");
         ASSERT((align & (align - 1)) == 0, "Aligment must be a POT number");
 
         if (ptr)
         {
-            iptr  address = (iptr)ptr;
-            usize misalign = (address & (align - 1));
-            usize adjustment = (align - misalign);
+            iptr address = (iptr)ptr;
+            iptr misalign = (address & (align - 1));
+            iptr adjustment = (align - misalign);
 
             *((byte*)ptr + adjustment - 1) = (byte)adjustment;
             void* result = (byte*)ptr + adjustment;
