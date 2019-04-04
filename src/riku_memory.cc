@@ -100,7 +100,7 @@ namespace memory
 
     void* copy(void* dst, const void* src, int size)
     {
-        if (size > 0)
+        if (size > 0 && src)
         {
             return ::memcpy(dst, src, (usize)size);
         }
@@ -112,7 +112,7 @@ namespace memory
 
     void* move(void* dst, const void* src, int size)
     {
-        if (size > 0)
+        if (size > 0 && src)
         {
             return ::memmove(dst, src, (usize)size);
         }
@@ -124,7 +124,7 @@ namespace memory
 
     int compare(const void* a, const void* b, int size)
     {
-        if (size > 0)
+        if (size > 0 && a && b)
         {
             return ::memcmp(a, b, (usize)size);
         }

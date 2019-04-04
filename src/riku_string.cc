@@ -16,16 +16,30 @@ namespace string
 
     char* clone(const char* str)
     {
+        if (string::is_valid(str))
+        {
 #if PLATFORM_WINDOWS
-        return _strdup(str);
+            return _strdup(str);
 #else
-        return strdup(str);
+            return strdup(str);
 #endif
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     int length(const char* str)
     {
-        return (int)strlen(str);
+        if (is_valid(str))
+        {
+            return (int)strlen(str);
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     const char* substr(const char* str, int start)
@@ -58,32 +72,88 @@ namespace string
 
     const char* copy(char* dst, const char* src)
     {
-        return strcpy(dst, src);
+        if (is_empty(src))
+        {
+            if (dst)
+            {
+                dst[0] = 0;
+            }
+        }
+        else
+        {
+            while ((*dst++ = *src++));
+        }
+        return dst;
     }
 
     const char* copy(char* dst, const char* src, int length)
     {
-        return strncpy(dst, src, (usize)length);
+        if (is_empty(src))
+        {
+            if (dst && length > 0)
+            {
+                dst[0] = 0;
+            }
+            return dst;
+        }
+        else
+        {
+            return strncpy(dst, src, (usize)length);
+        }
     }
 
     const char* concat(char* dst, const char* src)
     {
-        return strcat(dst, src);
+        if (is_valid(src))
+        {
+            while ((*dst++));
+            while ((*dst++ = *src++));
+        }
+        return dst;
     }
 
     const char* concat(char* dst, const char* src, int length)
     {
-        return strncat(dst, src, (usize)length);
+        if (is_empty(src) || length <= 0)
+        {
+            return dst;
+        }
+        else
+        {
+            return strncpy(dst, src, (usize)length);
+        }
     }
 
     int compare(const char* dst, const char* src)
     {
-        return strcmp(dst, src);
+        if (is_empty(dst))
+        {
+            return -(is_valid(src));
+        }
+        else if (is_empty(src))
+        {
+            return 1;
+        }
+        else
+        {
+            return strcmp(dst, src);
+        }
     }
 
     int compare(const char* dst, const char* src, int length)
     {
-        return strncmp(dst, src, (usize)length);
+        if (is_empty(dst))
+        {
+            return -(is_valid(src));
+        }
+        else if (is_empty(src))
+        {
+            return 1;
+        }
+        else
+        {
+            return strncmp(dst, src, (usize)length);
+        }
     }
 
     const char* format(const char* fmt, ...)
@@ -113,7 +183,11 @@ namespace string
 
     const char* format_args(char* buffer, int length, const char* fmt, ArgsList args_list)
     {
-        vsnprintf(buffer, (usize)length, fmt, args_list);
+        if (buffer && length > 0 && fmt && args_list)
+        {
+            vsnprintf(buffer, (usize)length, fmt, args_list);
+        }
+
         return buffer;
     }
 
