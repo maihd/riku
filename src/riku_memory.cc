@@ -9,45 +9,24 @@
 // Allocate a memory block, with given alignment
 void* Allocator::alloc(int size, int align)
 {
-    return memory::alloc(size, align);
+    return system_memory::alloc(size, align);
 }
 
 // Re-allocate memory block, with given alignment
 void* Allocator::realloc(void* ptr, int size, int align)
 {
-    return memory::realloc(ptr, size, align);
+    return system_memory::realloc(ptr, size, align);
 }
 
 // De-allocate memory block
 void  Allocator::dealloc(void* ptr)
 {
-    return memory::dealloc(ptr);
+    return system_memory::dealloc(ptr);
 }
 
-namespace memory
+namespace system_memory
 {
-    static Allocator s_allocator;
-    Allocator* allocator = &s_allocator;
-
-    void* alloc(int size)
-    {
-        return memory::alloc(size, 16);
-    }
-
-    void dealloc(void* ptr)
-    {
-        if (ptr)
-        {
-            void* org_ptr = memory::dealign(ptr);
-            ::free(org_ptr);
-        }
-    }
-
-    void* realloc(void* ptr, int size)
-    {
-        return memory::realloc(ptr, size, 16);
-    }
-
+    // Allocate a memory block, with given alignment
     void* alloc(int size, int align)
     {
         if (size > 0)
@@ -63,6 +42,7 @@ namespace memory
         }
     }
 
+    // Re-allocate memory block, with given alignment
     void* realloc(void* ptr, int size, int align)
     {
         if (size > 0)
@@ -83,6 +63,69 @@ namespace memory
         else
         {
             return NULL;
+        }
+    }
+
+    // De-allocate memory block
+    void  dealloc(void* ptr)
+    {
+        if (ptr)
+        {
+            void* org_ptr = memory::dealign(ptr);
+            ::free(org_ptr);
+        }
+    }
+}
+
+namespace memory
+{
+    // Default global allocator
+    static Allocator s_default_allocator;
+    Allocator* allocator = &s_default_allocator;
+
+    void* alloc(int size)
+    {
+        return memory::alloc(size, 16);
+    }
+
+    void dealloc(void* ptr)
+    {
+        if (allocator)
+        {
+            return allocator->dealloc(ptr);
+        }
+        else
+        {
+            system_memory::dealloc(ptr);
+        }
+    }
+
+    void* realloc(void* ptr, int size)
+    {
+        return memory::realloc(ptr, size, 16);
+    }
+
+    void* alloc(int size, int align)
+    {
+        if (allocator)
+        {
+            return allocator->alloc(size, align);
+        }
+        else
+        {
+            return system_memory::alloc(size, align);
+        }
+    }
+
+    void* realloc(void* ptr, int size, int align)
+    {
+        if (allocator)
+        {
+            return allocator->realloc(ptr, size, align);
+        }
+        else
+        {
+            system_memory::realloc(ptr, size, align);
         }
     }
 
