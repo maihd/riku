@@ -245,6 +245,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_events.cc">
     </ClCompile>
+    <ClCompile Include="..\..\..\unit_tests\test_fiber.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_fs.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_func.cc">

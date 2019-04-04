@@ -44,6 +44,7 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Array<T>: POD continous container
 * [x] HashTable<V>: POD table with hashed key
 * [x] Dictionary<K,V>: high-level of Table
+
 [//]: <> (* [x] Table<K,V>: POD table with generic key)
 
 ## License

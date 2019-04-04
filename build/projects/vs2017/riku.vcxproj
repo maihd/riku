@@ -358,7 +358,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\zutil.c">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\windows\riku_fs_windows.cc">
+    <ClCompile Include="..\..\..\src\windows\riku_windows_fiber.cc">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_windows_fs.cc">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

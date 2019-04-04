@@ -311,7 +311,10 @@
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\zutil.c">
       <Filter>3rdparty\zlib-1.2.11</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\windows\riku_fs_windows.cc">
+    <ClCompile Include="..\..\..\src\windows\riku_windows_fiber.cc">
+      <Filter>src\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_windows_fs.cc">
       <Filter>src\windows</Filter>
     </ClCompile>
   </ItemGroup>

@@ -91,6 +91,10 @@ public:
     ThreadFunc func;
 
 public:
+    // Pause current fiber
+    RIKU_API static void switch_back(void);
+
+public:
     RIKU_API bool init(const ThreadFunc& func);
     RIKU_API void release(void);
     RIKU_API void switch_to(void);
