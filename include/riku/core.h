@@ -914,10 +914,10 @@ namespace process
 namespace performance
 {
     // Current counter of CPU, in OS abstract measure unit
-    RIKU_API long now(void);
+    RIKU_API i64 now(void);
 
     // Frequency of CPU, in OS abstract measure unit
-    RIKU_API long frequency(void);
+    RIKU_API i64 frequency(void);
 
     // Sleep current thread in milliseconds
     RIKU_API bool sleep(long milliseconds);
@@ -930,6 +930,12 @@ namespace performance
 
     // Is system has monotonic timer
     RIKU_API bool has_monotonic(void);
+
+    // Convert tick to seconds
+    inline double ticks_to_seconds(i64 ticks)
+    {
+        return (double)ticks / frequency();
+    }
 }
 
 // Default 32-bit hash function

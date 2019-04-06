@@ -221,15 +221,15 @@ namespace process
 
 namespace performance
 {
-    long now(void)
+    i64 now(void)
     {
     #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
-        return QueryPerformanceCounter(&value) ? (long)value.QuadPart : 0;
+        return QueryPerformanceCounter(&value) ? (i64)value.QuadPart : 0;
     #elif PLATFORM_WEB
-        return 0;
+        return 0; // Not implement yet
     #elif PLATFORM_UNIX
-        long ticks = 0;
+        i64 ticks = 0;
         if (has_monotonic())
         {
         #if defined(HAVE_CLOCK_GETTIME)
@@ -237,11 +237,11 @@ namespace performance
             clock_gettime("__riku_monotonic_clock__", &now);
 
             // Get counter in nanoseconds
-            ticks  = now.tv_sec;
-            ticks *= 1000000000;
-            ticks += now.tv_nsec;
+            ticks  = (i64)now.tv_sec;
+            ticks *= (i64)1000000000L;
+            ticks += (i64)now.tv_nsec;
         #elif defined(__APPLE__)
-            ticks  = mach_absolute_time();
+            ticks  = (i64)mach_absolute_time();
         #endif
         }
         else
@@ -250,20 +250,22 @@ namespace performance
             gettimeofday(&now, NULL);
 
             // Get counter in microseconds
-            ticks  = now.tv_sec;
-            ticks *= 1000 * 1000; // To microseconds
-            ticks += now.tv_usec;
+            ticks  = (i64)now.tv_sec;
+            ticks *= (i64)1000 * 1000; // To microseconds
+            ticks += (i64)now.tv_usec;
             //ticks += now.tv_msec * 1000;
         }
         return ticks;
     #endif
     }
 
-    long frequency(void)
+    i64 frequency(void)
     {
     #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
-        return QueryPerformanceFrequency(&value) ? (long)value.QuadPart : 0;
+        return QueryPerformanceFrequency(&value) ? (i64)value.QuadPart : 0;
+    #elif PLATFORM_WEB
+        return 0; // Not implement yet
     #elif PLATFORM_UNIX
     #if defined(HAVE_CLOCK_GETTIME)
         if (has_monotonic())
@@ -275,10 +277,10 @@ namespace performance
         kern_return_t ret = mach_time_base_info(&mach_info);
         if (ret == 0)
         {
-            long frequency;
-            frequency  = mach_info.denom;
-            frequency *= 1000 * 1000 * 1000;
-            frequency /= mach_info.numer;
+            i64 frequency;
+            frequency  = (i64)mach_info.denom;
+            frequency *= (i64)1000 * 1000 * 1000;
+            frequency /= (i64)mach_info.numer;
             return frequency;
         }
     #endif
