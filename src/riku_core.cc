@@ -261,16 +261,22 @@ namespace performance
 
     i64 frequency(void)
     {
+        static i64 saved_value = -1;
+        if (saved_value < 0)
+        {
+            return saved_value;
+        }
+
     #if PLATFORM_WINDOWS
         LARGE_INTEGER value;
-        return QueryPerformanceFrequency(&value) ? (i64)value.QuadPart : 0;
+        return QueryPerformanceFrequency(&value) ? (i64)(saved_value = value.QuadPart) : 0;
     #elif PLATFORM_WEB
         return 0; // Not implement yet
     #elif PLATFORM_UNIX
     #if defined(HAVE_CLOCK_GETTIME)
         if (has_monotonic())
         {
-            return 1000 * 1000 * 1000; /* nanoseconds per second */
+            return (saved_value = 1000 * 1000 * 1000); /* nanoseconds per second */
         }
     #elif defined(__APPLE__)
         mach_timebase_info_data_t mach_info;
@@ -281,11 +287,11 @@ namespace performance
             frequency  = (i64)mach_info.denom;
             frequency *= (i64)1000 * 1000 * 1000;
             frequency /= (i64)mach_info.numer;
-            return frequency;
+            return (saved_value = frequency);
         }
     #endif
 
-        return 1000 * 1000; /* microseconds per second */
+        return (saved_value = 1000 * 1000); /* microseconds per second */
     #endif
     }
 
