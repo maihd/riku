@@ -68,6 +68,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -120,6 +121,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -172,6 +174,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -224,6 +227,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -276,6 +280,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -328,6 +333,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/unit_tests/test_date.o \
 	$(OBJDIR)/unit_tests/test_dictionary.o \
 	$(OBJDIR)/unit_tests/test_events.o \
+	$(OBJDIR)/unit_tests/test_fiber.o \
 	$(OBJDIR)/unit_tests/test_fs.o \
 	$(OBJDIR)/unit_tests/test_func.o \
 	$(OBJDIR)/unit_tests/test_hash_table.o \
@@ -421,6 +427,10 @@ $(OBJDIR)/unit_tests/test_dictionary.o: ../../../unit_tests/test_dictionary.cc $
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/unit_tests/test_events.o: ../../../unit_tests/test_events.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/unit_tests/test_fiber.o: ../../../unit_tests/test_fiber.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

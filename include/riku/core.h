@@ -336,6 +336,45 @@ using ArgsList = va_list;
 // Console
 namespace console
 {
+    struct Logger
+    {
+        // Log a message, with standard logging-level
+        RIKU_API virtual void log(const char* fmt, ...);
+
+        // Log an information message
+        RIKU_API virtual void info(const char* fmt, ...);
+
+        // Log a warning message
+        RIKU_API virtual void warn(const char* fmt, ...);
+
+        // Log an error message
+        RIKU_API virtual void error(const char* fmt, ...);
+
+        // Log assertion message, and abort the process
+        RIKU_API virtual void log_assert(const char* exp, const char* func, const char* file, int line, const char* fmt, ...);
+
+        // Log a message, with standard logging-level
+        RIKU_API virtual void log_args(const char* fmt, ArgsList args_list);
+
+        // Log an information message
+        RIKU_API virtual void info_args(const char* fmt, ArgsList args_list);
+
+        // Log a warning message
+        RIKU_API virtual void warn_args(const char* fmt, ArgsList args_list);
+
+        // Log an error message
+        RIKU_API virtual void error_args(const char* fmt, ArgsList args_list);
+
+        // Log assertion message, and abort the process
+        RIKU_API virtual void log_assert_args(const char* exp, const char* func, const char* file, int line, const char* fmt, ArgsList args_list);
+    };
+
+    // Add logger, that will call from log function
+    RIKU_API bool add_logger(Logger* logger);
+
+    // Remove logger, log function will no longer call logger
+    RIKU_API bool remove_logger(Logger* logger);
+
     // Get log tag of console, which is presented on logcat and family
     RIKU_API const char* get_log_tag(void);
 

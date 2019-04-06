@@ -79,6 +79,7 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -142,6 +143,7 @@ ifeq ($(config),release32)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -205,6 +207,7 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -268,6 +271,7 @@ ifeq ($(config),release64)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -331,6 +335,7 @@ ifeq ($(config),debug)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -394,6 +399,7 @@ ifeq ($(config),release)
 	$(OBJDIR)/3rdparty/zlib-1.2.11/uncompr.o \
 	$(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o \
 	$(OBJDIR)/src/riku_buffer.o \
+	$(OBJDIR)/src/riku_console.o \
 	$(OBJDIR)/src/riku_core.o \
 	$(OBJDIR)/src/riku_crypto.o \
 	$(OBJDIR)/src/riku_date.o \
@@ -538,6 +544,10 @@ $(OBJDIR)/3rdparty/zlib-1.2.11/zutil.o: ../../../3rdparty/zlib-1.2.11/zutil.c $(
 	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/src/riku_buffer.o: ../../../src/riku_buffer.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/riku_console.o: ../../../src/riku_console.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

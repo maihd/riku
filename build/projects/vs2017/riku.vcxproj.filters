@@ -218,6 +218,9 @@
     <ClCompile Include="..\..\..\src\riku_buffer.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\riku_console.cc">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_core.cc">
       <Filter>src</Filter>
     </ClCompile>
