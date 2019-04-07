@@ -45,15 +45,8 @@ namespace json
     struct State;
     struct Value;
 
-    struct Settings
-    {
-        void* data;
-        void* (*alloc)(void* data, usize size);
-        void  (*dealloc)(void* data, void* pointer);
-    };
-
     RIKU_API const Value& parse(const char* text, State** state = (State**)0);
-    RIKU_API const Value& parse(const char* text, const Settings* settings, State** state = (State**)0);
+    RIKU_API const Value& parse(const char* text, Allocator* allocator, State** state = (State**)0);
     RIKU_API void         release(State* state);
     RIKU_API Error        get_errno(const State* state = NULL);
     RIKU_API const char*  get_error(const State* state = NULL);

@@ -637,7 +637,7 @@ int ZEXPORT deflateTune(strm, good_length, max_lazy, nice_length, max_chain)
  * a close to exact, as well as small, upper bound on the compressed size.
  * They are coded as constants here for a reason--if the #define's are
  * changed, then this function needs to be changed as well.  The return
- * value for 15 and 8 only works for those exact settings.
+ * value for 15 and 8 only works for those exact allocator.
  *
  * For any setting other than those defaults for windowBits and memLevel,
  * the value returned is a conservative worst case for the maximum expansion
@@ -703,7 +703,7 @@ uLong ZEXPORT deflateBound(strm, sourceLen)
     if (s->w_bits != 15 || s->hash_bits != 8 + 7)
         return complen + wraplen;
 
-    /* default settings: return tight bound for that case */
+    /* default allocator: return tight bound for that case */
     return sourceLen + (sourceLen >> 12) + (sourceLen >> 14) +
            (sourceLen >> 25) + 13 - 6 + wraplen;
 }

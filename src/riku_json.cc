@@ -66,25 +66,11 @@ namespace json
         char*         errmsg;
         os::JumpPoint errjmp;
 
-        Settings settings; /* Runtime settings */
+        Allocator* allocator; /* Runtime allocator */
     };
 
     const  Value  Value::null;
     static State* root_state = NULL;
-
-    /* @funcdef: json__alloc */
-    static void *json__alloc(void *data, usize size)
-    {
-        (void)data;
-        return memory::alloc(size);
-    }
-
-    /* @funcdef: json__dealloc */
-    static void json__dealloc(void* data, void* pointer)
-    {
-        (void)data;
-        memory::dealloc(pointer);
-    }
 
     /* @funcdef: json__set_error_valist */
     static void json__set_error_valist(State* state, Type type, Error code, const char* fmt, ArgsList args_list)
@@ -126,7 +112,7 @@ namespace json
         state->errnum = code;
         if (state->errmsg == NULL)
         {
-            state->errmsg = (char*)state->settings.alloc(state->settings.data, errmsg_size);
+            state->errmsg = (char*)state->allocator->alloc(errmsg_size);
         }
 
         char final_format[1024];
@@ -165,7 +151,7 @@ namespace json
         }
 
         int   pool_size = count * (sizeof(void*) + size);
-        Pool* pool      = (Pool*)state->settings.alloc(state->settings.data, sizeof(Pool) + pool_size);
+        Pool* pool      = (Pool*)state->allocator->alloc(sizeof(Pool) + pool_size);
         if (pool)
         {
             if (prev)
@@ -195,7 +181,7 @@ namespace json
         if (pool)
         {
             json__free_pool(state, pool->prev);
-            state->settings.dealloc(state->settings.data, pool);
+            state->allocator->dealloc(pool);
         }
     }
 
@@ -237,7 +223,7 @@ namespace json
             return NULL;
         }
 
-        Bucket *bucket = (Bucket *)state->settings.alloc(state->settings.data, sizeof(Bucket) + count * size);
+        Bucket *bucket = (Bucket *)state->allocator->alloc(sizeof(Bucket) + count * size);
         if (bucket)
         {
             if (prev)
@@ -260,7 +246,7 @@ namespace json
         if (bucket)
         {
             json__free_bucket(state, bucket->next);
-            state->settings.dealloc(state->settings.data, bucket);
+            state->allocator->dealloc(bucket);
         }
     }
 
@@ -344,9 +330,9 @@ namespace json
     }
 
     /* @funcdef: json__make_state */
-    static State *json__make_state(const char *json, const Settings *settings)
+    static State *json__make_state(const char *json, Allocator* allocator)
     {
-        State *state = (State *)settings->alloc(settings->data, sizeof(State));
+        State *state = (State *)allocator->alloc(sizeof(State));
         if (state)
         {
             state->next = NULL;
@@ -364,13 +350,13 @@ namespace json
             state->values_bucket = NULL;
             state->string_bucket = NULL;
 
-            state->settings = *settings;
+            state->allocator = allocator;
         }
         return state;
     }
 
     /* @funcdef: json__reuse_state */
-    static State *json__reuse_state(State *state, const char *json, const Settings *settings)
+    static State *json__reuse_state(State *state, const char *json, Allocator* allocator)
     {
         if (state)
         {
@@ -398,9 +384,7 @@ namespace json
             state->buffer = json;
             state->errnum = Error::None;
 
-            if (state->settings.data != settings->data ||
-                state->settings.dealloc != settings->dealloc ||
-                state->settings.alloc != settings->alloc)
+            if (state->allocator != allocator)
             {
                 json__free_pool(state, state->value_pool);
                 json__free_bucket(state, state->values_bucket);
@@ -410,7 +394,7 @@ namespace json
                 state->values_bucket = NULL;
                 state->string_bucket = NULL;
 
-                state->settings.dealloc(state->settings.data, state->errmsg);
+                state->allocator->dealloc(state->errmsg);
                 state->errmsg = NULL;
             }
             else
@@ -472,8 +456,8 @@ namespace json
             json__free_bucket(state, state->string_bucket);
             json__free_pool(state, state->value_pool);
 
-            state->settings.dealloc(state->settings.data, state->errmsg);
-            state->settings.dealloc(state->settings.data, state);
+            state->allocator->dealloc(state->errmsg);
+            state->allocator->dealloc(state);
 
             json__free_state(next);
         }
@@ -1301,16 +1285,11 @@ namespace json
     /* @funcdef: parse */
     const Value& parse(const char* json, State** out_state)
     {
-        Settings settings;
-        settings.data    = NULL;
-        settings.alloc   = json__alloc;
-        settings.dealloc = json__dealloc;
-
-        return parse(json, &settings, out_state);
+        return parse(json, memory::allocator, out_state);
     }
 
     /* @funcdef: parse */
-    const Value& parse(const char* json, const Settings* settings, State** out_state)
+    const Value& parse(const char* json, Allocator* settings, State** out_state)
     {
         State* state = out_state && *out_state ? json__reuse_state(*out_state, json, settings) : json__make_state(json, settings);
 
