@@ -138,8 +138,8 @@ namespace performance
 
     i64 frequency(void)
     {
-        static i64 saved_value = -1;
-        if (saved_value < 0)
+        static i64 saved_value;
+        if (saved_value > 0)
         {
             return saved_value;
         }
