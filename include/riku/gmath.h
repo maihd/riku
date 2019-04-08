@@ -1764,6 +1764,13 @@ namespace math
         }
     }
 
+    /* Compute normalized vector
+     */
+    inline quat normalize(const quat& v)
+    {
+        return quat(normalize(*(float4*)&v));
+    }
+
     /* Compute reflection vector
      */
     inline float4 reflect(const float4& v, const float4& n)
@@ -3791,31 +3798,29 @@ namespace math
     }
 } // math namespace
 
-//
-// @region: Graphics functions
-//
 
-inline float4 float4::quat(const float3& axis, float angle)
+inline quat quat::axisangle(const float3& axis, float angle)
 {
     using namespace math;
 
     if (lensqr(axis) == 0.0f)
     {
-        return float4(0, 0, 0, 1);
+        return quat(0, 0, 0, 1);
     }
 
-    float4 r = float4(normalize(axis) * math::sin(angle * 0.5f), math::cos(angle * 0.5f));
+    float3 tmp = normalize(axis) * math::sin(angle * 0.5f);
+    quat r = quat(tmp.x, tmp.y, tmp.z, math::cos(angle * 0.5f));
     return r;
 }
 
-inline float4 float4::toaxis(const float4& quat)
+inline float4 quat::toaxis(const quat& q)
 {
     using namespace math;
 
-    float4 c = quat;
+    quat c = q;
     if (c.w != 0.0f)
     {
-        c = normalize(quat);
+        c = normalize(q);
     }
 
     float3 axis;
@@ -3833,16 +3838,16 @@ inline float4 float4::toaxis(const float4& quat)
     return float4(axis, angle);
 }
 
-inline void float4::toaxis(const float4& quat, float3* axis, float* angle)
+inline void quat::toaxis(const quat& quat, float3* axis, float* angle)
 {
     using namespace math;
 
-    float4 axisangle = float4::toaxis(quat);
+    float4 axisangle = quat::toaxis(quat);
     if (axis)  *axis = float3(axisangle.x, axisangle.y, axisangle.z);
     if (angle) *angle = axisangle.w;
 }
 
-inline float4 float4::euler(float x, float y, float z)
+inline quat quat::euler(float x, float y, float z)
 {
     using namespace math;
 
@@ -3868,9 +3873,9 @@ inline float4 float4::euler(float x, float y, float z)
     );
 }
 
-inline float4 float4::euler(const float3& v)
+inline quat quat::euler(const float3& v)
 {
-    return float4::euler(v.x, v.y, v.z);
+    return quat::euler(v.x, v.y, v.z);
 }
 
 inline float2x2 float2x2::rotate(float angle)
@@ -4141,8 +4146,8 @@ inline float4x4 float4x4::rotation_z(float angle)
     );
 }
 
-inline float4x4 float4x4::rotation(const float4& quaternion)
+inline float4x4 float4x4::rotation(const quat& quaternion)
 {
-    float4 axisangle = float4::toaxis(quaternion);
+    float4 axisangle = quat::toaxis(quaternion);
     return float4x4::rotation(axisangle.x, axisangle.y, axisangle.z, axisangle.w);
 }

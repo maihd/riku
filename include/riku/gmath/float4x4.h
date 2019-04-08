@@ -4,7 +4,9 @@
 #pragma once
 
 #include "./base.h"
-#include "./bool3.h"
+#include "./quat.h"
+#include "./float4.h"
+#include "./bool4x4.h"
 
 union float4x4
 {
@@ -73,7 +75,7 @@ public: // @region: Graphics functions
     static float4x4 translation(const float3& v);
     static float4x4 translation(float x, float y, float z = 0.0f);
 
-    static float4x4 rotation(const float4& quaternion);
+    static float4x4 rotation(const quat& quaternion);
     static float4x4 rotation(const float3& axis, float angle);
     static float4x4 rotation(float x, float y, float z, float angle);
 
@@ -87,7 +89,7 @@ public: // @region: Graphics functions
     static float4x4 frustum(float l, float r, float b, float t, float n, float f);
     static float4x4 perspective(float fov, float aspect, float znear, float zfar);
 
-    RIKU_API static void decompose(const float4x4& m, float3* scalation, float4* quaternion, float3* translation);
+    RIKU_API static void decompose(const float4x4& m, float3* scalation, quat* quaternion, float3* translation);
     RIKU_API static void decompose(const float4x4& m, float3* scalation, float3* axis, float* angle, float3* translation);
     
 private: // @region: Internal fields

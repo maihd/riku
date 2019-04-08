@@ -4,18 +4,18 @@ inline void float4x4::decompose(const float4x4& m, float3* scalation, float3* ax
 {
     if (axis || angle)
     {
-        float4 quat;
+        quat quat;
         decompose(m, scalation, &quat, translation);
 
-        float4::toaxis(quat, axis, angle);
+        quat::toaxis(quat, axis, angle);
     }
     else
     {
-        decompose(m, scalation, (float4*)0, translation);
+        decompose(m, scalation, (quat*)0, translation);
     }
 }
 
-void float4x4::decompose(const float4x4& m, float3* scalation, float4* quaternion, float3* translation)
+void float4x4::decompose(const float4x4& m, float3* scalation, quat* quaternion, float3* translation)
 {
     using namespace math;
 

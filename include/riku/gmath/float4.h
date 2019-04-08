@@ -47,29 +47,6 @@ public: // @region: Operators
         ASSERT(index > -1 && index < 4, "Index out of range");
         return ((float*)this)[index];
     }
-
-public:
-    /* Quaternion from axisangle
-     */
-    inline static float4 quat(const float3& axis, float angle);
-
-    /* Convert quaternion to axisangle
-     * @note: xyz is axis, w is angle
-     */
-    inline static float4 toaxis(const float4& quat);
-
-    /* Convert quaternion to axisangle
-     * @note: xyz is axis, w is angle
-     */
-    inline static void toaxis(const float4& quat, float3* axis, float* angle);
-
-    /* Quaternion from euler
-     */
-    inline static float4 euler(float x, float y, float z);
-
-    /* Quaternion from euler
-     */
-    inline static float4 euler(const float3& v);
 };
 
 inline float4 operator-(const float4& v)
