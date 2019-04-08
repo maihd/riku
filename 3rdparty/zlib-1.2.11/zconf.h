@@ -262,7 +262,7 @@
 #endif
 
 /* Maximum value for windowBits in deflateInit2 and inflateInit2.
- * WARNING: reducing MAX_WBITS makes minigzip unable to extract .gz files
+ * WARNING: reducing MAX_WBITS makes minigzip unable to acquire .gz files
  * created by gzip. (Files created by minigzip can still be extracted by
  * gzip.)
  */

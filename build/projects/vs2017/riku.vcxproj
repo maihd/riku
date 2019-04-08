@@ -230,6 +230,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\riku\alloc.h" />
     <ClInclude Include="..\..\..\include\riku\array.h" />
     <ClInclude Include="..\..\..\include\riku\buffer.h" />
     <ClInclude Include="..\..\..\include\riku\core.h" />
@@ -277,7 +278,6 @@
     <ClInclude Include="..\..\..\include\riku\gmath\uint3x3.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\uint4.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\uint4x4.h" />
-    <ClInclude Include="..\..\..\include\riku\previewing\alloc.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\smart_array.h" />
     <ClInclude Include="..\..\..\include\riku\previewing\table.h" />
@@ -294,6 +294,8 @@
     <ClInclude Include="..\..\..\3rdparty\zlib-1.2.11\zutil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\riku_alloc.cc">
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_buffer.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_console.cc">

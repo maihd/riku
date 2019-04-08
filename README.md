@@ -20,23 +20,18 @@ Main purpose of this library for using as a standard library, replacement for C/
 ## Modules
 * [x] Core: primitive types, `console`, `string`, `Date`, `memory`, ...
 * [x] JSON
-* [ ] Allocator
+* [x] Allocators: stack, linear and pool
 * [x] Dynamic string
 * [x] Dynamic buffer
 * [x] Crypto: hashing, encrypt, decrypt, encode, decode
 * [x] Thread, Mutex, Condition, Semaphore, Atomic, Fiber
-* [ ] Tasks or jobs system
-* [ ] Future and Promise/A+
 * [x] Linear and graphics math, all with same module `math`
 * [x] OS functions
 * [x] File system
 * [x] Path: helpers for working with filesystem path
-* [ ] Url: helpers for working with network URL 
 * [x] Net: sockets and streaming
-* [ ] Http/Https: NodeJS's `http` and `https`
 * [x] Dylib (low level)
-* [ ] Zlib: NodeJS's `zlib`
-* [ ] ArgsParse: parsing command line
+* [x] Zlib: NodeJS's `zlib`
 * [x] Stream: base of all streaming type
 * [x] Func<>: fast delegate
 * [x] EventEmitter<N,F>: raise an event and callback to listeners
@@ -45,7 +40,13 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] HashTable<V>: POD table with hashed key
 * [x] Dictionary<K,V>: high-level of Table
 
-[//]: <> (* [x] Table<K,V>: POD table with generic key)
+## Wishing modules
+
+1. ArgsParse: parsing command line argument, base on Python argparse
+2. Tasks or jobs system
+3. Future and Promise/A+
+4. Url: helpers for working with network URL 
+5. Http/Https: NodeJS's `http` and `https`
 
 ## License
 1. Author: MaiHD @ 2019

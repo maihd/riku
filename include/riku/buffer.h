@@ -5,7 +5,7 @@
 
 #include "./core.h"
 
-// Dynamic and growable memory container
+// Simple memory container
 struct Buffer
 {
 public:

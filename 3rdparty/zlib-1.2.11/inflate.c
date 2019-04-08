@@ -165,7 +165,7 @@ int windowBits;
     if (inflateStateCheck(strm)) return Z_STREAM_ERROR;
     state = (struct inflate_state FAR *)strm->state;
 
-    /* extract wrap request from windowBits parameter */
+    /* acquire wrap request from windowBits parameter */
     if (windowBits < 0) {
         wrap = 0;
         windowBits = -windowBits;

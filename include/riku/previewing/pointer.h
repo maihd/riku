@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "./core.h"
+#include "../core.h"
 
 //
 // Many implementation of smart pointers

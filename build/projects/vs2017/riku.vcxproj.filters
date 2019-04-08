@@ -27,6 +27,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\riku\alloc.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\array.h">
       <Filter>include\riku</Filter>
     </ClInclude>
@@ -168,9 +171,6 @@
     <ClInclude Include="..\..\..\include\riku\gmath\uint4x4.h">
       <Filter>include\riku\gmath</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\riku\previewing\alloc.h">
-      <Filter>include\riku\previewing</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\previewing\pointer.h">
       <Filter>include\riku\previewing</Filter>
     </ClInclude>
@@ -215,6 +215,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\riku_alloc.cc">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_buffer.cc">
       <Filter>src</Filter>
     </ClCompile>

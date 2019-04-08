@@ -426,9 +426,20 @@ namespace console
 // Memory allocator
 struct Allocator
 {
-    RIKU_API virtual void* alloc(int size, int align = 16);
+    RIKU_API virtual void* alloc(int size, int align);
     RIKU_API virtual void  dealloc(void* ptr);
-    RIKU_API virtual void* realloc(void* ptr, int size, int align = 16);
+    RIKU_API virtual void* realloc(void* ptr, int size, int align);
+
+    
+    inline void* alloc(int size)
+    {
+        return alloc(size, 16);
+    }
+
+    inline void* realloc(void* ptr, int size)
+    {
+        return realloc(ptr, size, 16);
+    }
 };
 
 // Memory management with customable allocator
