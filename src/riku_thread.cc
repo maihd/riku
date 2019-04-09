@@ -445,7 +445,7 @@ struct SemaphoreContext
 Semaphore::Semaphore(int count)
 {
 #if USE_CUSTOM_SEMAPHORE
-    handle = CREATE(SemaphoreContext) SemaphoreContext(count);
+    handle = new (memory::allocator) SemaphoreContext(count);
 #elif PLATFORM_WINDOWS
     handle = CreateSemaphoreA(NULL, count, INT_MAX, NULL);
 #elif PLATFORM_OSX
@@ -460,7 +460,8 @@ Semaphore::Semaphore(int count)
 Semaphore::~Semaphore(void)
 {
 #if USE_CUSTOM_SEMAPHORE
-    DESTROY((SemaphoreContext*)handle);
+    ((SemaphoreContext*)handle)->~SemaphoreContext();
+    memory::dealloc(handle);
 #elif PLATFORM_WINDOWS
     CloseHandle((HANDLE)handle);
 #elif PLATFORM_OSX
