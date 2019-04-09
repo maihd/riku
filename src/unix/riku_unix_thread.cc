@@ -15,48 +15,57 @@
 
 Atomic& operator++(Atomic& atomic)
 {
+    ++atomic.value;
     return atomic;
 }
 
 Atomic& operator--(Atomic& atomic)
 {
+    --atomic.value;
     return atomic;
 }
 
 Atomic operator++(Atomic& atomic, int)
 {
     auto result = atomic;
+    ++atomic.value;
     return result;
 }
 
 Atomic operator--(Atomic& atomic, int)
 {
     auto result = atomic;
+    --atomic.value;
     return result;
 }
 
 Atomic& operator+=(Atomic& atomic, i64 value)
 {
+    atomic.value += value;
     return atomic;
 }
 
 Atomic& operator-=(Atomic& atomic, i64 value)
 {
+    atomic.value -= value;
     return atomic;
 }
 
 Atomic& operator^=(Atomic& atomic, i64 value)
 {
+    atomic.value ^= value;
     return atomic;
 }
 
 Atomic& operator|=(Atomic& atomic, i64 value)
 {
+    atomic.value |= value;
     return atomic;
 }
 
 Atomic& operator&=(Atomic& atomic, i64 value)
 {
+    atomic.value &= value;
     return atomic;
 }
 
