@@ -97,7 +97,7 @@ public:
     inline Func(FuncType func)
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         stub->type      = Type::Function;
         stub->func      = &Stub::call_func;
@@ -108,7 +108,7 @@ public:
     inline Func(T* object, R (T::*method)(Args...))
         : stub((Stub*)memory::alloc(sizeof(Stub)))
     {
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         using TMethod = R(T::*)(Args...);
         union 
@@ -128,7 +128,7 @@ public:
     inline Func(const T& functor)
         : stub((Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor))))
     {
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         stub->type = Type::Functor;
         stub->size = sizeof(Stub) + sizeof(functor);
@@ -156,7 +156,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub)); 
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         stub->type      = Type::Function;
         stub->func      = &Stub::call_func;
@@ -173,7 +173,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub)); 
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         using TMethod = R(T::*)(Args...);
         union
@@ -199,7 +199,7 @@ public:
 
         // Create new stub
         stub = (Stub*)memory::alloc(sizeof(Stub) + (sizeof(functor)));
-        INIT(stub) RefCount();
+        new (stub) RefCount();
 
         stub->type = Type::Functor;
         stub->size = sizeof(Stub) + sizeof(functor);

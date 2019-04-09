@@ -128,7 +128,7 @@ namespace string
     {
         if (is_empty(dst))
         {
-            return -(is_valid(src));
+            return -((int)is_valid(src));
         }
         else if (is_empty(src))
         {
@@ -144,7 +144,7 @@ namespace string
     {
         if (is_empty(dst))
         {
-            return -(is_valid(src));
+            return -((int)is_valid(src));
         }
         else if (is_empty(src))
         {

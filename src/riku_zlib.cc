@@ -34,7 +34,7 @@ namespace zlib
 
     int inflate(void* buffer, int length, const void* data, int size)
     {
-        ZlibOptions options;
+        Options options;
         options.level = 1;
         options.allocator = NULL;
         return inflate(buffer, length, data, size, options);
@@ -42,13 +42,13 @@ namespace zlib
 
     int deflate(void* buffer, int length, const void* data, int size)
     {
-        ZlibOptions options;
+        Options options;
         options.level = 1;
         options.allocator = NULL;
         return deflate(buffer, length, data, size, options);
     }
 
-    int inflate(void* buffer, int length, const void* data, int size, const ZlibOptions& options)
+    int inflate(void* buffer, int length, const void* data, int size, const Options& options)
     {
         ::z_stream stream;
         stream.zalloc = zlib_alloc;
@@ -74,7 +74,7 @@ namespace zlib
         return (int)stream.total_out;
     }
 
-    int deflate(void* buffer, int length, const void* data, int size, const ZlibOptions& options)
+    int deflate(void* buffer, int length, const void* data, int size, const Options& options)
     {
         ::z_stream stream;
         stream.zalloc = zlib_alloc;

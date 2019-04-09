@@ -253,8 +253,8 @@ public:
                 buffer->keys     = NULL;
                 buffer->values   = NULL;
 
-                INIT(buffer) RefCount();
-                INIT(&buffer->hashs) Array<int>(allocator);
+                new (nullptr, buffer) RefCount();
+                new (nullptr, &buffer->hashs) Array<int>(allocator);
 
                 buffer->hashs.grow(64);
                 for (int i = 0; i < 64; i++)
@@ -300,8 +300,8 @@ public:
                     for (int i = buffer->length; i < new_size; i++)
                     {
                         buffer->nexts[i] = -1;
-                        INIT(&buffer->keys[i]) TKey();
-                        INIT(&buffer->values[i]) TValue();
+                        new (nullptr, &buffer->keys[i]) TKey();
+                        new (nullptr, &buffer->values[i]) TValue();
                     }
                 }
             }
@@ -403,8 +403,8 @@ public:
                 }
 
                 buffer->nexts[curr] = buffer->nexts[last];
-                INIT(&buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
-                INIT(&buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
+                new (nullptr, &buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
+                new (nullptr, &buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
             }
             buffer->length--;
 

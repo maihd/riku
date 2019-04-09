@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "./core.h"
-#include "./array.h"
+#include "../core.h"
+#include "../array.h"
 
 template <typename TKey, typename TValue>
 struct Table
@@ -70,8 +70,8 @@ public:
         buffer->keys     = NULL;
         buffer->values   = NULL;
 
-        INIT(buffer) RefCount();
-        INIT(&buffer->hashs) Array<int>();
+        new (buffer) RefCount();
+        new (&buffer->hashs) Array<int>();
 
         buffer->hashs.ensure(hash_count);
         for (int i = 0; i < hash_count; i++)
@@ -334,8 +334,8 @@ public:
                 }
 
                 buffer->nexts[curr] = buffer->nexts[last];
-                INIT(&buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
-                INIT(&buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
+                new (&buffer->keys[curr]) TKey(traits::make_rvalue(buffer->keys[last]));
+                new (&buffer->values[curr]) TValue(traits::make_rvalue(buffer->values[last]));
             }
             buffer->length--;
 

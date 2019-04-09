@@ -233,8 +233,8 @@ public:
                 buffer->keys     = NULL;
                 buffer->values   = NULL;
 
-                INIT(buffer) RefCount();
-                INIT(&buffer->hashs) Array<int>(allocator);
+                new (nullptr, buffer) RefCount();
+                new (nullptr, &buffer->hashs) Array<int>(allocator);
 
                 buffer->hashs.ensure(64);
                 for (int i = 0; i < 64; i++)

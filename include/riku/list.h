@@ -183,7 +183,7 @@ public:
             if (new_buf)
             {
                 // Initialize RefCount
-                INIT(new_buf) RefCount();
+                new (nullptr, new_buf) RefCount();
 
                 // Copy content of old buffer
                 memory::copy(new_buf->items, old_buf->items, (new_len) * sizeof(TItem));
@@ -237,7 +237,7 @@ public:
             return false;
         }
 
-        INIT(&buffer->items[buffer->length++]) TItem(value);
+        new (nullptr, &buffer->items[buffer->length++]) TItem(value);
         return true;
     }
 
@@ -273,7 +273,7 @@ public:
         memory::move(buffer->items + 1, buffer->items, this->get_length() * sizeof(TItem));
         
         buffer->length++;
-        INIT(&buffer->items[0]) TItem(value);
+        new (nullptr, &buffer->items[0]) TItem(value);
         return true;
     }
 

@@ -99,7 +99,7 @@ namespace net
     Socket connect(const char* host, int port)
     {
         int rv;
-        int sockfd;
+        int sockfd = -1;
         struct addrinfo hints, *servinfo, *p;
 
         memory::zero(&hints, sizeof(hints));
@@ -153,7 +153,7 @@ namespace net
     Socket create_server(const char* host, int port)
     {
         int rv;
-        int sockfd;
+        int sockfd = -1;
         struct addrinfo hints, *servinfo, *p;
 
         memory::zero(&hints, sizeof(hints));

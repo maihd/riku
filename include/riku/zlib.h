@@ -29,16 +29,28 @@ namespace zlib
     };
 #endif
 
-    struct ZlibOptions
+    struct Options
     {
         int level;
 
         Allocator* allocator;
+
+        inline Options(void)
+            : level(1)
+            , allocator(memory::allocator)
+        {
+        }
+
+        inline Options(int level, Allocator* allocator = memory::allocator) 
+            : level(level)
+            , allocator(allocator)
+        {
+        }
     };
 
     RIKU_API int inflate(void* buffer, int length, const void* data, int size);
     RIKU_API int deflate(void* buffer, int length, const void* data, int size);
 
-    RIKU_API int inflate(void* buffer, int length, const void* data, int size, const ZlibOptions& options);
-    RIKU_API int deflate(void* buffer, int length, const void* data, int size, const ZlibOptions& options);
+    RIKU_API int inflate(void* buffer, int length, const void* data, int size, const Options& options);
+    RIKU_API int deflate(void* buffer, int length, const void* data, int size, const Options& options);
 }

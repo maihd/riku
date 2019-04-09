@@ -1,3 +1,9 @@
+#if defined(_MSC_VER)
+#pragma warning(disable: 4458) // Params hide member
+#else
+
+#endif
+
 #include <riku/core.h>
 #include <riku/thread.h>
 

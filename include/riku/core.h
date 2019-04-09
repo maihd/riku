@@ -314,6 +314,14 @@ using uptr = usize;
 using Flags   = u32;
 using Flags64 = u64;
 
+// NULL
+#if !defined(NULL)
+#   define NULL 0
+#endif
+
+// Type of null pointer
+using NullPtr = decltype(nullptr);
+
 // ArgsList: alias of va_list
 #include <stdarg.h>
 using ArgsList = va_list;
@@ -522,34 +530,37 @@ namespace memory
     inline   bool  not_equals(const void* a, const void* b, int size)  { return compare(a, b, size) != 0;    }
 }
 
-// NULL
-#if !defined(NULL)
-#   define NULL 0
-#endif
-
-// Type of null pointer
-using NullPtr = decltype(nullptr);
-
-struct NewDummy {};
-inline void* operator new   (decltype(sizeof(0)), NewDummy, void* ptr) { return ptr; }
-inline void  operator delete(void*,  NewDummy, void*)     {             }
-
-#define INIT(ptr)    new (NewDummy(), ptr)
-#define CREATE(T)    new (NewDummy(), memory::alloc(sizeof(T)))
-#define DESTROY(ptr) __DO_DESTROY(ptr)
-
-template <typename T>
-inline bool __DO_DESTROY(T* ptr)
+// placement new
+inline void* operator new(decltype(sizeof(int)), Allocator*, void* placement)
 {
-    if (ptr) 
-    { 
-        (ptr)->~T(); 
-        memory::dealloc(ptr); 
-        return true;
+    return placement;
+}
+
+inline void operator delete(void*, Allocator*, void*)
+{
+}
+
+inline void* operator new(decltype(sizeof(int)) size, Allocator* allocator)
+{
+    if (allocator)
+    {
+        return allocator->alloc((int)size);
     }
     else
     {
-        return false;
+        return memory::alloc((int)size);
+    }
+}
+
+inline void operator delete(void* ptr, Allocator* allocator)
+{
+    if (allocator)
+    {
+        allocator->dealloc(ptr);
+    }
+    else
+    {
+        memory::dealloc(ptr);
     }
 }
 
