@@ -23,8 +23,8 @@ namespace enums
         Truncate    = 00001000,
         Directory   = 00200000,
 
-        Read        = 00000000,
-        Write       = 00000001,
+        Read        = 00000001,
+        Write       = 00000010,
         ReadWrite   = Read | Write,
     };
 };

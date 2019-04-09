@@ -11,11 +11,25 @@ namespace fs
 {
     FileHandle open(const char* path, Flags flags)
     {
-        if (flags & FileOpen::ReadWrite)
+        switch (flags & FileOpen::ReadWrite)
         {
+        case FileOpen::Read:
+            flags &= ~O_RDWR;
+            flags |=  O_RDONLY;
+            flags &= ~O_WRONLY;
+            break;
+
+        case FileOpen::Write:
+            flags &= ~O_RDWR;
+            flags &= ~O_RDONLY;
+            flags |=  O_WRONLY;
+            break;
+
+        case FileOpen::ReadWrite:
             flags |= O_RDWR;
             flags &= ~O_RDONLY;
             flags &= ~O_WRONLY;
+            break;
         }
 
         return (FileHandle)(iptr)::open(path, (int)flags);
