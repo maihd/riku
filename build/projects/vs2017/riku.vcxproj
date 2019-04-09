@@ -272,6 +272,7 @@
     <ClInclude Include="..\..\..\include\riku\gmath\int3x3.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\int4.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\int4x4.h" />
+    <ClInclude Include="..\..\..\include\riku\gmath\quat.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\uint2.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\uint2x2.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\uint3.h" />
@@ -328,8 +329,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\riku_string.cc">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\riku_thread.cc">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_zlib.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\3rdparty\zlib-1.2.11\adler32.c">
@@ -365,6 +364,8 @@
     <ClCompile Include="..\..\..\src\windows\riku_windows_fiber.cc">
     </ClCompile>
     <ClCompile Include="..\..\..\src\windows\riku_windows_fs.cc">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_windows_thread.cc">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

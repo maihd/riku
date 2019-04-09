@@ -22,6 +22,9 @@ RIKU_API Atomic& operator&=(Atomic& atomic, i64 value);
 struct Thread
 { 
 public:
+    struct Context;
+
+public:
     void*      handle;
     ThreadFunc func;
 

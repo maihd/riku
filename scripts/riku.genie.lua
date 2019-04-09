@@ -40,7 +40,8 @@ do
          path.join(RIKU_DIR, "src/linux/*.cc"),
          path.join(RIKU_DIR, "src/linux/**/*.cc"),
 
-         path.join(RIKU_DIR, "src/unix/riku_fs_unix.cc"),
+         path.join(RIKU_DIR, "src/unix/*.cc"),
+         path.join(RIKU_DIR, "src/unix/**/*.cc"),
       }
    end
 
@@ -49,7 +50,8 @@ do
          path.join(RIKU_DIR, "src/android/*.cc"),
          path.join(RIKU_DIR, "src/android/**/*.cc"),
          
-         path.join(RIKU_DIR, "src/unix/riku_fs_unix.cc"),
+         path.join(RIKU_DIR, "src/unix/*.cc"),
+         path.join(RIKU_DIR, "src/unix/**/*.cc"),
       }
    end
 

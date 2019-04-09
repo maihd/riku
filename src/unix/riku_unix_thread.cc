@@ -1,21 +1,10 @@
-#if defined(_MSC_VER)
-#pragma warning(disable: 4458) // Params hide member
-#else
-
-#endif
-
 #include <riku/core.h>
 #include <riku/thread.h>
 
 #include <errno.h>
 #include <stdlib.h>
 #include <limits.h>
-
-#if PLATFORM_WINDOWS
-#include <Windows.h>
-#elif PLATFORM_UNIX
 #include <pthread.h>
-#endif
 
 #if PLATFORM_OSX
 #   include <mach/mach.h>
@@ -26,138 +15,52 @@
 
 Atomic& operator++(Atomic& atomic)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedIncrement64(&atomic.value);
-#else
-    _InterlockedIncrement((volatile u32*)&atomic.value);
-#endif
-#else
-    atomic.value++;
-#endif
     return atomic;
 }
 
 Atomic& operator--(Atomic& atomic)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedDecrement64(&atomic.value);
-#else
-    _InterlockedDecrement((volatile u32*)&atomic.value);
-#endif
-#else
-    atomic.value--;
-#endif
     return atomic;
 }
 
 Atomic operator++(Atomic& atomic, int)
 {
     auto result = atomic;
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedIncrement64(&atomic.value);
-#else
-    _InterlockedIncrement((volatile u32*)&atomic.value);
-#endif
-#else
-    atomic.value++;
-#endif
     return result;
 }
 
 Atomic operator--(Atomic& atomic, int)
 {
     auto result = atomic;
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedDecrement64(&atomic.value);
-#else
-    _InterlockedDecrement((volatile u32*)&atomic.value);
-#endif
-#else
-    atomic.value--;
-#endif
     return result;
 }
 
 Atomic& operator+=(Atomic& atomic, i64 value)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedAdd64(&atomic.value, value);
-#else
-    _InterlockedAdd((volatile LONG*)&atomic.value, (LONG)value);
-#endif
-#else
-    atomic.value += value;
-#endif
-
     return atomic;
 }
 
 Atomic& operator-=(Atomic& atomic, i64 value)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedAdd64(&atomic.value, -value);
-#else
-    _InterlockedAdd((volatile LONG*)&atomic.value, (LONG)-value);
-#endif
-#else
-    atomic.value -= value;
-#endif
     return atomic;
 }
 
 Atomic& operator^=(Atomic& atomic, i64 value)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedXor64(&atomic.value, value);
-#else
-    _InterlockedXor((volatile LONG*)&atomic.value, (LONG)value);
-#endif
-#else
-    atomic.value ^= value;
-#endif
     return atomic;
 }
 
 Atomic& operator|=(Atomic& atomic, i64 value)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedOr64(&atomic.value, value);
-#else
-    _InterlockedOr((volatile LONG*)&atomic.value, (LONG)value);
-#endif
-#else
-    atomic.value |= value;
-#endif
     return atomic;
 }
 
 Atomic& operator&=(Atomic& atomic, i64 value)
 {
-#if PLATFORM_WINDOWS
-#if ARCH_64BIT
-	_InterlockedAnd64(&atomic.value, value);
-#else
-    _InterlockedAnd((volatile LONG*)&atomic.value, (LONG)value);
-#endif
-#else
-    atomic.value &= value;
-#endif
     return atomic;
 }
 
-#if PLATFORM_WINDOWS
-static DWORD WINAPI thread_routine(void* params)
-#elif PLATFORM_UNIX
 static void* thread_routine(void* params)
-#endif
 {
     // Run thread routine
     Thread* thread = (Thread*)params;
@@ -168,29 +71,19 @@ static void* thread_routine(void* params)
     thread->func = NullPtr();
 
     // End of thread
-#if PLATFORM_WINDOWS
-    return 0;
-#elif PLATFORM_UNIX
     return NULL;
-#endif
 }
 
 void Thread::start(const ThreadFunc& _func)
 {
     this->func = _func;
     
-#if PLATFORM_WINDOWS
-    handle = (void*)CreateThread(NULL, 0, thread_routine, this, 0, NULL); // HANDLE
-#elif PLATFORM_UNIX
     pthread_create((pthread_t*)&handle, NULL, thread_routine, this);
-#endif
 }
 
 void Thread::stop(void)
 {
-#if PLATFORM_WINDOWS
-    CloseHandle((HANDLE)handle);
-#elif PLATFORM_ANDROID
+#if PLATFORM_ANDROID
     pthread_kill((pthread_t)handle, SIGUSR1); // pthread_t
 #elif PLATFORM_UNIX
     pthread_cancel((pthread_t)handle); // pthread_t
@@ -201,78 +94,44 @@ void Thread::stop(void)
 
 void Thread::wait(void)
 {
-#if PLATFORM_WINDOWS
-    WaitForSingleObject((HANDLE)handle, INFINITE);
-#elif PLATFORM_UNIX
     pthread_join((pthread_t)handle, NULL);
-#endif
 }
 
 Mutex::Mutex(void)
 {
-#if PLATFORM_WINDOWS
-    handle = memory::alloc(sizeof(CRITICAL_SECTION));
-    InitializeCriticalSection((CRITICAL_SECTION*)handle);
-#elif PLATFORM_UNIX
     handle = memory::alloc(sizeof(pthread_mutex_t));
     pthread_mutex_init((pthread_mutex_t*)handle, NULL);
-#endif
 }
 
 Mutex::~Mutex(void)
 {
-#if PLATFORM_WINDOWS
-    DeleteCriticalSection((CRITICAL_SECTION*)handle);
-    memory::dealloc(handle);
-#elif PLATFORM_UNIX
     pthread_mutex_destroy((pthread_mutex_t*)handle);
     memory::dealloc(handle);
-#endif
 }
 
 void Mutex::lock(void)
 {
-#if PLATFORM_WINDOWS
-    EnterCriticalSection((CRITICAL_SECTION*)handle);
-#elif PLATFORM_UNIX
     pthread_mutex_lock((pthread_mutex_t*)handle);
-#endif
 }
 
 bool Mutex::trylock(void)
 {
-#if PLATFORM_WINDOWS
-    return TryEnterCriticalSection((CRITICAL_SECTION*)handle);
-#elif PLATFORM_UNIX
     return pthread_mutex_lock((pthread_mutex_t*)handle) == 0;
-#endif
 }
 
 void Mutex::unlock(void)
 {
-#if PLATFORM_WINDOWS
-    LeaveCriticalSection((CRITICAL_SECTION*)handle);
-#elif PLATFORM_UNIX
     pthread_mutex_unlock((pthread_mutex_t*)handle);
-#endif
 }
 
 Condition::Condition(void)
 {
-#if PLATFORM_WINDOWS
-    handle = memory::alloc(sizeof(CONDITION_VARIABLE));
-    InitializeConditionVariable((CONDITION_VARIABLE*)handle);
-#elif PLATFORM_UNIX
     handle = memory::alloc(sizeof(pthread_cond_t));
     pthread_cond_init((pthread_cond_t*)handle, NULL);
-#endif
 }
 
 Condition::~Condition(void)
 {
-#if PLATFORM_WINDOWS
-    memory::dealloc(handle);
-#elif PLATFORM_UNIX
 #if defined(__APPLE__) && defined(__MACH__)
     /* It has been reported that destroying condition variables that have been
      * signalled but not waited on can sometimes result in application crashes.
@@ -318,37 +177,18 @@ Condition::~Condition(void)
     }
 
     memory::dealloc(handle);
-#endif
 }
 
 void Condition::wait(const Mutex& mutex)
 {
-#if PLATFORM_WINDOWS
-    if (SleepConditionVariableCS((CONDITION_VARIABLE*)handle, (CRITICAL_SECTION*)mutex.handle, INFINITE))
-    {
-        process::abort();
-    }
-#elif PLATFORM_UNIX
     if (pthread_cond_wait((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle))
     {
         process::abort();
     }
-#endif
 }
 
 bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 {
-#if PLATFORM_WINDOWS
-    if (SleepConditionVariableCS((CONDITION_VARIABLE*)handle, (CRITICAL_SECTION*)mutex.handle, (DWORD)(nanoseconds * 1e-6)))
-    {
-        return true;
-    }
-    else if (GetLastError() != ERROR_TIMEOUT)
-    {
-        process::abort();
-    }
-    return true;
-#elif PLATFORM_UNIX
     int r;
     struct timespec ts;
 #if defined(__MVS__)
@@ -396,31 +236,22 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 
     process::abort();
     return false; /* Satisfy the compiler. */
-#endif
 }
 
 void Condition::signal(void)
 {
-#if PLATFORM_WINDOWS
-    WakeConditionVariable((CONDITION_VARIABLE*)handle);
-#elif PLATFORM_UNIX
     if (pthread_cond_signal((pthread_cond_t*)handle) != 0)
     {
         process::abort();
     }
-#endif
 }
 
 void Condition::broadcast(void)
 {
-#if PLATFORM_WINDOWS
-    WakeAllConditionVariable((CONDITION_VARIABLE*)handle);
-#elif PLATFORM_UNIX
     if (pthread_cond_broadcast((pthread_cond_t*)handle) != 0)
     {
         process::abort();
     }
-#endif
 }
 
 #if PLATFORM_UNIX
@@ -446,8 +277,6 @@ Semaphore::Semaphore(int count)
 {
 #if USE_CUSTOM_SEMAPHORE
     handle = new (memory::allocator) SemaphoreContext(count);
-#elif PLATFORM_WINDOWS
-    handle = CreateSemaphoreA(NULL, count, INT_MAX, NULL);
 #elif PLATFORM_OSX
     kern_return_t err = semaphore_create(mach_task_self(), (semaphore_t*)&handle, SYNC_POLICY_FIFO, count);
     if (err != KERN_SUCCESS)
@@ -462,8 +291,6 @@ Semaphore::~Semaphore(void)
 #if USE_CUSTOM_SEMAPHORE
     ((SemaphoreContext*)handle)->~SemaphoreContext();
     memory::dealloc(handle);
-#elif PLATFORM_WINDOWS
-    CloseHandle((HANDLE)handle);
 #elif PLATFORM_OSX
     if (semaphore_destroy(mach_task_self(), (semaphore_t)handle))
     {
@@ -484,11 +311,6 @@ void Semaphore::wait(void)
     }
     ctx->count--;
     ctx->mutex.unlock();
-#elif PLATFORM_WINDOWS
-    if (WaitForSingleObject((HANDLE)handle, INFINITE) != WAIT_OBJECT_0)
-    {
-        process::abort();
-    }
 #elif PLATFORM_OSX
     int r;
     do
@@ -514,11 +336,6 @@ void Semaphore::post(void)
         ctx->condition.signal();
     }
     ctx->mutex.unlock();
-#elif PLATFORM_WINDOWS
-    if (!ReleaseSemaphore((HANDLE)handle, 1, NULL))
-    {
-        process::abort();
-    }
 #elif PLATFORM_OSX
     if (semaphore_signal((semaphore_t)handle))
     {
@@ -547,21 +364,6 @@ bool Semaphore::trywait(void)
     ctx->mutex.unlock();
 
     return 0;
-#elif PLATFORM_WINDOWS
-    DWORD r = WaitForSingleObject((HANDLE)handle, 0);
-
-    if (r == WAIT_OBJECT_0)
-    {
-        return true;
-    }
-
-    if (r == WAIT_TIMEOUT)
-    {
-        return false;
-    }
-
-    process::abort();
-    return false; /* Satisfy the compiler. */
 #elif PLATFORM_OSX
     mach_timespec_t interval;
     kern_return_t err;

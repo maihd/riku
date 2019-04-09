@@ -95,9 +95,10 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -160,9 +161,10 @@ ifeq ($(config),release32)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -225,9 +227,10 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -290,9 +293,10 @@ ifeq ($(config),release64)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -355,9 +359,10 @@ ifeq ($(config),debug)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -420,9 +425,10 @@ ifeq ($(config),release)
 	$(OBJDIR)/src/riku_path.o \
 	$(OBJDIR)/src/riku_stream.o \
 	$(OBJDIR)/src/riku_string.o \
-	$(OBJDIR)/src/riku_thread.o \
 	$(OBJDIR)/src/riku_zlib.o \
-	$(OBJDIR)/src/unix/riku_fs_unix.o \
+	$(OBJDIR)/src/unix/riku_unix_fiber.o \
+	$(OBJDIR)/src/unix/riku_unix_fs.o \
+	$(OBJDIR)/src/unix/riku_unix_thread.o \
 
   define PREBUILDCMDS
   endef
@@ -617,15 +623,19 @@ $(OBJDIR)/src/riku_string.o: ../../../src/riku_string.cc $(GCH) $(MAKEFILE) | $(
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/riku_thread.o: ../../../src/riku_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
-
 $(OBJDIR)/src/riku_zlib.o: ../../../src/riku_zlib.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
-$(OBJDIR)/src/unix/riku_fs_unix.o: ../../../src/unix/riku_fs_unix.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/unix
+$(OBJDIR)/src/unix/riku_unix_fiber.o: ../../../src/unix/riku_unix_fiber.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/unix
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/unix/riku_unix_fs.o: ../../../src/unix/riku_unix_fs.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/unix
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
+
+$(OBJDIR)/src/unix/riku_unix_thread.o: ../../../src/unix/riku_unix_thread.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/src/unix
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

@@ -153,6 +153,9 @@
     <ClInclude Include="..\..\..\include\riku\gmath\int4x4.h">
       <Filter>include\riku\gmath</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\gmath\quat.h">
+      <Filter>include\riku\gmath</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\gmath\uint2.h">
       <Filter>include\riku\gmath</Filter>
     </ClInclude>
@@ -266,9 +269,6 @@
     <ClCompile Include="..\..\..\src\riku_string.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\riku_thread.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\riku_zlib.cc">
       <Filter>src</Filter>
     </ClCompile>
@@ -321,6 +321,9 @@
       <Filter>src\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\windows\riku_windows_fs.cc">
+      <Filter>src\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\windows\riku_windows_thread.cc">
       <Filter>src\windows</Filter>
     </ClCompile>
   </ItemGroup>
