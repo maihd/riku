@@ -102,7 +102,6 @@ static void* Thread_native_routine(void* params)
 
     // Clean up thread
     context->stop();
-    context->routine = NullPtr();
 
     // End of thread
     return NULL;
@@ -110,10 +109,14 @@ static void* Thread_native_routine(void* params)
 
 void Thread::start(const ThreadFunc& routine)
 {
-    if (!context && routine)
+    if (routine)
     {
-        context = new (memory::allocator) Context();
+        if (!context)
+        {
+            context = new (memory::allocator) Context();
+        }
 
+        context->_incref();
         context->routine = routine;
         pthread_create((pthread_t*)&context->handle, NULL, Thread_native_routine, context);
     }
@@ -124,6 +127,7 @@ void Thread::stop(void)
     if (context)
     {
         context->stop();
+        this->~Thread();
     }
 }
 
@@ -133,6 +137,35 @@ void Thread::wait(void)
     {
         context->wait();
     }
+}
+
+Thread::~Thread(void)
+{
+    if (context && context->_decref() <= 0)
+    {
+        context->~Context();
+        memory::dealloc(context);
+    }
+}
+
+Thread::Thread(const Thread& other)
+    : context(other.context)
+{
+    if (context)
+    {
+        context->_incref();
+    }
+}
+
+Thread& Thread::operator=(const Thread& other)
+{
+    context = other.context;
+    if (context)
+    {
+        context->_incref();
+    }
+
+    return *this;
 }
 
 Mutex::Mutex(void)

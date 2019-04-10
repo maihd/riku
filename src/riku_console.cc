@@ -114,7 +114,7 @@ namespace console
     {
 #if PLATFORM_ANDROID
         char final_fmt[4096];
-        string::format(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, func, file, line, fmt);
+        string::format(final_fmt, "Assertion failed!: %s\n\tIn %s:%s:%d\n\tMessage: %s", exp, routine, file, line, fmt);
 
         __android_log_vprint(ANDROID_LOG_FATAL, s_log_tag, final_fmt, args_list);
 #else

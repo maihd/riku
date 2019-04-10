@@ -6,8 +6,8 @@
 
 TEST_CASE("Thread testing", "[thread]")
 {
-    Thread* thread = new (memory::allocator) Thread();
-    thread->start([]() {
+    Thread thread;
+    thread.start([]() {
         Atomic count;
         count.value = 10;
         while (count.value > 0)
@@ -19,7 +19,5 @@ TEST_CASE("Thread testing", "[thread]")
         }
     });
 
-    thread->wait();
-    thread->~Thread();
-    memory::dealloc(thread);
+    thread.wait();
 }

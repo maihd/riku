@@ -33,6 +33,28 @@ public:
         {}
 
 public:
+    inline Thread(Thread&& other)
+        : context(other.context)
+    {
+        other.context = NULL;
+    }
+
+    inline Thread& operator=(Thread&& other)
+    {
+        context = other.context;
+        other.context = NULL;
+
+        return *this;
+    }
+
+public:
+    RIKU_API ~Thread(void);
+
+public:
+    RIKU_API Thread(const Thread& other);
+    RIKU_API Thread& operator=(const Thread& other);
+
+public:
     RIKU_API void start(const ThreadFunc& func);
     RIKU_API void stop(void);
     RIKU_API void wait(void);
