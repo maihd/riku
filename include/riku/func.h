@@ -87,7 +87,7 @@ public:
     
     inline ~Func(void)
     {
-        if (stub && stub->_ref_dec() <= 0)
+        if (stub && stub->_decref() <= 0)
         {
             memory::dealloc(stub);
         }
@@ -233,7 +233,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->_ref_inc();
+            stub->_incref();
         }
     }
 
@@ -245,7 +245,7 @@ public:
         stub = other.stub;
         if (stub)
         {
-            stub->_ref_inc();
+            stub->_incref();
         }
 
         return *this;

@@ -1945,7 +1945,7 @@ namespace Catch {
         {}
     };
 
-    // Specialised comparison functions to handle equality comparisons between ints and pointers (NULL deduces as an int)
+    // Specialised comparison functions to context equality comparisons between ints and pointers (NULL deduces as an int)
     template<typename LhsT, typename RhsT>
     auto compareEqual( LhsT const& lhs, RhsT const& rhs ) -> bool { return static_cast<bool>(lhs == rhs); }
     template<typename T>
@@ -8482,7 +8482,7 @@ namespace Catch {
 
     FatalConditionHandler::FatalConditionHandler() {
         isSet = true;
-        // 32k seems enough for Catch to handle stack overflow,
+        // 32k seems enough for Catch to context stack overflow,
         // but the value was found experimentally, so there is no strong guarantee
         guaranteeSize = 32 * 1024;
         exceptionHandlerHandle = nullptr;

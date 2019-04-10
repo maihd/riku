@@ -69,41 +69,70 @@ Atomic& operator&=(Atomic& atomic, i64 value)
     return atomic;
 }
 
-static void* thread_routine(void* params)
+struct Thread::Context : public RefCount
 {
-    // Run thread routine
-    Thread* thread = (Thread*)params;
-    thread->func();
+    pthread_t  handle;
+    ThreadFunc routine;
 
-    // Clean up thread
-    thread->stop();
-    thread->func = NullPtr();
-
-    // End of thread
-    return NULL;
-}
-
-void Thread::start(const ThreadFunc& _func)
-{
-    this->func = _func;
-    
-    pthread_create((pthread_t*)&handle, NULL, thread_routine, this);
-}
-
-void Thread::stop(void)
-{
+    void stop(void)
+    {
 #if PLATFORM_ANDROID
     pthread_kill((pthread_t)handle, SIGUSR1); // pthread_t
 #elif PLATFORM_UNIX
     pthread_cancel((pthread_t)handle); // pthread_t
 #endif
 
-    handle = NULL;
+        handle = 0;
+    }
+
+    void wait(void)
+    {
+        pthread_join((pthread_t)handle, NULL);
+    }
+};
+
+static void* Thread_native_routine(void* params)
+{
+    // Run thread routine
+    Thread::Context* context = (Thread::Context*)params;
+    if (context)
+    {
+        context->routine();
+    }
+
+    // Clean up thread
+    context->stop();
+    context->routine = NullPtr();
+
+    // End of thread
+    return NULL;
+}
+
+void Thread::start(const ThreadFunc& routine)
+{
+    if (!context && routine)
+    {
+        context = new (memory::allocator) Context();
+
+        context->routine = routine;
+        pthread_create((pthread_t*)&context->handle, NULL, Thread_native_routine, context);
+    }
+}
+
+void Thread::stop(void)
+{
+    if (context)
+    {
+        context->stop();
+    }
 }
 
 void Thread::wait(void)
 {
-    pthread_join((pthread_t)handle, NULL);
+    if (context)
+    {
+        context->wait();
+    }
 }
 
 Mutex::Mutex(void)
@@ -224,7 +253,7 @@ bool Condition::wait_timeout(const Mutex& mutex, long nanoseconds)
 
     /*
      * The bionic pthread implementation doesn't support CLOCK_MONOTONIC,
-     * but has this alternative function instead.
+     * but has this alternative routine instead.
      */
     r = pthread_cond_timedwait_monotonic_np((pthread_cond_t*)handle, (pthread_mutex_t*)mutex.handle, &ts);
 #else

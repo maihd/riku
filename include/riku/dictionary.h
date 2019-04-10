@@ -69,7 +69,7 @@ public:
 
     inline ~Dictionary(void)
     {
-        if (buffer && buffer->_ref_dec() < 0)
+        if (buffer && buffer->_decref() < 0)
         {
             for (int i = 0, n = get_length(); i < n; i++)
             {
@@ -93,7 +93,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
     }
 
@@ -103,7 +103,7 @@ public: // Copy
         allocator = other.allocator;
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
 
         return *this;

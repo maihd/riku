@@ -82,7 +82,7 @@ public:
 
     inline ~Table()
     {
-        if (buffer && buffer->_ref_dec() < 0)
+        if (buffer && buffer->_decref() < 0)
         {
             memory::dealloc(buffer->nexts);
             memory::dealloc(buffer->keys);
@@ -99,7 +99,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
     }
 
@@ -108,7 +108,7 @@ public: // Copy
         buffer = other.buffer;
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
 
         return *this;

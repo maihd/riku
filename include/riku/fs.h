@@ -67,10 +67,10 @@ namespace fs
     // Is file or directory exist at path
     RIKU_API bool exists(const char* path);
 
-    // Open file handle at given path
+    // Open file context at given path
     RIKU_API FileHandle open(const char* path, Flags flags);
 
-    // Open file handle at given path
+    // Open file context at given path
     RIKU_API FileHandle open(const char* path, const char* flags);
 
     // Set the position of file pointer
@@ -79,13 +79,13 @@ namespace fs
     // Tell the position of file pointer
     RIKU_API int        tell(FileHandle handle);
     
-    // Read content of file with handle
+    // Read content of file with context
     RIKU_API int        read(FileHandle handle, void* buffer, int length);
 
-    // Read content of file with handle
+    // Read content of file with context
     RIKU_API int        write(FileHandle handle, const void* buffer, int length);
 
-    // Close file handle
+    // Close file context
     RIKU_API void       close(FileHandle handle);
     
     // Read content of file at given path

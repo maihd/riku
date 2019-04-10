@@ -34,7 +34,7 @@ public:
 
     inline ~Array(void)
     {
-        if (buffer && buffer->_ref_dec() <= 0)
+        if (buffer && buffer->_decref() <= 0)
         {
             allocator->dealloc(buffer);
         }
@@ -47,7 +47,7 @@ public:
     {
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
     }
 
@@ -61,7 +61,7 @@ public:
         allocator = other.allocator;
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
 
         return *this;

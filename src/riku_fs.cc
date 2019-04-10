@@ -86,29 +86,29 @@ namespace fs
         return fopen(path, flags);
     }
 
-    int seek(FileHandle handle, FileSeek whence, int count)
+    int seek(FileHandle context, FileSeek whence, int count)
     {
-        return fseek((FILE*)handle, count, (int)whence);
+        return fseek((FILE*)context, count, (int)whence);
     }
 
-    int tell(FileHandle handle)
+    int tell(FileHandle context)
     {
-        return (int)ftell((FILE*)handle);
+        return (int)ftell((FILE*)context);
     }
 
-    int read(FileHandle handle, void* buffer, int length)
+    int read(FileHandle context, void* buffer, int length)
     {
-        return (int)fread(buffer, 1, (usize)length, (FILE*)handle);
+        return (int)fread(buffer, 1, (usize)length, (FILE*)context);
     }
 
-    int write(FileHandle handle, const void* buffer, int length)
+    int write(FileHandle context, const void* buffer, int length)
     {
-        return (int)fwrite(buffer, 1, (usize)length, (FILE*)handle);
+        return (int)fwrite(buffer, 1, (usize)length, (FILE*)context);
     }
 
-    void close(FileHandle handle)
+    void close(FileHandle context)
     {
-        fclose((FILE*)handle);
+        fclose((FILE*)context);
     }
 #endif
 

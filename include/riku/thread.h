@@ -25,12 +25,11 @@ public:
     struct Context;
 
 public:
-    void*      handle;
-    ThreadFunc func;
+    Context* context;
 
 public:
     inline Thread(void)
-        : handle(NULL)
+        : context(NULL)
         {}
 
 public:

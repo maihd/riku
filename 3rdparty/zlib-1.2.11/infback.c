@@ -443,7 +443,7 @@ void FAR *out_desc;
                 }
             }
 
-            /* handle error breaks in while */
+            /* context error breaks in while */
             if (state->mode == BAD) break;
 
             /* check for end-of-block code (better have one) */

@@ -771,11 +771,11 @@ public:
 public:
     // Increase counter
     // @note: ridiculous name for avoid member collision
-    inline int _ref_inc(void) { return ++_refcount; };
+    inline int _incref(void) { return ++_refcount; };
 
     // Decrease counter
     // @note: ridiculous name for avoid member collision
-    inline int _ref_dec(void) { return --_refcount; };
+    inline int _decref(void) { return --_refcount; };
 };
 
 // UTF8 string operator

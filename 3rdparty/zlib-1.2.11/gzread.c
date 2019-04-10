@@ -190,7 +190,7 @@ local int gz_decomp(state)
             break;
         }
 
-        /* decompress and handle errors */
+        /* decompress and context errors */
         ret = inflate(strm, Z_NO_FLUSH);
         if (ret == Z_STREAM_ERROR || ret == Z_NEED_DICT) {
             gz_error(state, Z_STREAM_ERROR,

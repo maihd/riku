@@ -72,7 +72,7 @@ public:
 
     inline ~HashTable()
     {
-        if (buffer && buffer->_ref_dec() < 0)
+        if (buffer && buffer->_decref() < 0)
         {
             allocator->dealloc(buffer->nexts);
             allocator->dealloc(buffer->keys);
@@ -90,7 +90,7 @@ public: // Copy
     {
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
     }
 
@@ -100,7 +100,7 @@ public: // Copy
         allocator = other.allocator;
         if (buffer)
         {
-            buffer->_ref_inc();
+            buffer->_incref();
         }
 
         return *this;

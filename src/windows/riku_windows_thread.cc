@@ -114,37 +114,70 @@ Atomic& operator&=(Atomic& atomic, i64 value)
     return atomic;
 }
 
-static DWORD WINAPI thread_routine(void* params)
+struct Thread::Context : public RefCount
+{
+    HANDLE     handle;
+    ThreadFunc routine;
+
+    void stop(void)
+    {
+        CloseHandle((HANDLE)handle);
+
+        handle = NULL;
+    }
+
+    void wait(void)
+    {
+        WaitForSingleObject(handle, INFINITE);
+    }
+};
+
+static DWORD WINAPI Thread_native_routine(void* params)
 {
     // Run thread routine
-    Thread* thread = (Thread*)params;
-    thread->func();
+    Thread::Context* context = (Thread::Context*)params;
+    if (context->routine)
+    {
+        context->routine();
+    }
 
     // Clean up thread
-    thread->stop();
-    thread->func = NullPtr();
+    context->stop();
+    if (context->_decref() <= 0)
+    {
+        context->~Context();
+        memory::dealloc(context);
+    }
 
     // End of thread
     return 0;
 }
 
-void Thread::start(const ThreadFunc& _func)
+void Thread::start(const ThreadFunc& routine)
 {
-    this->func = _func;
-    
-    handle = (void*)CreateThread(NULL, 0, thread_routine, this, 0, NULL); // HANDLE
+    if (!context && routine)
+    {
+        context = new (memory::allocator) Context();
+
+        context->routine = routine;
+        context->handle  = CreateThread(NULL, 0, Thread_native_routine, context, 0, NULL); // HANDLE
+    }
 }
 
 void Thread::stop(void)
 {
-    CloseHandle((HANDLE)handle);
-
-    handle = NULL;
+    if (context)
+    {
+        context->stop();
+    }
 }
 
 void Thread::wait(void)
 {
-    WaitForSingleObject((HANDLE)handle, INFINITE);
+    if (context)
+    {
+        context->wait();
+    }
 }
 
 Mutex::Mutex(void)
