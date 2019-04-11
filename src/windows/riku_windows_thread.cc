@@ -136,8 +136,8 @@ Atomic& operator&=(Atomic& atomic, i64 value)
 
 struct Thread::Context : public RefCount
 {
-    HANDLE     handle;
-    ThreadFunc routine;
+    HANDLE           handle;
+    Func<void(void)> routine;
 
     void stop(void)
     {
@@ -168,7 +168,7 @@ static DWORD WINAPI Thread_native_routine(void* params)
     return 0;
 }
 
-void Thread::start(const ThreadFunc& routine)
+void Thread::start(const Func<void(void)>& routine)
 {
     if (routine)
     {

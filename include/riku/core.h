@@ -531,15 +531,17 @@ namespace memory
 }
 
 // placement new
-inline void* operator new(decltype(sizeof(int)), Allocator*, void* placement)
+inline void* operator new(decltype(sizeof(int)), NullPtr, void* placement)
 {
     return placement;
 }
 
-inline void operator delete(void*, Allocator*, void*)
+// placement delete
+inline void operator delete(void*, NullPtr, void*)
 {
 }
 
+// Allocate new object with allocator
 inline void* operator new(decltype(sizeof(int)) size, Allocator* allocator)
 {
     if (allocator)
@@ -552,6 +554,7 @@ inline void* operator new(decltype(sizeof(int)) size, Allocator* allocator)
     }
 }
 
+// Delete the object with allocator
 inline void operator delete(void* ptr, Allocator* allocator)
 {
     if (allocator)

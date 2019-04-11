@@ -3,8 +3,6 @@
 #include "./core.h"
 #include "./func.h"
 
-using ThreadFunc = Func<void(void)>;
-
 struct Atomic 
 {
     volatile i64 value;
@@ -59,7 +57,7 @@ public:
     RIKU_API Thread& operator=(const Thread& other);
 
 public:
-    RIKU_API void start(const ThreadFunc& func);
+    RIKU_API void start(const Func<void(void)>& func);
     RIKU_API void stop(void);
     RIKU_API void wait(void);
 };
@@ -115,15 +113,14 @@ public:
 struct Fiber
 {
 public:
-    void*      handle;
-    ThreadFunc func;
+    void*              handle;
+    Func<void(Fiber*)> routine;
 
 public:
-    // Pause current fiber
-    RIKU_API static void switch_back(void);
-
-public:
-    RIKU_API bool init(const ThreadFunc& func);
+    RIKU_API bool init(const Func<void(Fiber*)>& routine);
     RIKU_API void release(void);
-    RIKU_API void switch_to(void);
+
+public:
+    RIKU_API bool switch_to(void);
+    RIKU_API void switch_back(void);
 };

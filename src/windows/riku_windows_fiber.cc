@@ -9,19 +9,22 @@
 
 #include <Windows.h>
 
-__threadstatic void* s_thread_fiber;
-namespace thread_callbacks
+namespace
 {
-    static void WINAPI fiber(void* params)
+    __threadstatic void* s_thread_fiber;
+    static void WINAPI Fiber_native_routine(void* params)
     {
+        ASSERT(params, "Internal logic error: params must be null");
+
         Fiber* fiber = (Fiber*)params;
-        if (fiber->func)
+        if (fiber->routine)
         {
-            fiber->func();
+            fiber->routine(fiber);
         }
 
-        // Switch back to main thread
-        ::SwitchToFiber(s_thread_fiber);
+        // Fiber done
+        fiber->handle = NULL;
+        fiber->switch_back();
     }
 }
 
@@ -32,19 +35,19 @@ void Fiber::switch_back(void)
     ::SwitchToFiber(s_thread_fiber);
 }
 
-bool Fiber::init(const ThreadFunc& func)
+bool Fiber::init(const Func<void(Fiber*)>& routine)
 {
-    if (func)
+    if (routine)
     {
         if (!s_thread_fiber)
         {
             s_thread_fiber = ::ConvertThreadToFiber(NULL);
         }
 
-        handle = ::CreateFiber(0, thread_callbacks::fiber, this);
+        handle = ::CreateFiber(0, Fiber_native_routine, this);
         if (handle)
         {
-            this->func = func;
+            this->routine = routine;
             return true;
         }
         else
@@ -63,15 +66,20 @@ void Fiber::release(void)
     if (handle)
     {
         ::DeleteFiber(handle);
-        handle = NULL;
-        func   = nullptr;
+        handle  = NULL;
+        routine = nullptr;
     }
 }
 
-void Fiber::switch_to(void)
+bool Fiber::switch_to(void)
 {
     if (handle)
     {
         ::SwitchToFiber(handle);
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }

@@ -251,6 +251,7 @@
     <ClInclude Include="..\..\..\include\riku\path.h" />
     <ClInclude Include="..\..\..\include\riku\stream.h" />
     <ClInclude Include="..\..\..\include\riku\string.h" />
+    <ClInclude Include="..\..\..\include\riku\sys.h" />
     <ClInclude Include="..\..\..\include\riku\thread.h" />
     <ClInclude Include="..\..\..\include\riku\zlib.h" />
     <ClInclude Include="..\..\..\include\riku\gmath\base.h" />

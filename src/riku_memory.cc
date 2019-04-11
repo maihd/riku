@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MaiHD. All right reversed.
 // License: Unlicensed
 
-#include <riku/os.h>
+#include <riku/sys.h>
 #include <riku/core.h>
 
 #include <stdlib.h>
@@ -10,22 +10,22 @@
 // Allocate a memory block, with given alignment
 void* Allocator::alloc(int size, int align)
 {
-    return os::alloc(size, align);
+    return sys::alloc(size, align);
 }
 
 // Re-allocate memory block, with given alignment
 void* Allocator::realloc(void* ptr, int size, int align)
 {
-    return os::realloc(ptr, size, align);
+    return sys::realloc(ptr, size, align);
 }
 
 // De-allocate memory block
 void  Allocator::dealloc(void* ptr)
 {
-    return os::dealloc(ptr);
+    return sys::dealloc(ptr);
 }
 
-namespace os
+namespace sys
 {
     // Allocate a memory block, with given alignment
     void* alloc(int size, int align)
@@ -97,7 +97,7 @@ namespace memory
         }
         else
         {
-            os::dealloc(ptr);
+            sys::dealloc(ptr);
         }
     }
 
@@ -114,7 +114,7 @@ namespace memory
         }
         else
         {
-            return os::alloc(size, align);
+            return sys::alloc(size, align);
         }
     }
 
@@ -126,7 +126,7 @@ namespace memory
         }
         else
         {
-            return os::realloc(ptr, size, align);
+            return sys::realloc(ptr, size, align);
         }
     }
 

@@ -109,8 +109,8 @@ Atomic& operator&=(Atomic& atomic, i64 value)
 
 struct Thread::Context : public RefCount
 {
-    pthread_t  handle;
-    ThreadFunc routine;
+    pthread_t        handle;
+    Func<void(void)> routine;
 
     void stop(void)
     {
@@ -145,7 +145,7 @@ static void* Thread_native_routine(void* params)
     return NULL;
 }
 
-void Thread::start(const ThreadFunc& routine)
+void Thread::start(const Func<void(void)>& routine)
 {
     if (routine)
     {

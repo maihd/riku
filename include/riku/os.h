@@ -4,7 +4,6 @@
 #pragma once
 
 #include "./core.h"
-#include <setjmp.h>
 
 namespace os
 {
@@ -128,10 +127,10 @@ namespace os
     // Obtain name of current user to given buffer
     RIKU_API const char*   hostname(char* buffer, int length);
 
-    // Get load average ìn single-precision floating point number
+    // Get load average ï¿½n single-precision floating point number
     RIKU_API void          loadavg(float avgs[3]);
 
-    // Get load average ìn double-precision floating point number
+    // Get load average ï¿½n double-precision floating point number
     RIKU_API void          loadavg(double avgs[3]);
 
     // Get the version of current os release
@@ -148,22 +147,4 @@ namespace os
 
     // Get cpu info
     RIKU_API int           cpus(CPU* buffer, int count);
-
-    // Long jump saved-point
-    using JumpPoint = jmp_buf;
-
-    // Set saved-point to long jump
-    using ::setjmp;
-
-    // Long jump to the last saved-point
-    using ::longjmp;
-
-    // Allocate a memory block from system RAM, with given alignment
-    RIKU_API void* alloc(int size, int align);
-
-    // Re-allocate memory block from system RAM, with given alignment
-    RIKU_API void* realloc(void* ptr, int size, int align);
-
-    // De-allocate memory block from system RAM
-    RIKU_API void  dealloc(void* ptr);
 }

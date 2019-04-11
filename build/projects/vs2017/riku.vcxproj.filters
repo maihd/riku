@@ -90,6 +90,9 @@
     <ClInclude Include="..\..\..\include\riku\string.h">
       <Filter>include\riku</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\riku\sys.h">
+      <Filter>include\riku</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\riku\thread.h">
       <Filter>include\riku</Filter>
     </ClInclude>

@@ -5,7 +5,7 @@
 #pragma warning(disable: 4611)
 #endif
 
-#include <riku/os.h>
+#include <riku/sys.h>
 #include <riku/json.h>
 
 #include <math.h>
@@ -62,9 +62,9 @@ namespace json
         usize       length;
         const char* buffer;
 
-        Error         errnum;
-        char*         errmsg;
-        os::JumpPoint errjmp;
+        Error          errnum;
+        char*          errmsg;
+        sys::JumpPoint errjmp;
 
         Allocator* allocator; /* Runtime allocator */
     };
@@ -139,7 +139,7 @@ namespace json
         json__set_error_valist(state, type, code, fmt, varg);
         va_end(varg);
 
-        os::longjmp(state->errjmp, (int)code);
+        sys::longjmp(state->errjmp, (int)code);
     }
 
     /* funcdef: json__make_pool */
@@ -1237,7 +1237,7 @@ namespace json
 
         if (json__skip_space(state) == '{')
         {
-            if (os::setjmp(state->errjmp) == 0)
+            if (sys::setjmp(state->errjmp) == 0)
             {
                 Value* value = json__parse_object(state, NULL);
 
@@ -1256,7 +1256,7 @@ namespace json
         }
         else if (json__skip_space(state) == '[')
         {
-            if (os::setjmp(state->errjmp) == 0)
+            if (sys::setjmp(state->errjmp) == 0)
             {
                 Value* value = json__parse_array(state, NULL);
 
