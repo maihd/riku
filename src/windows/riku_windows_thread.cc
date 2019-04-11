@@ -10,6 +10,26 @@
 #include <limits.h>
 #include <Windows.h>
 
+Atomic& Atomic::operator=(i64 value)
+{
+#if ARCH_64BIT
+    _InterlockedExchange64(&this->value, value);
+#else
+    _InterlockedExchange((LONG*)&this->value, value);
+#endif
+    return *this;
+}
+
+Atomic& Atomic::operator=(const Atomic& other)
+{
+#if ARCH_64BIT
+    _InterlockedExchange64(&this->value, other.value);
+#else
+    _InterlockedExchange((LONG*)&this->value, other.value);
+#endif
+    return *this;
+}
+
 Atomic& operator++(Atomic& atomic)
 {
 #if ARCH_64BIT

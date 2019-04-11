@@ -13,59 +13,97 @@
 #   include <TargetConditionals.h>
 #endif
 
+Atomic& Atomic::operator=(i64 value)
+{
+#ifdef __ATOMIC_RELAXED
+    __atomic_exchange_n(&this->value, value, __ATOMIC_RELAXED);
+#else
+    this->value = value;
+#endif
+    return *this;
+}
+
+Atomic& Atomic::operator=(const Atomic& other)
+{
+#ifdef __ATOMIC_RELAXED
+    __atomic_exchange_n(&this->value, other.value, __ATOMIC_RELAXED);
+#else
+    this->value = other.value;
+#endif
+    return *this;
+}
+
 Atomic& operator++(Atomic& atomic)
 {
-    ++atomic.value;
-    return atomic;
+    return (atomic += 1);
 }
 
 Atomic& operator--(Atomic& atomic)
 {
-    --atomic.value;
-    return atomic;
+    return (atomic -= 1);
 }
 
 Atomic operator++(Atomic& atomic, int)
 {
     auto result = atomic;
-    ++atomic.value;
+    atomic += 1;
     return result;
 }
 
 Atomic operator--(Atomic& atomic, int)
 {
     auto result = atomic;
-    --atomic.value;
+    atomic -= 1;
     return result;
 }
 
 Atomic& operator+=(Atomic& atomic, i64 value)
 {
+#ifdef __ATOMIC_RELAXED
+    __atomic_add_fetch(&atomic.value, value, __ATOMIC_RELAXED);
+#else
     atomic.value += value;
+#endif
     return atomic;
 }
 
 Atomic& operator-=(Atomic& atomic, i64 value)
 {
+#ifdef __ATOMIC_RELAXED
+    __atomic_sub_fetch(&atomic.value, value, __ATOMIC_RELAXED);
+#else
     atomic.value -= value;
+#endif
     return atomic;
 }
 
 Atomic& operator^=(Atomic& atomic, i64 value)
 {
+#ifdef __ATOMIC_RELAXED
+    __atomic_xor_fetch(&atomic.value, value, __ATOMIC_RELAXED);
+#else
     atomic.value ^= value;
+#endif
     return atomic;
 }
 
 Atomic& operator|=(Atomic& atomic, i64 value)
-{
+{   
+#ifdef __ATOMIC_RELAXED
+    __atomic_or_fetch(&atomic.value, value, __ATOMIC_RELAXED);
+#else
     atomic.value |= value;
+#endif
     return atomic;
 }
 
 Atomic& operator&=(Atomic& atomic, i64 value)
 {
+#ifdef __ATOMIC_RELAXED
+    __atomic_and_fetch(&atomic.value, value, __ATOMIC_RELAXED);
+#else
     atomic.value &= value;
+#endif
     return atomic;
 }
 

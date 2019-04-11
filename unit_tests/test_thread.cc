@@ -4,6 +4,8 @@
 #include <riku/thread.h>
 #include "./unit_test.h"
 
+#include <atomic>
+
 TEST_CASE("Thread testing", "[thread]")
 {
     Thread thread;

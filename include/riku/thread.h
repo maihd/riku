@@ -7,8 +7,12 @@ using ThreadFunc = Func<void(void)>;
 
 struct Atomic 
 {
-	volatile i64 value;
+    volatile i64 value;
+    
+    RIKU_API Atomic& operator=(i64 value);
+    RIKU_API Atomic& operator=(const Atomic& other);
 };
+
 RIKU_API Atomic& operator++(Atomic& atomic);
 RIKU_API Atomic& operator--(Atomic& atomic);
 RIKU_API Atomic  operator++(Atomic& atomic, int);
