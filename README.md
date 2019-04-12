@@ -43,8 +43,8 @@ Main purpose of this library for using as a standard library, replacement for C/
 ## Wishing modules
 
 1. ArgsParse: parsing command line argument, base on Python argparse
-2. Tasks or jobs system
-3. Future and Promise/A+
+2. WebSocket
+3. Value, ValuePool, StringPool
 4. Url: helpers for working with network URL 
 5. Http/Https: NodeJS's `http` and `https`
 
