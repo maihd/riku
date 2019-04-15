@@ -150,6 +150,18 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		description = "Use AVX extension.",
 	}
 
+	newaction {
+		trigger 	= "android-studio",
+		description = "Generate Android Studio project.",
+		execute		= function ()
+			os.execute("genie cmake")
+
+			os.execute("cp -r android-studio " .. path.join(BUILD_DIR, "projects"))
+
+			os.execute("cp " .. path.join(BUILD_DIR, "projects/cmake/*") .. " " .. path.join(BUILD_DIR, "projects/android-studio/app/jni"))
+		end
+	}
+
 	-- Avoid error when invoking genie --help.
 	if (_ACTION == nil) then return false end
 
@@ -206,6 +218,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 	end
 
 	_PLATFORM = _OPTIONS["platform"]
+
 	if _ACTION == "gmake" or _ACTION == "ninja" then
 		if nil == _PLATFORM then
 			print("Platform must be specified for gmake or ninja build!")
@@ -213,6 +226,11 @@ function toolchain(BUILD_DIR, LIB_DIR)
 		end
 
 		if "windows" == _PLATFORM then
+			print("Platform of gmake or ninja cannot be windows! Maybe your choice is windows-clang.")
+			os.exit(1)
+		end
+
+		if "android-studio" == _PLATFORM then
 			print("Platform of gmake or ninja cannot be windows! Maybe your choice is windows-clang.")
 			os.exit(1)
 		end
