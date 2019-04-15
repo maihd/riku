@@ -34,7 +34,11 @@ dofile "riku.genie.lua"
 
 project "riku.unit_tests"
 do
-   kind "consoleapp"
+   if _ACTION == "android-studio" then
+      kind "sharedlib"
+   else
+      kind "consoleapp"
+   end
 
    removeflags {
       "NoExceptions",

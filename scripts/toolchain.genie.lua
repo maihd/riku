@@ -158,7 +158,7 @@ function toolchain(BUILD_DIR, LIB_DIR)
 
 			os.execute("cp -r android-studio " .. path.join(BUILD_DIR, "projects"))
 
-			os.execute("cp " .. path.join(BUILD_DIR, "projects/cmake/*") .. " " .. path.join(BUILD_DIR, "projects/android-studio/app/jni"))
+			os.execute("cp -r " .. path.join(BUILD_DIR, "projects/cmake/*") .. " " .. path.join(BUILD_DIR, "projects/android-studio/app/jni"))
 		end
 	}
 
