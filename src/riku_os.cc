@@ -3,7 +3,6 @@
 
 #include <riku/fs.h>
 #include <riku/os.h>
-#include <riku/math.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -289,7 +288,13 @@ namespace os
 
         if (buffer && length > 0)
         {
-            for (int i = 0, n = math::min(cpu_count, length); i < n; i++)
+            int count = cpu_count;
+            if (count < length)
+            {
+                count = length;
+            }
+
+            for (int i = 0, n = count; i < n; i++)
             {
 #if PLATFORM_WINDOWS
                 HKEY  hKey;

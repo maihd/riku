@@ -74,7 +74,6 @@ ifeq ($(config),debug32)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -127,7 +126,6 @@ ifeq ($(config),release32)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -180,7 +178,6 @@ ifeq ($(config),debug64)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -233,7 +230,6 @@ ifeq ($(config),release64)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -286,7 +282,6 @@ ifeq ($(config),debug)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -339,7 +334,6 @@ ifeq ($(config),release)
 	$(OBJDIR)/unit_tests/test_hash_table.o \
 	$(OBJDIR)/unit_tests/test_json.o \
 	$(OBJDIR)/unit_tests/test_list.o \
-	$(OBJDIR)/unit_tests/test_math.o \
 	$(OBJDIR)/unit_tests/test_os.o \
 	$(OBJDIR)/unit_tests/test_path.o \
 	$(OBJDIR)/unit_tests/test_property.o \
@@ -451,10 +445,6 @@ $(OBJDIR)/unit_tests/test_json.o: ../../../unit_tests/test_json.cc $(GCH) $(MAKE
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 
 $(OBJDIR)/unit_tests/test_list.o: ../../../unit_tests/test_list.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
-
-$(OBJDIR)/unit_tests/test_math.o: ../../../unit_tests/test_math.cc $(GCH) $(MAKEFILE) | $(OBJDIR)/unit_tests
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -c "$<"
 

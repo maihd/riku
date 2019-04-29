@@ -44,9 +44,6 @@
     <ClCompile Include="..\..\..\unit_tests\test_list.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\unit_tests\test_math.cc">
-      <Filter>unit_tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\unit_tests\test_os.cc">
       <Filter>unit_tests</Filter>
     </ClCompile>

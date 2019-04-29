@@ -4,6 +4,7 @@ Standard runtime and library for C++.
 ## Build
 1. Pregenerated projects in `build/projects/*`
 2. Require [GENie](https://github.com/bkaradzic/GENie) to generate your target project.
+3. `genie [--platform=<platform>] <target>` to generate project
 
 ## Features and targets
 Main purpose of this library for using as a standard library, replacement for C/C++ standard library.
@@ -25,12 +26,11 @@ Main purpose of this library for using as a standard library, replacement for C/
 * [x] Dynamic buffer
 * [x] Crypto: hashing, encrypt, decrypt, encode, decode
 * [x] Thread, Mutex, Condition, Semaphore, Atomic, Fiber
-* [x] Linear and graphics math, all with same module `math`
 * [x] OS functions
 * [x] File system
 * [x] Path: helpers for working with filesystem path
 * [x] Net: sockets and streaming
-* [x] Dylib (low level)
+* [x] Dylib (low level): dynamic library loading
 * [x] Zlib: NodeJS's `zlib`
 * [x] Stream: base of all streaming type
 * [x] Func<>: fast delegate

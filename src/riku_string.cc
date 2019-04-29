@@ -1,5 +1,4 @@
 #include <riku/core.h>
-#include <riku/math.h>
 #include <riku/string.h>
 
 #include <stdio.h>
@@ -61,7 +60,13 @@ namespace string
     {
         if (end > start)
         {
-            return string::copy(buffer, str + start, math::min(length, end - start));
+            int expect_length = end - start;
+            if (expect_length > length)
+            {
+                expect_length = length;
+            }
+                
+            return string::copy(buffer, str + start, expect_length);
         }
         else
         {
