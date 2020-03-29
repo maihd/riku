@@ -136,13 +136,13 @@
  || defined(__powerpc64__) \
  || defined(__ppc64__)     \
  || defined(__LP64__)
-#define ARCH_64BIT   1
-#define ARCH_32BIT   0
-#define ARCH_BITNESS 64
+#   define ARCH_64BIT   1
+#   define ARCH_32BIT   0
+#   define ARCH_BITNESS 64
 #else
-#define ARCH_64BIT   0
-#define ARCH_32BIT   1
-#define ARCH_BITNESS 32
+#   define ARCH_64BIT   0
+#   define ARCH_32BIT   1
+#   define ARCH_BITNESS 32
 #endif
 
 // Dectect cpu endian
@@ -161,23 +161,23 @@
 
 // CPU name
 #if defined(__mips__)
-#define CPU_NAME "mips"
+#   define CPU_NAME "mips"
 #elif defined(__MIPSEL__)
-#define CPU_NAME "mipsel"
+#   define CPU_NAME "mipsel"
 #elif defined(__aarch64__)
-#define CPU_NAME "arm64"
+#   define CPU_NAME "arm64"
 #elif defined(__arm__)
-#define CPU_NAME "arm"
+#   define CPU_NAME "arm"
 #elif defined(__i386__)
-#define CPU_NAME "x32"
+#   define CPU_NAME "x32"
 #elif defined(__powerpc__)
-#define CPU_NAME "ppc"
+#   define CPU_NAME "ppc"
 #elif defined(__powerpc64__)
-#define CPU_NAME "ppc64"
+#   define CPU_NAME "ppc64"
 #elif defined(__x86_64__) || defined(_M_X64)
-#define CPU_NAME "amd64"
+#   define CPU_NAME "amd64"
 #else
-#define CPU_NAME "x86"
+#   define CPU_NAME "x86"
 #endif
 
 // Platform name
