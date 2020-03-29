@@ -195,10 +195,10 @@
 #   define PLATFORM_FAMILY "Linux"
 #elif PLATFORM_ASMJS
 #   define PLATFORM_NAME   "asmjs"
-#   define PLATFORM_FAMILY "Emscripten"
+#   define PLATFORM_FAMILY "Web"
 #elif PLATFORM_WASM
 #   define PLATFORM_NAME   "wasm"
-#   define PLATFORM_FAMILY "Emscripten"
+#   define PLATFORM_FAMILY "Web"
 #elif PLATFORM_IOS
 #   define PLATFORM_NAME   "ios"
 #   define PLATFORM_FAMILY "Darwin"
